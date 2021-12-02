@@ -1,11 +1,24 @@
+"""
+A script copies movie and TV files to your GD drive, in a Emby-happy struct.
+"""
+#  python3 torcp.py \
+#   /home/ccf2012/Downloads/The.Boys.S02.2020.1080p.BluRay.DTS.x264-HDS \
+#   --gd_path=gd123:/176/ -s  --dryrun
+#
+#  python3 torcp.py \
+#   /home/ccf2012/Downloads/ \
+#   --gd_path=gd123:/176/   --dryrun
+#
 import re
 import os
+import glob
 import sys
+import argparse
 import rclone
 from torguess import GuessCategoryUtils
 
 GD_CONFIG = r'/root/.config/rclone/rclone.conf'
-GD_PATH = r'gd123:/176/'
+GD_PATH = r''
 
 
 def parseMovieName(torName):
@@ -28,8 +41,7 @@ def parseMovieName(torName):
     for original, replacement in dilimers.items():
         sstr = sstr.replace(original, replacement)
 
-    sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d)\W*', '', sstr, flags=re.I)
-    # sstr = re.sub(r'\S+\w+@\w*', '', sstr)
+    sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d|[A-Z]{1,5}TV)\W*', '', sstr, flags=re.I)
     seasonstr = ''
     yearstr = ''
     titlestr = sstr
@@ -68,29 +80,34 @@ def parseMovieName(torName):
     if m:
         chtitle = m.group(0)
         titlestr = titlestr.replace(chtitle, '')
-
-    # titlestr = re.sub(r'\((\w+| )\)?(?!.*\(.*\)).*$', '', sstr).strip()
     # if titlestr.endswith(' JP'):
     #     titlestr = titlestr.replace(' JP', '')
 
     return titlestr, yearstr, seasonstr, chtitle
 
 
-def genTargetDir(cat, filename):
-    return os.path.join(cat, filename)
-
-
 def rcloneCopy(fromLoc, toLoc):
     print('rclone copy ', fromLoc, GD_PATH + toLoc)
 
-    cfg_path = GD_CONFIG
+    result = ''
+    if not args.dryrun:
+        cfg_path = GD_CONFIG
+        with open(cfg_path) as f:
+            cfg = f.read()
+        result = rclone.with_config(cfg).copy(fromLoc, GD_PATH + toLoc)
+    return result
 
+
+def rcloneLs(loc):
+    cfg_path = GD_CONFIG
     with open(cfg_path) as f:
         cfg = f.read()
 
-    result = rclone.with_config(cfg).copy(fromLoc, GD_PATH + toLoc)
+    dirStr = rclone.with_config(cfg).lsd(GD_PATH + loc)['out'].decode("utf-8")
+    dirlist = re.sub(r' +-1\s\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\s+-1\s', '',
+                     dirStr).split('\n')
+    return dirlist
 
-    return result
 
 def getSeasonFromFolderName(folderName, failDir=''):
     m1 = re.search(r'(\bS\d+(-S\d+)?)\b', folderName, flags=re.A | re.I)
@@ -99,35 +116,129 @@ def getSeasonFromFolderName(folderName, failDir=''):
     else:
         return failDir
 
-def main():
-    if len(sys.argv) <= 1:
-        cpLocation = '.'
-    else:
-        cpLocation = sys.argv[1]
 
-    for torFolderItem in os.listdir(cpLocation):
-        cat, group = GuessCategoryUtils.guessByName(torFolderItem)
-        title, year, season, chtitle = parseMovieName(torFolderItem)
-        mediaFolderName = title + ' (' + year + ')'
-        if cat == 'TV':
-            tv0Path = os.path.join(cpLocation, torFolderItem)
-            for tv1item in os.listdir(tv0Path):
-                tv1FullPath = os.path.join(tv0Path, tv1item)
-                if os.path.isdir(tv1FullPath):
-                    seasonFolder = getSeasonFromFolderName(tv1item, failDir=season)
-                    seasonFolderFullPath = os.path.join(cat, mediaFolderName, seasonFolder)
-                    for tv2item in os.listdir(tv1FullPath):
-                        tv2FullPath = os.path.join(tv1FullPath, tv2item)
-                        rcloneCopy(tv2FullPath, seasonFolderFullPath)
-                else:
-                    seasonFolderFullPath = os.path.join(cat, mediaFolderName, season)
-                    rcloneCopy(tv1FullPath, seasonFolderFullPath )
-        elif cat == 'MovieEncode':
-            movieParentDir = os.path.join(cat, mediaFolderName)
-            movieSource = os.path.join(cpLocation, torFolderItem)
-            for movieItem in os.listdir(movieSource):
-                movieFullPath = os.path.join(movieSource, movieItem)
-                rcloneCopy(movieFullPath, movieParentDir)
+def genMediaFolderName(cat, title, year, season):
+    if cat == 'TV':
+        if len(year) == 4 and season == 'S01':
+            mediaFolderName = title + ' (' + year + ')'
+        else:
+            mediaFolderName = title
+    else:
+        if len(year) == 4:
+            mediaFolderName = title + ' (' + year + ')'
+        else:
+            mediaFolderName = title
+    return mediaFolderName
+
+
+def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder):
+    seasonFolderFullPath = os.path.join('TV', tvFolder, seasonFolder)
+    for tv2item in os.listdir(tvSourceFullPath):
+        tv2FullPath = os.path.join(tvSourceFullPath, tv2item)
+        rcloneCopy(tv2FullPath, seasonFolderFullPath)
+
+
+def copyTVFolderItems(tvSourceFolder, genFolder, parseSeason):
+    for tvitem in os.listdir(tvSourceFolder):
+        tvitemPath = os.path.join(tvSourceFolder, tvitem)
+        if os.path.isdir(tvitemPath):
+            seasonFolder = getSeasonFromFolderName(tvitem, failDir=parseSeason)
+            copyTVSeasonItems(tvitemPath, genFolder, seasonFolder)
+        else:
+            seasonFolderFullPath = os.path.join('TV', genFolder, parseSeason)
+            rcloneCopy(tvitemPath, seasonFolderFullPath)
+
+
+def copyMovieFolderItems(movieSourceFolder, movieTargeDir):
+    if args.full:
+        for movieItem in os.listdir(movieSourceFolder):
+            movieFullPath = os.path.join(movieSourceFolder, movieItem)
+            rcloneCopy(movieFullPath, movieTargeDir)
+    else:
+        mediaFilePath = getLargestFile(movieSourceFolder)
+        rcloneCopy(mediaFilePath, movieTargeDir)
+
+
+def getLargestFile(dirName):
+    fileSizeTupleList = []
+    largestSize = 0
+    largestFile = None
+
+    for i in os.listdir(dirName):
+        p = os.path.join(dirName, i)
+        if os.path.isfile(p):
+            fileSizeTupleList.append((p, os.path.getsize(p)))
+
+    for fileName, fileSize in fileSizeTupleList:
+        if fileSize > largestSize:
+            largestSize = fileSize
+            largestFile = fileName
+    return largestFile
+
+
+def processOneDir(cpLocation, folderName):
+    cat, group = GuessCategoryUtils.guessByName(folderName)
+    parseTitle, parseYear, parseSeason, cntitle = parseMovieName(folderName)
+    mediaFolderName = genMediaFolderName(cat, parseTitle, parseYear,
+                                         parseSeason)
+    if cat == 'TV':
+        if args.single or (mediaFolderName not in gdTVList):
+            copyTVFolderItems(os.path.join(cpLocation, folderName),
+                              mediaFolderName, parseSeason)
+    elif cat == 'MovieEncode':
+        if args.single or (mediaFolderName not in gdMovieList):
+            copyMovieFolderItems(os.path.join(cpLocation, folderName),
+                                 os.path.join(cat, mediaFolderName))
+
+
+def loadArgs():
+    parser = argparse.ArgumentParser(
+        description=
+        'A script copies Movies and TVs to your GD drive, in Emby-happy struct.'
+    )
+    parser.add_argument(
+        'MEDIA_DIR',
+        help='The directory contains TVs and Movies to be copied.')
+    parser.add_argument('--gd_conf',
+                        help='the full path to the GD config file.')
+    parser.add_argument('--gd_path', required=True, help='the dest GD path.')
+    parser.add_argument('--dryrun',
+                        action='store_true',
+                        help='print msg instead of real copy.')
+    parser.add_argument('--single',
+                        '-s',
+                        action='store_true',
+                        help='parse and copy one single folder.')
+    parser.add_argument(
+        '--full',
+        action='store_true',
+        help='Movie only: copy all files, otherwise only the largest file')
+
+    global args
+    global GD_CONFIG
+    global GD_PATH
+    args = parser.parse_args()
+    if args.gd_conf:
+        GD_CONFIG = args.gd_conf
+    if args.gd_path:
+        GD_PATH = args.gd_path
+
+
+def main():
+    loadArgs()
+    cpLocation = args.MEDIA_DIR
+    cpLocation = os.path.abspath(cpLocation)
+
+    global gdTVList
+    global gdMovieList
+    gdTVList = rcloneLs('TV')
+    gdMovieList = rcloneLs('MovieEncode')
+    if args.single:
+        processOneDir(os.path.dirname(cpLocation),
+                      os.path.basename(os.path.normpath(cpLocation)))
+    else:
+        for torFolderItem in os.listdir(cpLocation):
+            processOneDir(cpLocation, torFolderItem)
 
 
 if __name__ == '__main__':

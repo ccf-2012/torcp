@@ -82,14 +82,14 @@ class GuessCategoryUtils:
             GuessCategoryUtils.setCategory('Music')
         elif re.search(r'(乐团|交响曲|协奏曲|二重奏|专辑\b)', torName):
             GuessCategoryUtils.setCategory('Music')
-        elif re.search(r'\bHDTV\b', torName):
-            GuessCategoryUtils.setCategory('HDTV')
         else:
             return False
         return True
 
     def categoryTvByName(torName):
-        if re.search(r'[ES]\d+\W|EP\d+\W|\d+季|第\w{1,3}季\W', torName, re.I):
+        if re.search(r'\bHDTV\b', torName):
+            GuessCategoryUtils.setCategory('HDTV')
+        elif re.search(r'[ES]\d+\W|EP\d+\W|\d+季|第\w{1,3}季\W', torName, re.I):
             GuessCategoryUtils.setCategory('TV')
         elif re.search(r'\Wcomplete\W|Full.Season|全\d+集|\d+集全', torName, re.I):
             GuessCategoryUtils.setCategory('TV')

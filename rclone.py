@@ -135,7 +135,16 @@ class RClone:
         Args:
         - dest (string): A string "remote:path" representing the location to list.
         """
-        return self.run_cmd(command="ls", extra_args=[dest] + flags)
+        return self.run_cmd(command="ls  --max-depth 1", extra_args=[dest] + flags)
+
+    def lsd(self, dest, flags=[]):
+        """
+        Executes: rclone ls remote:path [flags]
+
+        Args:
+        - dest (string): A string "remote:path" representing the location to list.
+        """
+        return self.run_cmd(command="lsd", extra_args=[dest] + flags)
 
     def lsjson(self, dest, flags=[]):
         """

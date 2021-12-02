@@ -60,6 +60,9 @@ from torguess import GuessCategoryUtils
      'Foundation', '2021', 'S01'),
     ('我是你的眼.I\'m.Your.Eyes.2016.S01.2160p.WEB-DL.H265.AAC-LeagueWEB',
      'I\'m Your Eyes', '2016', 'S01'),
+    ('Ms.45.1981.720p.BluRay.FLAC1.0.x264-PTer', 'Ms 45', '1981', ''),
+    ('BTV.The.Forbidden.City.Ep11-Ep12.HDTV.1080i.H264-HDSTV', 'The Forbidden City', '', 'Ep11-Ep12'),
+    ('HunanTV.Da.Wan.Zai.De.Ye.20211201.HDTV.1080i.H264-HDSTV.ts', 'Da Wan Zai De Ye 20211201', '', '')
 ])
 def test_parseTVName(test_input, e1, e2, e3):
     a1, a2, a3, a4 = torcp.parseMovieName(test_input)
@@ -74,6 +77,16 @@ def test_parseTVName(test_input, e1, e2, e3):
     ('半暖时光.The.Memory.About.You.S01.2021.2160p.WEB-DL.AAC.H265-HDSWEB', 'TV',
      'HDSWEB'),
     ('不惑之旅.To.the.Oak.S01.2021.2160p.WEB-DL.AAC.H265-HDSWEB', 'TV', 'HDSWEB'),
+    ('BDRemux+Hakumei+to+Mikochi+JP+7³ACG@OurBits', 'Other', 'OURBITS'),
+    ('FIFA.WORLD.CUP.QUALIFIERS.ENG.VS.ALB.20211113.1080i.HDTV.H264.DD-PTerTV.ts', 'HDTV', 'PTERTV'),
+    ('Babymother.1998.1080p.BluRay.REMUX.AVC.FLAC.2.0-BLURANiUM.mkv', 'MovieRemux', 'BLURANIUM'),
+    ('春花秋月未了情.Breezy.1973.1080p.BluRay.x265.10bit.FLAC.MNHD-FRDS', 'MovieEncode', 'FRDS'),
+    ('Michael Jackson - The Mystery Of HIStory (1997) [FLAC]', 'Music', None),
+    ('New_Order-(The_Rest_Of)_New_Order-CD-FLAC-1995-WREMiX', 'Music', 'WREMIX'),
+    ('VA-Kill_Bill_Vol_2-(9362-48676-2)-CD-FLAC-2004', 'Music', '2004'),
+    ('The Blue Diamonds - Het Beste Van (1988) [FLAC-CD] {WG,RM,Philips,834 484-2}', 'Music', None),
+    ('Commodores - Caught In The Act (1975) [FLAC] {24-192 HDTracks}', 'Music', None),
+    ('BTV.The.Forbidden.City.Ep11-Ep12.HDTV.1080i.H264-HDSTV', 'HDTV', 'HDSTV'),
 ])
 def test_guessByName(test_input, e1, e2):
     a1, a2 = GuessCategoryUtils.guessByName(test_input)
