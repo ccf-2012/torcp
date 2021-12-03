@@ -41,10 +41,17 @@ def parseMovieName(torName):
     for original, replacement in dilimers.items():
         sstr = sstr.replace(original, replacement)
 
-    sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d|[A-Z]{1,5}TV)\W*', '', sstr, flags=re.I)
+    sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d|[A-Z]{1,5}TV)\W*',
+                  '',
+                  sstr,
+                  flags=re.I)
     seasonstr = ''
     yearstr = ''
     titlestr = sstr
+    mcns = re.search(r'(第(\d+)(-\d+)?季)\b', sstr, flags=re.I)
+    if mcns:
+        seasonstr = 'S' + mcns.group(2)
+        sstr = sstr.replace(mcns.group(1), '')
     mep = re.search(r'(\bEp?\d+-Ep?\d+)\b', sstr, flags=re.A | re.I)
     if mep:
         seasonstr = mep.group(1)
@@ -74,23 +81,26 @@ def parseMovieName(torName):
 
     titlestr = re.sub(r' +', ' ', sstr).strip()
 
-    chtitle = titlestr
+    cntitle = titlestr
     m = re.search(r'^.*[\u4e00-\u9fa5\u3041-\u30fc](S\d+| |\.|\d|-)*(?=[A-Z])',
                   titlestr)
     if m:
-        chtitle = m.group(0)
-        titlestr = titlestr.replace(chtitle, '')
+        cntitle = m.group(0)
+        titlestr = titlestr.replace(cntitle, '')
     # if titlestr.endswith(' JP'):
     #     titlestr = titlestr.replace(' JP', '')
+    if re.search(r'\bAKA\b', titlestr):
+        titlestr = titlestr.split('AKA')[0].strip()
 
-    return titlestr, yearstr, seasonstr, chtitle
+
+    return titlestr, yearstr, seasonstr, cntitle
 
 
 def rcloneCopy(fromLoc, toLoc):
     print('rclone copy ', fromLoc, GD_PATH + toLoc)
 
     result = ''
-    if not args.dryrun:
+    if not g_args.dryrun:
         cfg_path = GD_CONFIG
         with open(cfg_path) as f:
             cfg = f.read()
@@ -150,7 +160,7 @@ def copyTVFolderItems(tvSourceFolder, genFolder, parseSeason):
 
 
 def copyMovieFolderItems(movieSourceFolder, movieTargeDir):
-    if args.full:
+    if g_args.full:
         for movieItem in os.listdir(movieSourceFolder):
             movieFullPath = os.path.join(movieSourceFolder, movieItem)
             rcloneCopy(movieFullPath, movieTargeDir)
@@ -176,19 +186,29 @@ def getLargestFile(dirName):
     return largestFile
 
 
-def processOneDir(cpLocation, folderName):
-    cat, group = GuessCategoryUtils.guessByName(folderName)
-    parseTitle, parseYear, parseSeason, cntitle = parseMovieName(folderName)
+def processOneDirItem(cpLocation, itemName):
+    cat, group = GuessCategoryUtils.guessByName(itemName)
+    parseTitle, parseYear, parseSeason, cntitle = parseMovieName(itemName)
+    re.sub(r'^E\d+-E\d+$', 'S01', parseSeason, re.I)
+
     mediaFolderName = genMediaFolderName(cat, parseTitle, parseYear,
                                          parseSeason)
     if cat == 'TV':
-        if args.single or (mediaFolderName not in gdTVList):
-            copyTVFolderItems(os.path.join(cpLocation, folderName),
+        if g_args.single or (mediaFolderName not in g_gd_tv_list):
+            #TODO: assert os.path.isdir(os.path.join(cpLocation, itemName))
+            copyTVFolderItems(os.path.join(cpLocation, itemName),
                               mediaFolderName, parseSeason)
     elif cat == 'MovieEncode':
-        if args.single or (mediaFolderName not in gdMovieList):
-            copyMovieFolderItems(os.path.join(cpLocation, folderName),
-                                 os.path.join(cat, mediaFolderName))
+        if g_args.single or (mediaFolderName not in g_gd_movie_list):
+            movieSrc = os.path.join(cpLocation, itemName)
+            movieTargeDir = os.path.join(cat, mediaFolderName)
+            if os.path.isfile(movieSrc):
+                rcloneCopy(movieSrc, movieTargeDir)
+            else:
+                copyMovieFolderItems(movieSrc, movieTargeDir)
+    elif cat == 'MV':
+        elseSrc = os.path.join(cpLocation, itemName)
+        rcloneCopy(elseSrc, cat)
 
 
 def loadArgs():
@@ -214,31 +234,33 @@ def loadArgs():
         action='store_true',
         help='Movie only: copy all files, otherwise only the largest file')
 
-    global args
+    global g_args
     global GD_CONFIG
     global GD_PATH
-    args = parser.parse_args()
-    if args.gd_conf:
-        GD_CONFIG = args.gd_conf
-    if args.gd_path:
-        GD_PATH = args.gd_path
+    g_args = parser.parse_args()
+    if g_args.gd_conf:
+        GD_CONFIG = g_args.gd_conf
+    if g_args.gd_path:
+        GD_PATH = g_args.gd_path
 
 
 def main():
     loadArgs()
-    cpLocation = args.MEDIA_DIR
+    cpLocation = g_args.MEDIA_DIR
     cpLocation = os.path.abspath(cpLocation)
 
-    global gdTVList
-    global gdMovieList
-    gdTVList = rcloneLs('TV')
-    gdMovieList = rcloneLs('MovieEncode')
-    if args.single:
-        processOneDir(os.path.dirname(cpLocation),
-                      os.path.basename(os.path.normpath(cpLocation)))
+    global g_gd_tv_list
+    global g_gd_movie_list
+    global g_gd_mv_list
+    g_gd_tv_list = rcloneLs('TV')
+    g_gd_movie_list = rcloneLs('MovieEncode')
+    g_gd_mv_list = rcloneLs('MV')
+    if g_args.single:
+        processOneDirItem(os.path.dirname(cpLocation),
+                          os.path.basename(os.path.normpath(cpLocation)))
     else:
         for torFolderItem in os.listdir(cpLocation):
-            processOneDir(cpLocation, torFolderItem)
+            processOneDirItem(cpLocation, torFolderItem)
 
 
 if __name__ == '__main__':

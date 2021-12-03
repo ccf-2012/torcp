@@ -194,10 +194,10 @@ class GuessCategoryUtils:
         if GuessCategoryUtils.categoryTvByName(torName):
             return GuessCategoryUtils.category, GuessCategoryUtils.group
 
-        if GuessCategoryUtils.categoryByGroup(GuessCategoryUtils.group):
+        if GuessCategoryUtils.categoryByKeyword(torName):
             return GuessCategoryUtils.category, GuessCategoryUtils.group
 
-        if GuessCategoryUtils.categoryByKeyword(torName):
+        if GuessCategoryUtils.categoryByGroup(GuessCategoryUtils.group):
             return GuessCategoryUtils.category, GuessCategoryUtils.group
 
         # 非web组出的

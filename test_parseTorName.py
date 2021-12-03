@@ -62,7 +62,9 @@ from torguess import GuessCategoryUtils
      'I\'m Your Eyes', '2016', 'S01'),
     ('Ms.45.1981.720p.BluRay.FLAC1.0.x264-PTer', 'Ms 45', '1981', ''),
     ('BTV.The.Forbidden.City.Ep11-Ep12.HDTV.1080i.H264-HDSTV', 'The Forbidden City', '', 'Ep11-Ep12'),
-    ('HunanTV.Da.Wan.Zai.De.Ye.20211201.HDTV.1080i.H264-HDSTV.ts', 'Da Wan Zai De Ye 20211201', '', '')
+    ('HunanTV.Da.Wan.Zai.De.Ye.20211201.HDTV.1080i.H264-HDSTV.ts', 'Da Wan Zai De Ye 20211201', '', ''),
+    ('2021.FIVB.VNL.CHN.vs.BRA.20210608.1080p.REPACK.WEB-DL.x264.AAC-TJUPT.mp4', '2021 FIVB VNL CHN vs BRA 20210608', '2021', ''),
+    ('失落的秘符.第1季', '失落的秘符', '', 'S1'),
 ])
 def test_parseTVName(test_input, e1, e2, e3):
     a1, a2, a3, a4 = torcp.parseMovieName(test_input)
@@ -87,6 +89,8 @@ def test_parseTVName(test_input, e1, e2, e3):
     ('The Blue Diamonds - Het Beste Van (1988) [FLAC-CD] {WG,RM,Philips,834 484-2}', 'Music', None),
     ('Commodores - Caught In The Act (1975) [FLAC] {24-192 HDTracks}', 'Music', None),
     ('BTV.The.Forbidden.City.Ep11-Ep12.HDTV.1080i.H264-HDSTV', 'HDTV', 'HDSTV'),
+    ('[漫游·张靓颖沉浸式虚拟音乐会·完整版].Roaming·Jane Zhang Immersive Virtual Concert.2021.1080p.WEB-DL.AVC.AAC-QHstudIo', 'MV', 'QHSTUDIO'),
+
 ])
 def test_guessByName(test_input, e1, e2):
     a1, a2 = GuessCategoryUtils.guessByName(test_input)
