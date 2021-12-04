@@ -1,6 +1,6 @@
 import pytest
-import torcp
-from torguess import GuessCategoryUtils
+import tortitle
+from torcategory import GuessCategoryUtils
 
 
 @pytest.mark.parametrize("test_input, e1, e2, e3", [
@@ -67,7 +67,7 @@ from torguess import GuessCategoryUtils
     ('失落的秘符.第1季', '失落的秘符', '', 'S1'),
 ])
 def test_parseTVName(test_input, e1, e2, e3):
-    a1, a2, a3, a4 = torcp.parseMovieName(test_input)
+    a1, a2, a3, a4 = tortitle.parseMovieName(test_input)
     assert a1 == e1 and a2 == e2 and a3 == e3
 
 

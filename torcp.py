@@ -1,99 +1,66 @@
 """
-A script copies movie and TV files to your GD drive, in a Emby-happy struct.
+A script copies movie and TV files to your GD drive, or create Hard Link in a seperate dir, in Emby-happy struct.
 """
-#  python3 torcp.py \
-#   /home/ccf2012/Downloads/The.Boys.S02.2020.1080p.BluRay.DTS.x264-HDS \
-#   --gd_path=gd123:/176/ -s  --dryrun
+#  Usage:
+#   python3 torcp.py -h
 #
-#  python3 torcp.py \
-#   /home/ccf2012/Downloads/ \
-#   --gd_path=gd123:/176/   --dryrun
+#  Example:
+#   python3 torcp.py  /home/ccf2012/Downloads/  --gd_path=gd123:/176/
+#
+#  Example for single directory:
+#   python3 torcp.py \
+#     /home/ccf2012/Downloads/The.Boys.S02.2020.1080p.BluRay.DTS.x264-HDS \
+#     --gd_path=gd123:/176/ -s
+#
 #
 import re
 import os
-import glob
-import sys
 import argparse
 import rclone
-from torguess import GuessCategoryUtils
+import shutil
+from torcategory import GuessCategoryUtils
+from tortitle import parseMovieName
+
 
 GD_CONFIG = r'/root/.config/rclone/rclone.conf'
-GD_PATH = r''
+GD_PATH = r'gd123:/media/'
+
+HD_PATH = r'/home/ccf2012/emby/'
 
 
-def parseMovieName(torName):
-    sstr = GuessCategoryUtils.cutExt(torName)
+def ensureDir(file_path):
+    if os.path.isfile(file_path):
+        file_path = os.path.dirname(file_path)
+    if not os.path.exists(file_path):
+        os.makedirs(file_path)
 
-    sstr = re.sub(
-        r'((UHD)?\s+BluRay|Blu-?ray|720p|1080[pi]|2160p|576i|WEB-DL|\.DVD\.|WEBRip|HDTV|REMASTERED|LIMITED|Complete|SUBBED|TV Series).*$',
-        '',
-        sstr,
-        flags=re.I)
 
-    dilimers = {
-        '[': ' ',
-        ']': ' ',
-        '.': ' ',
-        '{': ' ',
-        '}': ' ',
-        '_': ' ',
-    }
-    for original, replacement in dilimers.items():
-        sstr = sstr.replace(original, replacement)
-
-    sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d|[A-Z]{1,5}TV)\W*',
-                  '',
-                  sstr,
-                  flags=re.I)
-    seasonstr = ''
-    yearstr = ''
-    titlestr = sstr
-    mcns = re.search(r'(第(\d+)(-\d+)?季)\b', sstr, flags=re.I)
-    if mcns:
-        seasonstr = 'S' + mcns.group(2)
-        sstr = sstr.replace(mcns.group(1), '')
-    mep = re.search(r'(\bEp?\d+-Ep?\d+)\b', sstr, flags=re.A | re.I)
-    if mep:
-        seasonstr = mep.group(1)
-        sstr = sstr.replace(seasonstr, '')
-    m1 = None
-    for m1 in re.finditer(r'(\bS\d+(-S\d+)?)\b', sstr, flags=re.A | re.I):
-        pass
-    # m1 = re.search(r'(\bS\d+(-S\d+)?)\b', sstr, flags=re.A | re.I)
-    if m1:
-        seasonstr = m1.group(1)
-        seasonsapn = m1.span(1)
-        sstr = sstr.replace(seasonstr, '')
-
-    m2 = re.search(r'\b((19\d{2}\b|20\d{2})-?(19\d{2}|20\d{2})?)\b',
-                   sstr,
-                   flags=re.I)
-    if m2:
-        yearstr = m2.group(1)
-        yearspan = m2.span(1)
-        if re.search(r'\w.*' + yearstr, sstr):
-            sstr = sstr[:yearspan[0] - 1]
+def hdlinkCopy(fromLoc, toLoc):
+    destDir = os.path.join(HD_PATH, toLoc)
+    ensureDir(destDir)
+    if os.path.isfile(fromLoc):
+        destFile = os.path.join(destDir, os.path.basename(fromLoc))
+        print('ln ', fromLoc, destFile)
+        if not os.path.exists(destFile):
+            os.link(fromLoc, destFile)
     else:
-        if m1:
-            ss2 = sstr[:seasonsapn[0] - 1]
-            if not re.search(r'[\u4e00-\u9fa5\u3041-\u30fc]$', ss2):
-                sstr = ss2
-
-    titlestr = re.sub(r' +', ' ', sstr).strip()
-
-    cntitle = titlestr
-    m = re.search(r'^.*[\u4e00-\u9fa5\u3041-\u30fc](S\d+| |\.|\d|-)*(?=[A-Z])',
-                  titlestr)
-    if m:
-        cntitle = m.group(0)
-        titlestr = titlestr.replace(cntitle, '')
-    # if titlestr.endswith(' JP'):
-    #     titlestr = titlestr.replace(' JP', '')
-    if re.search(r'\bAKA\b', titlestr):
-        titlestr = titlestr.split('AKA')[0].strip()
+        destDir = os.path.join(destDir, os.path.basename(fromLoc))
+        print('copytree ', fromLoc, destDir)
+        if not os.path.exists(destDir):
+            shutil.copytree(fromLoc, destDir, copy_function=os.link)
 
 
-    return titlestr, yearstr, seasonstr, cntitle
+def hdlinkLs(loc):
+    destDir = HD_PATH + loc
+    ensureDir(destDir)
+    return os.listdir(destDir)
+
+
+def targetCopy(fromLoc, toLoc):
+    if g_args.hd_path:
+        hdlinkCopy(fromLoc, toLoc)
+    elif g_args.gd_path:
+        rcloneCopy(fromLoc, toLoc)
 
 
 def rcloneCopy(fromLoc, toLoc):
@@ -124,7 +91,8 @@ def getSeasonFromFolderName(folderName, failDir=''):
     if m1:
         return m1.group(1)
     else:
-        return failDir
+        return folderName
+        # return failDir
 
 
 def genMediaFolderName(cat, title, year, season):
@@ -145,7 +113,7 @@ def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder):
     seasonFolderFullPath = os.path.join('TV', tvFolder, seasonFolder)
     for tv2item in os.listdir(tvSourceFullPath):
         tv2FullPath = os.path.join(tvSourceFullPath, tv2item)
-        rcloneCopy(tv2FullPath, seasonFolderFullPath)
+        targetCopy(tv2FullPath, seasonFolderFullPath)
 
 
 def copyTVFolderItems(tvSourceFolder, genFolder, parseSeason):
@@ -156,17 +124,17 @@ def copyTVFolderItems(tvSourceFolder, genFolder, parseSeason):
             copyTVSeasonItems(tvitemPath, genFolder, seasonFolder)
         else:
             seasonFolderFullPath = os.path.join('TV', genFolder, parseSeason)
-            rcloneCopy(tvitemPath, seasonFolderFullPath)
+            targetCopy(tvitemPath, seasonFolderFullPath)
 
 
 def copyMovieFolderItems(movieSourceFolder, movieTargeDir):
     if g_args.full:
         for movieItem in os.listdir(movieSourceFolder):
             movieFullPath = os.path.join(movieSourceFolder, movieItem)
-            rcloneCopy(movieFullPath, movieTargeDir)
+            targetCopy(movieFullPath, movieTargeDir)
     else:
         mediaFilePath = getLargestFile(movieSourceFolder)
-        rcloneCopy(mediaFilePath, movieTargeDir)
+        targetCopy(mediaFilePath, movieTargeDir)
 
 
 def getLargestFile(dirName):
@@ -189,13 +157,13 @@ def getLargestFile(dirName):
 def processOneDirItem(cpLocation, itemName):
     cat, group = GuessCategoryUtils.guessByName(itemName)
     parseTitle, parseYear, parseSeason, cntitle = parseMovieName(itemName)
-    re.sub(r'^E\d+-E\d+$', 'S01', parseSeason, re.I)
+    parseSeason = re.sub(r'^Ep?\d+-Ep?\d+$', 'S01', parseSeason, re.I)
 
     mediaFolderName = genMediaFolderName(cat, parseTitle, parseYear,
                                          parseSeason)
     if cat == 'TV':
-        if g_args.single or (mediaFolderName not in g_gd_tv_list):
-            #TODO: assert os.path.isdir(os.path.join(cpLocation, itemName))
+        if g_args.append or g_args.single or (mediaFolderName not in g_gd_tv_list):
+            # TODO: assert os.path.isdir(os.path.join(cpLocation, itemName))
             copyTVFolderItems(os.path.join(cpLocation, itemName),
                               mediaFolderName, parseSeason)
     elif cat == 'MovieEncode':
@@ -203,25 +171,28 @@ def processOneDirItem(cpLocation, itemName):
             movieSrc = os.path.join(cpLocation, itemName)
             movieTargeDir = os.path.join(cat, mediaFolderName)
             if os.path.isfile(movieSrc):
-                rcloneCopy(movieSrc, movieTargeDir)
+                targetCopy(movieSrc, movieTargeDir)
             else:
                 copyMovieFolderItems(movieSrc, movieTargeDir)
-    elif cat == 'MV':
-        elseSrc = os.path.join(cpLocation, itemName)
-        rcloneCopy(elseSrc, cat)
+    # elif cat == 'MV':
+    #     elseSrc = os.path.join(cpLocation, itemName)
+    #     rcloneCopy(elseSrc, cat)
 
 
 def loadArgs():
     parser = argparse.ArgumentParser(
-        description=
-        'A script copies Movies and TVs to your GD drive, in Emby-happy struct.'
+        description='A script copies Movies and TVs to your GD drive, in Emby-happy struct.'
     )
     parser.add_argument(
         'MEDIA_DIR',
         help='The directory contains TVs and Movies to be copied.')
     parser.add_argument('--gd_conf',
                         help='the full path to the GD config file.')
-    parser.add_argument('--gd_path', required=True, help='the dest GD path.')
+    parser.add_argument('--gd_path', help='the dest GD path.')
+    parser.add_argument('--hd_path', help='the dest path to create Hard Link.')
+    parser.add_argument('--append',
+                        action='store_true',
+                        help='try copy when dir exists.')
     parser.add_argument('--dryrun',
                         action='store_true',
                         help='print msg instead of real copy.')
@@ -251,10 +222,15 @@ def main():
 
     global g_gd_tv_list
     global g_gd_movie_list
-    global g_gd_mv_list
-    g_gd_tv_list = rcloneLs('TV')
-    g_gd_movie_list = rcloneLs('MovieEncode')
-    g_gd_mv_list = rcloneLs('MV')
+    # global g_gd_mv_list
+    if g_args.gd_path:
+        g_gd_tv_list = rcloneLs('TV')
+        g_gd_movie_list = rcloneLs('MovieEncode')
+    elif g_args.hd_path:
+        g_gd_tv_list = hdlinkLs('TV')
+        g_gd_movie_list = hdlinkLs('MovieEncode')
+
+    # g_gd_mv_list = rcloneLs('MV')
     if g_args.single:
         processOneDirItem(os.path.dirname(cpLocation),
                           os.path.basename(os.path.normpath(cpLocation)))
