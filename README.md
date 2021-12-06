@@ -1,8 +1,8 @@
 # torcp
 A script to rename and copy downloaded files to a target in Emby-happy way:
 1. Category TV/Movie.
-2. Extract movie name from filename.
-3. Copy to your `GD drive`.
+2. Parse movie name, year, season from filename/dirname.
+3. [rclone](https://rclone.org/) copy to your `GD drive`, `OneDrive` or anything [rclone](https://rclone.org/) supports, in [Emby-happy](https://support.emby.media/support/solutions/articles/44001159102-movie-naming) naming.
 4. or create `Hard Link` in a seperate dir.
 
 ##  Usage:
