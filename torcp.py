@@ -61,6 +61,7 @@ def targetCopy(fromLoc, toLoc):
 def rcloneCopy(fromLoc, toLoc):
     print('rclone copy ', fromLoc, g_args.gd_path + toLoc)
 
+    flagList = []
     if g_args.gd_flags:
         flagList = g_args.gd_flags.split(' ')
     result = ''

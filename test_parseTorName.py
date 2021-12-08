@@ -65,6 +65,7 @@ from torcategory import GuessCategoryUtils
     ('HunanTV.Da.Wan.Zai.De.Ye.20211201.HDTV.1080i.H264-HDSTV.ts', 'Da Wan Zai De Ye 20211201', '', ''),
     ('2021.FIVB.VNL.CHN.vs.BRA.20210608.1080p.REPACK.WEB-DL.x264.AAC-TJUPT.mp4', '2021 FIVB VNL CHN vs BRA 20210608', '2021', ''),
     ('失落的秘符.第1季', '失落的秘符', '', 'S1'),
+    ('最后的决斗.The.Last.Duel.2021.1080p.Blu-ray.x265.DTS￡cXcY@FRDS', 'The Last Duel', '2021', ''),
 ])
 def test_parseTVName(test_input, e1, e2, e3):
     a1, a2, a3, a4 = tortitle.parseMovieName(test_input)
