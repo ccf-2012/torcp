@@ -21,12 +21,7 @@ import shutil
 from torcategory import GuessCategoryUtils
 from tortitle import parseMovieName
 
-
-GD_CONFIG = r'/root/.config/rclone/rclone.conf'
-GD_PATH = r'gd123:/media/'
-
-HD_PATH = r'/home/ccf2012/emby/'
-
+g_args = None
 
 def ensureDir(file_path):
     if os.path.isfile(file_path):
@@ -36,7 +31,7 @@ def ensureDir(file_path):
 
 
 def hdlinkCopy(fromLoc, toLoc):
-    destDir = os.path.join(HD_PATH, toLoc)
+    destDir = os.path.join(g_args.hd_path, toLoc)
     ensureDir(destDir)
     if os.path.isfile(fromLoc):
         destFile = os.path.join(destDir, os.path.basename(fromLoc))
@@ -51,7 +46,7 @@ def hdlinkCopy(fromLoc, toLoc):
 
 
 def hdlinkLs(loc):
-    destDir = HD_PATH + loc
+    destDir = os.path.join(g_args.hd_path, loc)
     ensureDir(destDir)
     return os.listdir(destDir)
 
@@ -64,25 +59,32 @@ def targetCopy(fromLoc, toLoc):
 
 
 def rcloneCopy(fromLoc, toLoc):
-    print('rclone copy ', fromLoc, GD_PATH + toLoc)
+    print('rclone copy ', fromLoc, g_args.gd_path + toLoc)
 
+    if g_args.gd_flags:
+        flagList = g_args.gd_flags.split(' ')
     result = ''
     if not g_args.dryrun:
-        cfg_path = GD_CONFIG
-        with open(cfg_path) as f:
+        with open(g_args.gd_conf) as f:
             cfg = f.read()
-        result = rclone.with_config(cfg).copy(fromLoc, GD_PATH + toLoc)
+        result = rclone.with_config(cfg).copy(fromLoc, g_args.gd_path + toLoc, flags=flagList)
     return result
 
 
 def rcloneLs(loc):
-    cfg_path = GD_CONFIG
-    with open(cfg_path) as f:
+    if not g_args.gd_path:
+        print('forgot --gd_path?')
+        return ''
+
+    with open(g_args.gd_conf) as f:
         cfg = f.read()
 
-    dirStr = rclone.with_config(cfg).lsd(GD_PATH + loc)['out'].decode("utf-8")
-    dirlist = re.sub(r' +-1\s\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\s+-1\s', '',
-                     dirStr).split('\n')
+    try:
+        dirStr = rclone.with_config(cfg).lsd(g_args.gd_path + loc)['out'].decode("utf-8")
+        dirlist = re.sub(r' +-1\s\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\s+-1\s', '',
+                        dirStr).split('\n')
+    except:
+        dirlist = ''
     return dirlist
 
 
@@ -181,14 +183,16 @@ def processOneDirItem(cpLocation, itemName):
 
 def loadArgs():
     parser = argparse.ArgumentParser(
-        description='A script copies Movies and TVs to your GD drive, in Emby-happy struct.'
+        description='A script copies Movies and TVs to your rclone target, in Emby-happy struct.'
     )
     parser.add_argument(
         'MEDIA_DIR',
         help='The directory contains TVs and Movies to be copied.')
     parser.add_argument('--gd_conf',
-                        help='the full path to the GD config file.')
-    parser.add_argument('--gd_path', help='the dest GD path.')
+                        help='the full path to the rclone config file.',
+                        default=r'/root/.config/rclone/rclone.conf')
+    parser.add_argument('--gd_path', help='the rclone target path.')
+    parser.add_argument('--gd_flags', help='extra rclone flags.')
     parser.add_argument('--hd_path', help='the dest path to create Hard Link.')
     parser.add_argument('--append',
                         action='store_true',
@@ -206,13 +210,7 @@ def loadArgs():
         help='Movie only: copy all files, otherwise only the largest file')
 
     global g_args
-    global GD_CONFIG
-    global GD_PATH
     g_args = parser.parse_args()
-    if g_args.gd_conf:
-        GD_CONFIG = g_args.gd_conf
-    if g_args.gd_path:
-        GD_PATH = g_args.gd_path
 
 
 def main():
