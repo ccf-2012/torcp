@@ -1,16 +1,14 @@
 """
-A script copies movie and TV files to your GD drive, or create Hard Link in a seperate dir, in Emby-happy struct.
+A script hardlink/rclone copy media files and directories in Emby-happy naming and structs.
 """
 #  Usage:
 #   python3 torcp.py -h
 #
-#  Example:
+#  Example 1, rclone copy to a gd drive
 #   python3 torcp.py  /home/ccf2012/Downloads/  --gd_path=gd123:/176/
 #
-#  Example for single directory:
-#   python3 torcp.py \
-#     /home/ccf2012/Downloads/The.Boys.S02.2020.1080p.BluRay.DTS.x264-HDS \
-#     --gd_path=gd123:/176/ -s
+#  Example 2, hard link to a seperate dir
+#    python3 torcp.py /home/ccf2012/Downloads/  --hd_path=/home/ccf2012/emby/
 #
 #
 import re
@@ -23,6 +21,7 @@ from tortitle import parseMovieName
 import logging
 
 g_args = None
+
 
 def ensureDir(file_path):
     if os.path.isfile(file_path):
@@ -68,7 +67,9 @@ def rcloneCopy(fromLoc, toLoc):
     if not g_args.dryrun:
         with open(g_args.gd_conf) as f:
             cfg = f.read()
-        result = rclone.with_config(cfg).copy(fromLoc, g_args.gd_path + toLoc, flags=flagList)
+        result = rclone.with_config(cfg).copy(fromLoc,
+                                              g_args.gd_path + toLoc,
+                                              flags=flagList)
     return result
 
 
@@ -81,9 +82,10 @@ def rcloneLs(loc):
         cfg = f.read()
 
     try:
-        dirStr = rclone.with_config(cfg).lsd(g_args.gd_path + loc)['out'].decode("utf-8")
-        dirlist = re.sub(r' +-1\s\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\s+-1\s', '',
-                        dirStr).split('\n')
+        dirStr = rclone.with_config(cfg).lsd(g_args.gd_path +
+                                             loc)['out'].decode("utf-8")
+        dirlist = re.sub(r' +-1\s\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\s+-1\s',
+                         '', dirStr).split('\n')
     except:
         dirlist = ''
     return dirlist
@@ -167,12 +169,13 @@ def processOneDirItem(cpLocation, itemName):
     mediaSrc = os.path.join(cpLocation, itemName)
     mediaTargeDir = os.path.join(cat, mediaFolderName)
     if cat == 'TV':
-        if g_args.append or g_args.single or (mediaFolderName not in g_gd_tv_list):
+        if g_args.append or g_args.single or (mediaFolderName
+                                              not in g_gd_tv_list):
             if os.path.isfile(mediaSrc):
                 targetCopy(mediaSrc, mediaTargeDir)
             else:
                 copyTVFolderItems(os.path.join(cpLocation, itemName),
-                              mediaFolderName, parseSeason)
+                                  mediaFolderName, parseSeason)
     elif cat == 'MovieEncode':
         if g_args.single or (mediaFolderName not in g_gd_movie_list):
             if os.path.isfile(mediaSrc):
@@ -186,7 +189,8 @@ def processOneDirItem(cpLocation, itemName):
 
 def loadArgs():
     parser = argparse.ArgumentParser(
-        description='A script copies Movies and TVs to your rclone target, in Emby-happy struct.'
+        description=
+        'A script copies Movies and TVs to your rclone target, in Emby-happy struct.'
     )
     parser.add_argument(
         'MEDIA_DIR',
@@ -241,5 +245,6 @@ def main():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
+    # uncomment this to show rclone messages
+    # logging.basicConfig(level=logging.DEBUG)
     main()
