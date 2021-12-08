@@ -131,13 +131,13 @@ def copyTVFolderItems(tvSourceFolder, genFolder, parseSeason):
 
 
 def copyMovieFolderItems(movieSourceFolder, movieTargeDir):
-    if g_args.full:
+    if g_args.largest:
+        mediaFilePath = getLargestFile(movieSourceFolder)
+        targetCopy(mediaFilePath, movieTargeDir)
+    else:
         for movieItem in os.listdir(movieSourceFolder):
             movieFullPath = os.path.join(movieSourceFolder, movieItem)
             targetCopy(movieFullPath, movieTargeDir)
-    else:
-        mediaFilePath = getLargestFile(movieSourceFolder)
-        targetCopy(mediaFilePath, movieTargeDir)
 
 
 def getLargestFile(dirName):
@@ -164,19 +164,21 @@ def processOneDirItem(cpLocation, itemName):
 
     mediaFolderName = genMediaFolderName(cat, parseTitle, parseYear,
                                          parseSeason)
+    mediaSrc = os.path.join(cpLocation, itemName)
+    mediaTargeDir = os.path.join(cat, mediaFolderName)
     if cat == 'TV':
         if g_args.append or g_args.single or (mediaFolderName not in g_gd_tv_list):
-            # TODO: assert os.path.isdir(os.path.join(cpLocation, itemName))
-            copyTVFolderItems(os.path.join(cpLocation, itemName),
+            if os.path.isfile(mediaSrc):
+                targetCopy(mediaSrc, mediaTargeDir)
+            else:
+                copyTVFolderItems(os.path.join(cpLocation, itemName),
                               mediaFolderName, parseSeason)
     elif cat == 'MovieEncode':
         if g_args.single or (mediaFolderName not in g_gd_movie_list):
-            movieSrc = os.path.join(cpLocation, itemName)
-            movieTargeDir = os.path.join(cat, mediaFolderName)
-            if os.path.isfile(movieSrc):
-                targetCopy(movieSrc, movieTargeDir)
+            if os.path.isfile(mediaSrc):
+                targetCopy(mediaSrc, mediaTargeDir)
             else:
-                copyMovieFolderItems(movieSrc, movieTargeDir)
+                copyMovieFolderItems(mediaSrc, mediaTargeDir)
     # elif cat == 'MV':
     #     elseSrc = os.path.join(cpLocation, itemName)
     #     rcloneCopy(elseSrc, cat)
@@ -206,9 +208,9 @@ def loadArgs():
                         action='store_true',
                         help='parse and copy one single folder.')
     parser.add_argument(
-        '--full',
+        '--largest',
         action='store_true',
-        help='Movie only: copy all files, otherwise only the largest file')
+        help='Movie only: copy the largest file, instead all files')
 
     global g_args
     g_args = parser.parse_args()
