@@ -20,6 +20,7 @@ import rclone
 import shutil
 from torcategory import GuessCategoryUtils
 from tortitle import parseMovieName
+import logging
 
 g_args = None
 
@@ -238,4 +239,5 @@ def main():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
     main()
