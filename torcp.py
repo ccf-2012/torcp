@@ -52,6 +52,10 @@ def hdlinkLs(loc):
 
 
 def targetCopy(fromLoc, toLoc):
+    if g_args.dryrun:
+        print(fromLoc, ' ==> ', toLoc)
+        return
+
     if g_args.hd_path:
         hdlinkCopy(fromLoc, toLoc)
     elif g_args.gd_path:
@@ -65,12 +69,11 @@ def rcloneCopy(fromLoc, toLoc):
     if g_args.gd_flags:
         flagList = g_args.gd_flags.split(' ')
     result = ''
-    if not g_args.dryrun:
-        with open(g_args.gd_conf) as f:
-            cfg = f.read()
-        result = rclone.with_config(cfg).copy(fromLoc,
-                                              g_args.gd_path + toLoc,
-                                              flags=flagList)
+    with open(g_args.gd_conf) as f:
+        cfg = f.read()
+    result = rclone.with_config(cfg).copy(fromLoc,
+                                          g_args.gd_path + toLoc,
+                                          flags=flagList)
     return result
 
 
@@ -160,10 +163,25 @@ def getLargestFile(dirName):
     return largestFile
 
 
+def getCategory(itemName):
+    if g_args.tv or g_args.movie:
+        if g_args.tv:
+            cat = 'TV'
+        elif g_args.movie:
+            cat = 'MovieEncode'
+    else:
+        cat, group = GuessCategoryUtils.guessByName(itemName)
+    return cat
+
+
+def fixSeasonName(seasonStr):
+    return re.sub(r'^Ep?\d+-Ep?\d+$', 'S01', seasonStr, re.I)
+
+
 def processOneDirItem(cpLocation, itemName):
-    cat, group = GuessCategoryUtils.guessByName(itemName)
+    cat = getCategory(itemName)
     parseTitle, parseYear, parseSeason, cntitle = parseMovieName(itemName)
-    parseSeason = re.sub(r'^Ep?\d+-Ep?\d+$', 'S01', parseSeason, re.I)
+    parseSeason = fixSeasonName(parseSeason)
 
     mediaFolderName = genMediaFolderName(cat, parseTitle, parseYear,
                                          parseSeason)
@@ -190,8 +208,7 @@ def processOneDirItem(cpLocation, itemName):
 
 def loadArgs():
     parser = argparse.ArgumentParser(
-        description=
-        'A script copies Movies and TVs to your rclone target, in Emby-happy struct.'
+        description='A script copies Movies and TVs to your rclone target, in Emby-happy struct.'
     )
     parser.add_argument(
         'MEDIA_DIR',
@@ -202,6 +219,12 @@ def loadArgs():
     parser.add_argument('--gd_path', help='the rclone target path.')
     parser.add_argument('--gd_flags', help='extra rclone flags.')
     parser.add_argument('--hd_path', help='the dest path to create Hard Link.')
+    parser.add_argument('--tv',
+                        action='store_true',
+                        help='specify the src directory is TV')
+    parser.add_argument('--movie',
+                        action='store_true',
+                        help='specify the src directory is Movie(MovieEncode')
     parser.add_argument('--append',
                         action='store_true',
                         help='try copy when dir exists.')
