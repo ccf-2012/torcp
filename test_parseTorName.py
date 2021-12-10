@@ -91,6 +91,7 @@ def test_parseTVName(test_input, e1, e2, e3):
     ('Commodores - Caught In The Act (1975) [FLAC] {24-192 HDTracks}', 'Music', None),
     ('BTV.The.Forbidden.City.Ep11-Ep12.HDTV.1080i.H264-HDSTV', 'HDTV', 'HDSTV'),
     ('[漫游·张靓颖沉浸式虚拟音乐会·完整版].Roaming·Jane Zhang Immersive Virtual Concert.2021.1080p.WEB-DL.AVC.AAC-QHstudIo', 'MV', 'QHSTUDIO'),
+    ('OOOPS2.2020.BluRay.1080p.2Audio.TrueHD.5.1.x265.10bit-BeiTai', 'MovieEncode', 'BEITAI'),
 
 ])
 def test_guessByName(test_input, e1, e2):

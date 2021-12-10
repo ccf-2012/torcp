@@ -35,13 +35,13 @@ def hdlinkCopy(fromLoc, toLoc):
     ensureDir(destDir)
     if os.path.isfile(fromLoc):
         destFile = os.path.join(destDir, os.path.basename(fromLoc))
-        print('ln ', fromLoc, destFile)
         if not os.path.exists(destFile):
+            print('ln ', fromLoc, destFile)
             os.link(fromLoc, destFile)
     else:
         destDir = os.path.join(destDir, os.path.basename(fromLoc))
-        print('copytree ', fromLoc, destDir)
         if not os.path.exists(destDir):
+            print('copytree ', fromLoc, destDir)
             shutil.copytree(fromLoc, destDir, copy_function=os.link)
 
 
@@ -168,9 +168,11 @@ def getCategory(itemName):
         if g_args.tv:
             cat = 'TV'
         elif g_args.movie:
-            cat = 'MovieEncode'
+            cat = 'Movie'
     else:
         cat, group = GuessCategoryUtils.guessByName(itemName)
+        if cat == 'MovieWeb4K':
+            cat = 'MovieWebdl'
     return cat
 
 
@@ -188,27 +190,33 @@ def processOneDirItem(cpLocation, itemName):
     mediaSrc = os.path.join(cpLocation, itemName)
     mediaTargeDir = os.path.join(cat, mediaFolderName)
     if cat == 'TV':
-        if g_args.append or g_args.single or (mediaFolderName
-                                              not in g_gd_tv_list):
-            if os.path.isfile(mediaSrc):
-                targetCopy(mediaSrc, mediaTargeDir)
-            else:
-                copyTVFolderItems(os.path.join(cpLocation, itemName),
-                                  mediaFolderName, parseSeason)
-    elif cat == 'MovieEncode':
-        if g_args.single or (mediaFolderName not in g_gd_movie_list):
-            if os.path.isfile(mediaSrc):
-                targetCopy(mediaSrc, mediaTargeDir)
-            else:
-                copyMovieFolderItems(mediaSrc, mediaTargeDir)
-    # elif cat == 'MV':
-    #     elseSrc = os.path.join(cpLocation, itemName)
-    #     rcloneCopy(elseSrc, cat)
+        if g_args.quickskip and mediaFolderName in g_gd_tv_list:
+            print('\033[32mQUICK_SKIP: [%s], %s => %s\033[0m' % (cat, mediaSrc, mediaTargeDir))
+            return
+        if os.path.isfile(mediaSrc):
+            targetCopy(mediaSrc, mediaTargeDir)
+        else:
+            copyTVFolderItems(os.path.join(cpLocation, itemName),
+                              mediaFolderName, parseSeason)
+    elif cat in [
+            'Movie', 'MovieEncode', 'Movie4K', 'MovieWebdl', 'MovieBDMV', 'MovieBDMV4K',
+            'MV'
+    ]:
+        if g_args.quickskip and mediaFolderName in g_gd_movie_list:
+            print('\033[32mQUICK_SKIP: [%s], %s => %s\033[0m' % (cat, mediaSrc, mediaTargeDir))
+            return
+        if os.path.isfile(mediaSrc):
+            targetCopy(mediaSrc, mediaTargeDir)
+        else:
+            copyMovieFolderItems(mediaSrc, mediaTargeDir)
+    else:
+        print('\033[33mSKIP: [%s], %s\033[0m ' % (cat, mediaSrc))
 
 
 def loadArgs():
     parser = argparse.ArgumentParser(
-        description='A script copies Movies and TVs to your rclone target, in Emby-happy struct.'
+        description=
+        'A script copies Movies and TVs to your rclone target, in Emby-happy struct.'
     )
     parser.add_argument(
         'MEDIA_DIR',
@@ -221,13 +229,13 @@ def loadArgs():
     parser.add_argument('--hd_path', help='the dest path to create Hard Link.')
     parser.add_argument('--tv',
                         action='store_true',
-                        help='specify the src directory is TV')
+                        help='specify the src directory is TV.')
     parser.add_argument('--movie',
                         action='store_true',
-                        help='specify the src directory is Movie(MovieEncode')
-    parser.add_argument('--append',
+                        help='specify the src directory is Movie.')
+    parser.add_argument('--quickskip',
                         action='store_true',
-                        help='try copy when dir exists.')
+                        help='skip exist dir, rclone only.')
     parser.add_argument('--dryrun',
                         action='store_true',
                         help='print msg instead of real copy.')
@@ -252,14 +260,13 @@ def main():
     global g_gd_tv_list
     global g_gd_movie_list
     # global g_gd_mv_list
-    if g_args.gd_path:
+    g_gd_tv_list = ''
+    g_gd_movie_list = ''
+    if g_args.quickskip and g_args.gd_path:
         g_gd_tv_list = rcloneLs('TV')
         g_gd_movie_list = rcloneLs('MovieEncode')
-    elif g_args.hd_path:
-        g_gd_tv_list = hdlinkLs('TV')
-        g_gd_movie_list = hdlinkLs('MovieEncode')
+        # g_gd_mv_list = rcloneLs('MV')
 
-    # g_gd_mv_list = rcloneLs('MV')
     if g_args.single:
         processOneDirItem(os.path.dirname(cpLocation),
                           os.path.basename(os.path.normpath(cpLocation)))
