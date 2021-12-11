@@ -190,19 +190,20 @@ def processOneDirItem(cpLocation, itemName):
     mediaSrc = os.path.join(cpLocation, itemName)
     mediaTargeDir = os.path.join(cat, mediaFolderName)
     if cat == 'TV':
-        if g_args.single or (g_args.quickls and mediaFolderName
-                             not in g_gd_tv_list):
-            if os.path.isfile(mediaSrc):
-                targetCopy(mediaSrc, mediaTargeDir)
-            else:
-                copyTVFolderItems(os.path.join(cpLocation, itemName),
-                                  mediaFolderName, parseSeason)
+        if g_args.quickls and mediaFolderName in g_gd_tv_list):
+            return
+        if os.path.isfile(mediaSrc):
+            targetCopy(mediaSrc, mediaTargeDir)
+        else:
+            copyTVFolderItems(os.path.join(cpLocation, itemName),
+                                mediaFolderName, parseSeason)
     elif cat in ['Movie', 'MovieEncode', 'MovieWebdl', 'MovieBDMV', 'MovieBDMV4K', 'MV']:
-        if g_args.single or (g_args.quickls and mediaFolderName not in g_gd_movie_list):
-            if os.path.isfile(mediaSrc):
-                targetCopy(mediaSrc, mediaTargeDir)
-            else:
-                copyMovieFolderItems(mediaSrc, mediaTargeDir)
+        if g_args.quickls and mediaFolderName in g_gd_movie_list):
+            return
+        if os.path.isfile(mediaSrc):
+            targetCopy(mediaSrc, mediaTargeDir)
+        else:
+            copyMovieFolderItems(mediaSrc, mediaTargeDir)
 
 
 def loadArgs():
