@@ -168,9 +168,11 @@ def getCategory(itemName):
         if g_args.tv:
             cat = 'TV'
         elif g_args.movie:
-            cat = 'MovieEncode'
+            cat = 'Movie'
     else:
         cat, group = GuessCategoryUtils.guessByName(itemName)
+        if cat == 'MovieWebdl4K':
+            cat = 'MovieWebdl'
     return cat
 
 
@@ -188,22 +190,19 @@ def processOneDirItem(cpLocation, itemName):
     mediaSrc = os.path.join(cpLocation, itemName)
     mediaTargeDir = os.path.join(cat, mediaFolderName)
     if cat == 'TV':
-        if g_args.append or g_args.single or (mediaFolderName
-                                              not in g_gd_tv_list):
+        if g_args.single or (g_args.quickls and mediaFolderName
+                             not in g_gd_tv_list):
             if os.path.isfile(mediaSrc):
                 targetCopy(mediaSrc, mediaTargeDir)
             else:
                 copyTVFolderItems(os.path.join(cpLocation, itemName),
                                   mediaFolderName, parseSeason)
-    elif cat == 'MovieEncode':
-        if g_args.single or (mediaFolderName not in g_gd_movie_list):
+    elif cat in ['Movie', 'MovieEncode', 'MovieWebdl', 'MovieBDMV', 'MovieBDMV4K', 'MV']:
+        if g_args.single or (g_args.quickls and mediaFolderName not in g_gd_movie_list):
             if os.path.isfile(mediaSrc):
                 targetCopy(mediaSrc, mediaTargeDir)
             else:
                 copyMovieFolderItems(mediaSrc, mediaTargeDir)
-    # elif cat == 'MV':
-    #     elseSrc = os.path.join(cpLocation, itemName)
-    #     rcloneCopy(elseSrc, cat)
 
 
 def loadArgs():
@@ -225,7 +224,7 @@ def loadArgs():
     parser.add_argument('--movie',
                         action='store_true',
                         help='specify the src directory is Movie(MovieEncode')
-    parser.add_argument('--append',
+    parser.add_argument('--quickls',
                         action='store_true',
                         help='try copy when dir exists.')
     parser.add_argument('--dryrun',
