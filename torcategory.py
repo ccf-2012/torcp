@@ -130,7 +130,7 @@ class GuessCategoryUtils:
                 if not groupName.startswith('CMCTV'):
                     groupName = 'CMCT'
             return groupName
-
+ß
         return None
 
     def getResolution(torName):
