@@ -66,6 +66,7 @@ from torcategory import GuessCategoryUtils
     ('2021.FIVB.VNL.CHN.vs.BRA.20210608.1080p.REPACK.WEB-DL.x264.AAC-TJUPT.mp4', '2021 FIVB VNL CHN vs BRA 20210608', '2021', ''),
     ('失落的秘符.第1季', '失落的秘符', '', 'S1'),
     ('最后的决斗.The.Last.Duel.2021.1080p.Blu-ray.x265.DTS￡cXcY@FRDS', 'The Last Duel', '2021', ''),
+    ('现代爱情S02.Modern.Love.2021.1080p.WEB-DL.x265.AC3￡cXcY@FRDS', 'Modern Love', '2021', 'S02'),
 ])
 def test_parseTVName(test_input, e1, e2, e3):
     a1, a2, a3, a4 = tortitle.parseMovieName(test_input)
@@ -92,6 +93,7 @@ def test_parseTVName(test_input, e1, e2, e3):
     ('BTV.The.Forbidden.City.Ep11-Ep12.HDTV.1080i.H264-HDSTV', 'HDTV', 'HDSTV'),
     ('[漫游·张靓颖沉浸式虚拟音乐会·完整版].Roaming·Jane Zhang Immersive Virtual Concert.2021.1080p.WEB-DL.AVC.AAC-QHstudIo', 'MV', 'QHSTUDIO'),
     ('OOOPS2.2020.BluRay.1080p.2Audio.TrueHD.5.1.x265.10bit-BeiTai', 'MovieEncode', 'BEITAI'),
+    ('现代爱情S02.Modern.Love.2021.1080p.WEB-DL.x265.AC3￡cXcY@FRDS', 'TV', 'FRDS'),
 
 ])
 def test_guessByName(test_input, e1, e2):

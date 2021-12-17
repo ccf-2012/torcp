@@ -70,14 +70,14 @@ class GuessCategoryUtils:
         elif re.search(r'(\d+册|\d+期|\d+版|\d+本|\d+年|\d+月|系列|全集|作品集).?$',
                        torName):
             GuessCategoryUtils.setCategory('eBook')
-        elif re.search(r'(\bConcert|演唱会|音乐会|\bLive[. ]At)\b', torName, re.I):
+        elif re.search(r'(\bConcert|演唱会|音乐会|\bLive[. ]At)\b', torName, re.A | re.I):
             GuessCategoryUtils.setCategory('MV')
         elif re.search(r'\bBugs!.?\.mp4', torName, re.I):
             GuessCategoryUtils.setCategory('MV')
         elif re.search(r'(\bVarious Artists|\bMQA\b|整轨|\b分轨|\b无损|\bLPCD|\bSACD|XRCD\d{1,3})',
-                       torName, re.I):
+                       torName, re.A | re.I):
             GuessCategoryUtils.setCategory('Music')
-        elif re.search(r'(\b\d+ ?CD|24-96|24\-192|24\-44\.1|FLAC.*24bit|FLAC.*44|FLAC.*48|WAV.*CUE|FLAC.*CUE|\[FLAC\]|FLAC.+WEB\b|FLAC.*Album|CD[\s-]+FLAC|FLAC[\s-]+CD)', torName, re.I):
+        elif re.search(r'(\b\d+ ?CD|24-96|24\-192|24\-44\.1|FLAC.*24bit|FLAC.*44|FLAC.*48|WAV.*CUE|FLAC.*CUE|\[FLAC\]|FLAC.+WEB\b|FLAC.*Album|CD[\s-]+FLAC|FLAC[\s-]+CD)', torName, re.A | re.I):
             GuessCategoryUtils.setCategory('Music')
         elif re.search(r'(乐团|交响曲|协奏曲|二重奏|专辑\b)', torName):
             GuessCategoryUtils.setCategory('Music')
@@ -88,9 +88,9 @@ class GuessCategoryUtils:
     def categoryTvByName(torName):
         if re.search(r'\bHDTV\b', torName):
             GuessCategoryUtils.setCategory('HDTV')
-        elif re.search(r'\W[ES]\d+\W|EP\d+\W|\d+季|第\w{1,3}季\W', torName, re.I):
+        elif re.search(r'\W[ES]\d+\W|EP\d+\W|\d+季|第\w{1,3}季\W', torName, re.A | re.I):
             GuessCategoryUtils.setCategory('TV')
-        elif re.search(r'\Wcomplete\W|Full.Season|全\d+集|\d+集全', torName, re.I):
+        elif re.search(r'\Wcomplete\W|Full.Season|全\d+集|\d+集全', torName, re.A | re.I):
             GuessCategoryUtils.setCategory('TV')
         else:
             return False
@@ -134,14 +134,14 @@ class GuessCategoryUtils:
         return None
 
     def getResolution(torName):
-        match = re.search(r'\b(2160p|1080[pi]|720p|576p|480p)\b', torName, re.I)
+        match = re.search(r'\b(2160p|1080[pi]|720p|576p|480p)\b', torName, re.A | re.I)
         if match:
             return match.group(0).strip().lower()
         else:
             return ''
 
     def getQuality(torName):
-        match = re.search(r'\b(Blu[\-\. ]?Ray|WEB[\-\. ]?DL)\b', torName, re.I)
+        match = re.search(r'\b(Blu[\-\. ]?Ray|WEB[\-\. ]?DL)\b', torName, re.A | re.I)
         if match:
             groupstr = match.group(0).strip().lower()
             if 'blu' in groupstr:
