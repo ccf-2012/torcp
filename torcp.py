@@ -139,7 +139,8 @@ def copyTVFolderItems(tvSourceFolder, genFolder, parseSeason):
 def copyMovieFolderItems(movieSourceFolder, movieTargeDir):
     if g_args.largest:
         mediaFilePath = getLargestFile(movieSourceFolder)
-        targetCopy(mediaFilePath, movieTargeDir)
+        if mediaFilePath:
+            targetCopy(mediaFilePath, movieTargeDir)
     else:
         for movieItem in os.listdir(movieSourceFolder):
             movieFullPath = os.path.join(movieSourceFolder, movieItem)
