@@ -11,6 +11,11 @@ def parseMovieName(torName):
         sstr,
         flags=re.I)
 
+    sstr = re.sub(r'\W?(IMAX|Extended Cut)\s*$',
+                  '',
+                  sstr,
+                  flags=re.I)
+
     dilimers = {
         '[': ' ',
         ']': ' ',
