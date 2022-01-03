@@ -1,9 +1,9 @@
 # torcp
-A script to rename and copy downloaded files to a target in Emby-happy way:
+A script to rename and copy media files to a target in Emby-happy way:
 1. Category TV/Movie.
 2. Parse movie name, year, season from filename/dirname.
-3. Rename and organize dir your media files  in [Emby-happy](https://support.emby.media/support/solutions/articles/44001159102-movie-naming) happy ways, by:
-   1. create `Hard Link` ( ln ) in a seperate dir,  or:
+3. Rename and organize your media files  in [Emby-happy](https://support.emby.media/support/solutions/articles/44001159102-movie-naming) ways, supports:
+   1. create `Hard Link` ( ln ) to a seperate dir,  or:
    2. [rclone](https://rclone.org/) copy to your `GD drive`, `OneDrive` or anything [rclone](https://rclone.org/) supports,.
  
 
