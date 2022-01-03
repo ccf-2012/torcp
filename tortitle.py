@@ -51,7 +51,7 @@ def parseMovieName(torName):
         seasonsapn = m1.span(1)
         sstr = sstr.replace(seasonstr, '')
 
-    m2 = re.search(r'\b((19\d{2}\b|20\d{2})-?(19\d{2}|20\d{2})?)\b',
+    m2 = re.search(r'\b((19\d{2}\b|20\d{2})-?(19\d{2}|20\d{2})?)\b(?!.*\b\d{4}\b.*)',
                    sstr,
                    flags=re.I)
     if m2:
