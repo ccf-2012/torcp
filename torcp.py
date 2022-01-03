@@ -231,7 +231,7 @@ def processOneDirItem(cpLocation, itemName):
 def loadArgs():
     parser = argparse.ArgumentParser(
         description=
-        'A script copies Movies and TVs to your rclone target, in Emby-happy struct.'
+        'torcp: a script to organize media files in Emby-happy way, support hardlink and rclone.'
     )
     parser.add_argument(
         'MEDIA_DIR',
