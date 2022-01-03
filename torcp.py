@@ -52,6 +52,12 @@ def hdlinkLs(loc):
 
 
 def targetCopy(fromLoc, toLoc):
+    if g_args.no_nfo:
+        if os.path.isfile(fromLoc):
+            filename, file_ext = os.path.splitext(fromLoc)
+            if file_ext == 'nfo':
+                return
+
     if g_args.dryrun:
         print(fromLoc, ' ==> ', toLoc)
         return
@@ -136,15 +142,23 @@ def copyTVFolderItems(tvSourceFolder, genFolder, parseSeason):
             targetCopy(tvitemPath, seasonFolderFullPath)
 
 
+def copyFiles(fromDir, toDir):
+    for movieItem in os.listdir(fromDir):
+        movieFullPath = os.path.join(fromDir, movieItem)
+        targetCopy(movieFullPath, toDir)
+
+
 def copyMovieFolderItems(movieSourceFolder, movieTargeDir):
     if g_args.largest:
         mediaFilePath = getLargestFile(movieSourceFolder)
         if mediaFilePath:
-            targetCopy(mediaFilePath, movieTargeDir)
+            filename, file_ext = os.path.splitext(mediaFilePath)
+            if file_ext in ['mkv', 'mp4', 'iso']:
+                targetCopy(mediaFilePath, movieTargeDir)
+            else:
+                copyFiles(movieSourceFolder, movieTargeDir)
     else:
-        for movieItem in os.listdir(movieSourceFolder):
-            movieFullPath = os.path.join(movieSourceFolder, movieItem)
-            targetCopy(movieFullPath, movieTargeDir)
+        copyFiles(movieSourceFolder, movieTargeDir)
 
 
 def getLargestFile(dirName):
@@ -248,6 +262,10 @@ def loadArgs():
         '--largest',
         action='store_true',
         help='Movie only: copy the largest file, instead all files')
+    parser.add_argument(
+        '--no_nfo',
+        action='store_true',
+        help='Movie only: exclude nfo file')
 
     global g_args
     g_args = parser.parse_args()
@@ -277,6 +295,6 @@ def main():
 
 
 if __name__ == '__main__':
-    # uncomment this to show rclone messages
+    # # uncomment this to show rclone messages
     # logging.basicConfig(level=logging.DEBUG)
     main()

@@ -62,14 +62,17 @@ def parseMovieName(torName):
     else:
         if m1:
             ss2 = sstr[:seasonsapn[0] - 1]
-            if not re.search(r'[\u4e00-\u9fa5\u3041-\u30fc]$', ss2):
+            if not re.search(r'[^a-zA-Z_\- 0-9]$', ss2):
+            # if not re.search(r'[\u4e00-\u9fa5\u3041-\u30fc]$', ss2):
                 sstr = ss2
 
     titlestr = re.sub(r' +', ' ', sstr).strip()
 
     cntitle = titlestr
-    m = re.search(r'^.*[\u4e00-\u9fa5\u3041-\u30fc](S\d+| |\.|\d|-)*(?=[A-Z])',
-                  titlestr)
+    m = re.search(r'^.*[^a-zA-Z_\- 0-9](S\d+|\s|\.|\d|-)*\b(?=[A-Z])',
+                  titlestr, flags=re.A )
+    # m = re.search(r'^.*[\u4e00-\u9fa5\u3041-\u30fc](S\d+| |\.|\d|-)*(?=[A-Z])',
+    #               titlestr)
     if m:
         cntitle = m.group(0)
         titlestr = titlestr.replace(cntitle, '')
