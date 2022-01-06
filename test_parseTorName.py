@@ -72,6 +72,7 @@ from torcategory import GuessCategoryUtils
     ('Weathering.With.You.2019.1080p.NLD.AVC.DTS-HD.MA.5.1-NeoVision', 'Weathering With You', '2019', ''),
     ('[BDMV][Bokutachi no Remake][Vol.01-02]', 'Bokutachi no Remake', '', ''),
     ('[吸血鬼同盟][Dance In The Vampire Bund][ダンスインザヴァンパイアバンド][BDMV][1080p][DISC×2][GER]', 'Dance In The Vampire Bund', '', ''),
+    ('1917 2019 V2 ULTRAHD BluRay 2160p HEVC Atmos TrueHD7.1-sGnb@CHDBits', '1917', '2019', ''),
 ])
 def test_parseTVName(test_input, e1, e2, e3):
     a1, a2, a3, a4 = tortitle.parseMovieName(test_input)
