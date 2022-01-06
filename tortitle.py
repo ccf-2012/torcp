@@ -3,11 +3,15 @@ from torcategory import GuessCategoryUtils
 
 
 def isFullAscii(str):
-    return re.fullmatch(r'[\w\d ]*', str, re.A)
+    return re.fullmatch(r'[\x00-\x7F]*', str, re.A)
 
 
 def containsCJK(str):
     return re.search(r'[\u4e00-\u9fa5\u3041-\u30fc]', str)
+
+
+def notTitle(str):
+    return re.search(r'(BDMV|1080[pi]|MOVIE|DISC|Vol)', str, re.A | re.I)
 
 
 def getIndexItem(items, index):
@@ -19,16 +23,30 @@ def getIndexItem(items, index):
 
 def parseJpAniName(torName):
     items = re.findall(r'\[([^]]*)\]', torName)
-    if items[0] in [
-            'BDMV',
-    ]:
+    if items[0] in ['BDMV', 'EAC', 'XLD']:
         items.pop(0)
     titleIndex = -1
     if isFullAscii(items[0]):
         titleIndex = 0
-    elif isFullAscii(items[1]):
+    elif isFullAscii(items[1]) and not notTitle(items[1]):
         titleIndex = 1
 
+    if titleIndex >= 0:
+        return get3SectionJpAniName(items, titleIndex)
+    else:
+        return get1SectionJpAniName(items)
+
+
+def get1SectionJpAniName(items):
+    m = re.search(r'\(([\x00-\x7F]*)\)', items[0], re.A)
+    if m:
+        titlestr = m[1]
+    else:
+        titlestr = items[0]
+    return titlestr, '', '', ''
+
+
+def get3SectionJpAniName(items, titleIndex):
     prevstr = getIndexItem(items, titleIndex - 1)
     if prevstr and containsCJK(prevstr):
         cntitle = prevstr
@@ -46,7 +64,7 @@ def parseJpAniName(torName):
         jptitleIndex = titleIndex
 
     nextstr2 = getIndexItem(items, jptitleIndex + 1)
-    if re.search(r'\b\d{4}\b', nextstr2):
+    if re.search(r'\b((19\d{2}\b|20\d{2})-?(19\d{2}|20\d{2})?)\b', nextstr2):
         yearstr = nextstr2
         # seasonstr = getIndexItem(items, jptitleIndex+2)
     else:
@@ -55,7 +73,6 @@ def parseJpAniName(torName):
     seasonstr = ''
 
     return titlestr, yearstr, seasonstr, cntitle
-    # return None
 
 
 def parseMovieName(torName):
@@ -108,9 +125,10 @@ def parseMovieName(torName):
         seasonsapn = m1.span(1)
         sstr = sstr.replace(seasonstr, '')
 
-    m2 = re.search(r'\b((19\d{2}\b|20\d{2})-?(19\d{2}|20\d{2})?)\b(?!.*\b\d{4}\b.*)',
-                   sstr,
-                   flags=re.I)
+    m2 = re.search(
+        r'\b((19\d{2}\b|20\d{2})-?(19\d{2}|20\d{2})?)\b(?!.*\b\d{4}\b.*)',
+        sstr,
+        flags=re.I)
     if m2:
         yearstr = m2.group(1)
         yearspan = m2.span(1)
