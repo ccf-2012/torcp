@@ -13,6 +13,12 @@ def containsCJK(str):
 def notTitle(str):
     return re.search(r'(BDMV|1080[pi]|MOVIE|DISC|Vol)', str, re.A | re.I)
 
+def cutAKA(titlestr):
+    m = re.search(r'\s(/|AKA)\s', titlestr)
+    if m:
+        titlestr = titlestr.split(m.group(0))[0].strip()
+    return titlestr
+
 
 def getIndexItem(items, index):
     if index >= 0 and index < len(items):
@@ -43,7 +49,9 @@ def get1SectionJpAniName(items):
         titlestr = m[1]
     else:
         titlestr = items[0]
-    return titlestr, '', '', ''
+
+
+    return cutAKA(titlestr), '', '', ''
 
 
 def get3SectionJpAniName(items, titleIndex):
@@ -72,7 +80,7 @@ def get3SectionJpAniName(items, titleIndex):
         # seasonstr = getIndexItem(items, jptitleIndex+1)
     seasonstr = ''
 
-    return titlestr, yearstr, seasonstr, cntitle
+    return cutAKA(titlestr), yearstr, seasonstr, cntitle
 
 
 def parseMovieName(torName):
@@ -154,7 +162,7 @@ def parseMovieName(torName):
         titlestr = titlestr.replace(cntitle, '')
     # if titlestr.endswith(' JP'):
     #     titlestr = titlestr.replace(' JP', '')
-    if re.search(r'\bAKA\b', titlestr):
-        titlestr = titlestr.split('AKA')[0].strip()
+    # if re.search(r'\bAKA\b', titlestr):
+    #     titlestr = titlestr.split('AKA')[0].strip()
 
-    return titlestr, yearstr, seasonstr, cntitle
+    return cutAKA(titlestr), yearstr, seasonstr, cntitle
