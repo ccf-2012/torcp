@@ -60,6 +60,8 @@ from torcategory import GuessCategoryUtils
      'Foundation', '2021', 'S01'),
     ('我是你的眼.I\'m.Your.Eyes.2016.S01.2160p.WEB-DL.H265.AAC-LeagueWEB',
      'I\'m Your Eyes', '2016', 'S01'),
+    ('Guard.Jie.Fang.Xi.2022.S03.1080p.WEB-DL.H264.AAC-TJUPT', 'Guard Jie Fang Xi', '2022', 'S03'),
+    ('[不能只有我看到的-便利店追女神食谱].Fast&Delicious.2021.1080i.HDTV.H264.DD-PTerTV', 'Fast&Delicious', '2021', ''),
     ('Ms.45.1981.720p.BluRay.FLAC1.0.x264-PTer', 'Ms 45', '1981', ''),
     ('BTV.The.Forbidden.City.Ep11-Ep12.HDTV.1080i.H264-HDSTV', 'The Forbidden City', '', 'Ep11-Ep12'),
     ('HunanTV.Da.Wan.Zai.De.Ye.20211201.HDTV.1080i.H264-HDSTV.ts', 'Da Wan Zai De Ye 20211201', '', ''),

@@ -84,7 +84,7 @@ def get3SectionJpAniName(items, titleIndex):
 
 
 def parseMovieName(torName):
-    if torName.startswith('['):
+    if torName.startswith('[') and torName.endswith(']'):
         return parseJpAniName(torName)
 
     sstr = GuessCategoryUtils.cutExt(torName)
@@ -152,7 +152,9 @@ def parseMovieName(torName):
     titlestr = re.sub(r' +', ' ', sstr).strip()
 
     cntitle = titlestr
-    m = re.search(r'^.*[^a-zA-Z_\- 0-9](S\d+|\s|\.|\d|-)*\b(?=[A-Z])',
+    
+    m = re.search(r'^.*[^a-zA-Z_\- &0-9](S\d+|\s|\.|\d|-)*\b(?=[A-Z])',
+    # m = re.search(r'^.*[^\x00-\x7F](S\d+|\s|\.|\d|-)*\b(?=[A-Z])',
                   titlestr,
                   flags=re.A)
     # m = re.search(r'^.*[\u4e00-\u9fa5\u3041-\u30fc](S\d+| |\.|\d|-)*(?=[A-Z])',
