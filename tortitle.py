@@ -157,21 +157,24 @@ def parseMovieName2(torName):
     seasonstr = ''
     yearstr = ''
     titlestr = sstr
-    mcns = re.search(r'(第(\d+)(-\d+)?季)\b', sstr, flags=re.I)
+
+    mcns = re.search(r'(第\s*(\d+)(-\d+)?季)\b', sstr, flags=re.I)
     if mcns:
         seasonstr = 'S' + mcns.group(2)
+        # seasonsapn = mcns.span(1)
         sstr = sstr.replace(mcns.group(1), '')
-    mep = re.search(r'(\bEp?\d+-Ep?\d+)\b', sstr, flags=re.A | re.I)
+    mep = re.search(r'(\b(S\d+)(E\d+)?|(Ep?\d+-Ep?\d+))\s', sstr, flags=re.A | re.I)
     if mep:
         seasonstr = mep.group(1)
-        sstr = sstr.replace(seasonstr, '')
-    m1 = None
-    for m1 in re.finditer(r'(\bS\d+(-S\d+)?)\b', sstr, flags=re.A | re.I):
-        pass
-    # m1 = re.search(r'(\bS\d+(-S\d+)?)\b', sstr, flags=re.A | re.I)
+        if mep.group(2):
+            seasonstr = mep.group(2)
+
+    # m1 = None
+    # for m1 in re.finditer(r'(\bS\d+(-S\d+)?)\b', sstr, flags=re.A | re.I):
+    #     pass
+    m1 = re.search(r'(\bS\d+(-S\d+))\s', sstr, flags=re.A | re.I)
     if m1:
         seasonstr = m1.group(1)
-        seasonsapn = m1.span(1)
         sstr = sstr.replace(seasonstr, '')
 
     m2 = re.search(
@@ -183,12 +186,9 @@ def parseMovieName2(torName):
         yearspan = m2.span(1)
         if re.search(r'\w.*' + yearstr, sstr):
             sstr = sstr[:yearspan[0] - 1]
-    else:
-        if m1:
-            ss2 = sstr[:seasonsapn[0] - 1]
-            if not re.search(r'[^a-zA-Z_\- 0-9]$', ss2):
-                # if not re.search(r'[\u4e00-\u9fa5\u3041-\u30fc]$', ss2):
-                sstr = ss2
+
+    if seasonstr:
+        sstr = re.sub(r'\s+'+seasonstr+r'.*$', '', sstr)
 
     titlestr = re.sub(r' +', ' ', sstr).strip()
 
@@ -206,7 +206,5 @@ def parseMovieName2(torName):
         titlestr = titlestr.replace(cntitle, '')
     # if titlestr.endswith(' JP'):
     #     titlestr = titlestr.replace(' JP', '')
-    # if re.search(r'\bAKA\b', titlestr):
-    #     titlestr = titlestr.split('AKA')[0].strip()
 
     return cutAKA(titlestr), yearstr, seasonstr, cntitle
