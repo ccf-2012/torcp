@@ -11,7 +11,8 @@ def containsCJK(str):
 
 
 def notTitle(str):
-    return re.search(r'(BDMV|1080[pi]|MOVIE|DISC|Vol)', str, re.A | re.I)
+    return re.search(r'^(BDMV|1080[pi]|MOVIE|DISC|Vol)', str, re.A | re.I)
+
 
 def cutAKA(titlestr):
     m = re.search(r'\s(/|AKA)\s', titlestr)
@@ -27,15 +28,34 @@ def getIndexItem(items, index):
         return ''
 
 
+def getNoBracketedStr(torName, items):
+    ss = torName
+    for s in items:
+        ss = ss.replace('[' + s + ']', '')
+    ss = ss.replace('[', '')
+    ss = ss.replace(']', '')
+    ss = ss.strip()
+
+    return ss
+
+
 def parseJpAniName(torName):
     items = re.findall(r'\[([^]]*)\]', torName)
+    if len(items) < 2:
+        return parseMovieName2(torName)
+
+    strLeft = getNoBracketedStr(torName, items)
+
     if items[0] in ['BDMV', 'EAC', 'XLD']:
         items.pop(0)
-    titleIndex = -1
-    if isFullAscii(items[0]):
-        titleIndex = 0
-    elif isFullAscii(items[1]) and not notTitle(items[1]):
-        titleIndex = 1
+    if len(strLeft) > 0:
+        return getUnbracketedTitle(strLeft, items)
+    else:
+        titleIndex = -1
+        if isFullAscii(items[0]):
+            titleIndex = 0
+        elif isFullAscii(items[1]) and not notTitle(items[1]):
+            titleIndex = 1
 
     if titleIndex >= 0:
         return get3SectionJpAniName(items, titleIndex)
@@ -43,15 +63,32 @@ def parseJpAniName(torName):
         return get1SectionJpAniName(items)
 
 
+def getUnbracketedTitle(strLeft, items):
+    yearstr, titlestr = getYearStr(strLeft)
+
+    return cutAKA(titlestr), yearstr, '', ''
+
+
 def get1SectionJpAniName(items):
     m = re.search(r'\(([\x00-\x7F]*)\)', items[0], re.A)
     if m:
         titlestr = m[1]
+        yearstr, titlestr = getYearStr(titlestr)
     else:
         titlestr = items[0]
 
+    return cutAKA(titlestr), yearstr, '', ''
 
-    return cutAKA(titlestr), '', '', ''
+
+def getYearStr(str):
+    myear = re.search(r'\b((19\d{2}\b|20\d{2})-?(19\d{2}|20\d{2})?)\b', str)
+    if myear:
+        yearstr = myear.group(1)
+        titlestr = re.sub(r'\(?' + yearstr + r'\)?', '', str)
+    else:
+        yearstr = ''
+        titlestr = str
+    return yearstr, titlestr
 
 
 def get3SectionJpAniName(items, titleIndex):
@@ -76,7 +113,7 @@ def get3SectionJpAniName(items, titleIndex):
         yearstr = nextstr2
         # seasonstr = getIndexItem(items, jptitleIndex+2)
     else:
-        yearstr = ''
+        yearstr, titlestr = getYearStr(titlestr)
         # seasonstr = getIndexItem(items, jptitleIndex+1)
     seasonstr = ''
 
@@ -86,7 +123,11 @@ def get3SectionJpAniName(items, titleIndex):
 def parseMovieName(torName):
     if torName.startswith('[') and torName.endswith(']'):
         return parseJpAniName(torName)
+    else:
+        return parseMovieName2(torName)
 
+
+def parseMovieName2(torName):
     sstr = GuessCategoryUtils.cutExt(torName)
 
     sstr = re.sub(
@@ -152,11 +193,12 @@ def parseMovieName(torName):
     titlestr = re.sub(r' +', ' ', sstr).strip()
 
     cntitle = titlestr
-    
-    m = re.search(r'^.*[^a-zA-Z_\- &0-9](S\d+|\s|\.|\d|-)*\b(?=[A-Z])',
-    # m = re.search(r'^.*[^\x00-\x7F](S\d+|\s|\.|\d|-)*\b(?=[A-Z])',
-                  titlestr,
-                  flags=re.A)
+
+    m = re.search(
+        r'^.*[^a-zA-Z_\- &0-9](S\d+|\s|\.|\d|-)*\b(?=[A-Z])',
+        # m = re.search(r'^.*[^\x00-\x7F](S\d+|\s|\.|\d|-)*\b(?=[A-Z])',
+        titlestr,
+        flags=re.A)
     # m = re.search(r'^.*[\u4e00-\u9fa5\u3041-\u30fc](S\d+| |\.|\d|-)*(?=[A-Z])',
     #               titlestr)
     if m:

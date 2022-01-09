@@ -81,6 +81,10 @@ from torcategory import GuessCategoryUtils
     ('[BanG Dream! Episode of Roselia][劇場版 BanG Dream! Episode of Roselia][BDRip][1920x1080][Movie 01-02 Fin+SP][H264 FLAC DTS-HDMA MKV][自壓]', 'BanG Dream! Episode of Roselia', '', ''),
     ('[持续狩猎史莱姆三百年, 不知不觉就练到LV MAX][Slime Taoshite 300-nen, Shiranai Uchi ni Level Max ni Nattemashita][スライム倒して300年、知らないうちにレベルMAXになってました][外挂结构][日英简]', 'Slime Taoshite 300-nen, Shiranai Uchi ni Level Max ni Nattemashita', '', ''),
     ('[贾希大人不气馁][The Great Jahy Will Not Be Defeated! / Jahy-sama wa Kujikenai!][ジャヒー様はくじけない!][BDMV][1080p][Vol.1]', 'The Great Jahy Will Not Be Defeated!', '', ''),
+    ('[银河英雄传说 Die Neue These (2019)][Ginga Eiyuu Densetsu: Die Neue These (2019) / Legend of the Galactic Heroes: Die Neue These (2019)][銀河英雄伝説 Die Neue These (2019)][BDMV][1080p][Vol.4-6 BDx3 + DVDx3 Fin][JP]', 'Ginga Eiyuu Densetsu: Die Neue These', '2019', ''),
+    ('[堀與宮村][Horimiya][ホリミヤ][加流重灌 (Modded Blu-rays)][1080P][Vol.1-Vol.7 Fin][SweetDreamDay]', 'Horimiya', '', ''),
+    ('[剧场版 Healin\' Good 光之美少女 梦想的小镇心动不已! GoGo! 大变身!!][Eiga Healin\' Good Precure Yume no Machi de Kyun! Tto Go Go! Dai Henshin!!][映画ヒーリングっど プリキュア ゆめのまちでキュン!っとGoGo!大変身!!/(短編)映画トロピカル~ジュ!プリキュアとびこめ!コラボダンスパーティ!][BDMV][MOVIE][U2娘@Share]', 'Eiga Healin\' Good Precure Yume no Machi de Kyun! Tto Go Go! Dai Henshin!!', '', ''),
+    ('[鲁邦三世VS名侦探柯南 THE MOVIE]Lupin the 3rd vs Detective Conan THE MOVIE / Lupin Sansei vs. Meitantei Conan The Movie[ルパン三世vs名探偵コナン THE MOVIE][BDMV][1080p][MOVIE][AVC][ITA]', 'Lupin the 3rd vs Detective Conan THE MOVIE', '', ''),
 ])
 def test_parseTVName(test_input, e1, e2, e3):
     a1, a2, a3, a4 = tortitle.parseMovieName(test_input)
