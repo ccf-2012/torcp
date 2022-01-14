@@ -114,6 +114,7 @@ def test_parseTVName(test_input, e1, e2, e3):
     ('[漫游·张靓颖沉浸式虚拟音乐会·完整版].Roaming·Jane Zhang Immersive Virtual Concert.2021.1080p.WEB-DL.AVC.AAC-QHstudIo', 'MV', 'QHSTUDIO'),
     ('OOOPS2.2020.BluRay.1080p.2Audio.TrueHD.5.1.x265.10bit-BeiTai', 'MovieEncode', 'BEITAI'),
     ('现代爱情S02.Modern.Love.2021.1080p.WEB-DL.x265.AC3￡cXcY@FRDS', 'TV', 'FRDS'),
+    ('The.Green.Planet.S01E01.Tropical.Worlds.2160p.iP.WEB-DL.AAC2.0.H.265-NTb.mkv', 'TV', 'NTB'),
 
 ])
 def test_guessByName(test_input, e1, e2):

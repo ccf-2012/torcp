@@ -88,6 +88,12 @@ class GuessCategoryUtils:
     def categoryTvByName(torName):
         if re.search(r'\bHDTV\b', torName):
             GuessCategoryUtils.setCategory('HDTV')
+        elif re.search(r'(\b(S\d+)(E\d+)?|(Ep?\d+-Ep?\d+))\b', torName, flags=re.A | re.I):
+            GuessCategoryUtils.setCategory('TV')
+        elif re.search(r'(第\s*(\d+)(-\d+)?季)\b', torName, flags=re.I):
+            GuessCategoryUtils.setCategory('TV')
+        elif re.search(r'(\bS\d+(-S\d+))\b', torName, flags=re.A | re.I):
+            GuessCategoryUtils.setCategory('TV')
         elif re.search(r'\W[ES]\d+\W|EP\d+\W|\d+季|第\w{1,3}季\W', torName, re.A | re.I):
             GuessCategoryUtils.setCategory('TV')
         elif re.search(r'Full.Season|全\d+集|\d+集全', torName, re.A | re.I):
