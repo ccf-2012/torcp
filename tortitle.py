@@ -158,9 +158,13 @@ def parseMovieName2(torName):
     yearstr = ''
     titlestr = sstr
 
-    mcns = re.search(r'(第\s*(\d+)(-\d+)?季)\b', sstr, flags=re.I)
+    mcns = re.search(r'(第\s*((\d+)|([一二三四五六七八九]))(-\d+)?季)\b', sstr, flags=re.I)
     if mcns:
-        seasonstr = 'S' + mcns.group(2)
+        ss1 = mcns.group(2)
+        iss = '一二三四五六七八九'.find(ss1)
+        if iss >= 0:
+            ss1 = str(iss+1).zfill(2)
+        seasonstr = 'S' + ss1
         # seasonsapn = mcns.span(1)
         sstr = sstr.replace(mcns.group(1), '')
     mep = re.search(r'(\b(S\d+)(E\d+)?|(Ep?\d+-Ep?\d+))\s', sstr, flags=re.A | re.I)
@@ -172,7 +176,7 @@ def parseMovieName2(torName):
     # m1 = None
     # for m1 in re.finditer(r'(\bS\d+(-S\d+)?)\b', sstr, flags=re.A | re.I):
     #     pass
-    m1 = re.search(r'(\bS\d+(-S\d+))\s', sstr, flags=re.A | re.I)
+    m1 = re.search(r'(\bS\d+(-S?\d+))\s', sstr, flags=re.A | re.I)
     if m1:
         seasonstr = m1.group(1)
         sstr = sstr.replace(seasonstr, '')

@@ -40,6 +40,8 @@ from torcategory import GuessCategoryUtils
      'The Legend Of Film', '', 'Ep01-Ep06'),
     ('The.Boys.S02.2020.1080p.BluRay.DTS.x265-10bit-HDS', 'The Boys', '2020',
      'S02'),
+    ('X档案.第一季.1993.中英字幕￡CMCT梦幻', 'X档案', '1993', 'S01'),
+    ('Californication.S01-07.1080p.BluRay.DD5.1.x264-NTb', 'Californication', '', 'S01-07'),
     ('Doctor.X.Surgeon.Michiko.Daimon.S06.1080p.BluRay.x265.10bit.FLAC.MNHD-FRDS',
      'Doctor X Surgeon Michiko Daimon', '', 'S06'),
     ('逆世界.Upside.Down.2012.BluRay.1080p.x265.10bit.2Audio.MNHD-FRDS',
