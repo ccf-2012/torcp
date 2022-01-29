@@ -198,6 +198,9 @@ def fixSeasonName(seasonStr):
 def processOneDirItem(cpLocation, itemName):
     cat = getCategory(itemName)
     parseTitle, parseYear, parseSeason, cntitle = parseMovieName(itemName)
+    if parseSeason and cat != 'TV':
+        print('Category fixed: '+itemName)
+        cat = 'TV'
     parseSeason = fixSeasonName(parseSeason)
 
     mediaFolderName = genMediaFolderName(cat, parseTitle, parseYear,
