@@ -131,7 +131,7 @@ class GuessCategoryUtils:
         sstr = GuessCategoryUtils.cutExt(torName)
         match = re.search(r'[@\-￡]\s?(\w{3,12})\b(?!.*[@\-￡].*)$', sstr, re.I)
         if match:
-            groupName = match.group(1).strip().upper()
+            groupName = match.group(1).strip()
             if groupName.startswith('CMCT'):
                 if not groupName.startswith('CMCTV'):
                     groupName = 'CMCT'
