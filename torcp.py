@@ -132,6 +132,9 @@ def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder):
 
 
 def copyTVFolderItems(tvSourceFolder, genFolder, parseSeason):
+    if os.path.islink(tvSourceFolder):
+        print('\033[31mSKIP symbolic link: [%s]\033[0m ' % tvSourceFolder)
+        return
     for tvitem in os.listdir(tvSourceFolder):
         tvitemPath = os.path.join(tvSourceFolder, tvitem)
         if os.path.isdir(tvitemPath):
@@ -143,6 +146,9 @@ def copyTVFolderItems(tvSourceFolder, genFolder, parseSeason):
 
 
 def copyFiles(fromDir, toDir):
+    if os.path.islink(fromDir):
+        print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromDir)
+        return
     for movieItem in os.listdir(fromDir):
         movieFullPath = os.path.join(fromDir, movieItem)
         targetCopy(movieFullPath, toDir)
