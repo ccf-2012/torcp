@@ -31,6 +31,9 @@ def ensureDir(file_path):
 
 
 def hdlinkCopy(fromLoc, toLoc):
+    if os.path.islink(fromLoc):
+        print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromLoc)
+        return
     destDir = os.path.join(g_args.hd_path, toLoc)
     ensureDir(destDir)
     if os.path.isfile(fromLoc):
@@ -52,6 +55,9 @@ def hdlinkLs(loc):
 
 
 def targetCopy(fromLoc, toLoc):
+    if os.path.islink(fromLoc):
+        print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromLoc)
+        return
     if g_args.no_nfo:
         if os.path.isfile(fromLoc):
             filename, file_ext = os.path.splitext(fromLoc)
