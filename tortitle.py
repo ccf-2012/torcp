@@ -15,7 +15,7 @@ def notTitle(str):
 
 
 def cutAKA(titlestr):
-    m = re.search(r'\s(/|AKA)\s', titlestr)
+    m = re.search(r'\s(/|AKA)\s', titlestr, re.I)
     if m:
         titlestr = titlestr.split(m.group(0))[0].strip()
     return titlestr
@@ -131,7 +131,7 @@ def parseMovieName2(torName):
     sstr = GuessCategoryUtils.cutExt(torName)
 
     sstr = re.sub(
-        r'\b((UHD)?\s+BluRay|Blu-?ray|720p|1080[pi]|2160p|576i|WEB-DL|\.DVD\.|WEBRip|HDTV|REMASTERED|LIMITED|Complete|SUBBED|TV Series).*$',
+        r'\b((UHD)?\s+BluRay|Blu-?ray|720p|1080[pi]|2160p|576i|WEB-DL|\.DVD\.|WEBRip|HDTV|Director(\'s)?[ .]Cut|REMASTERED|LIMITED|Complete|SUBBED|TV Series).*$',
         '',
         sstr,
         flags=re.I)
@@ -150,7 +150,7 @@ def parseMovieName2(torName):
     for original, replacement in dilimers.items():
         sstr = sstr.replace(original, replacement)
 
-    sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d|[A-Z]{1,5}TV)\W*',
+    sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d(HD)?|[A-Z]{1,5}TV)\W*',
                   '',
                   sstr,
                   flags=re.I)
@@ -167,7 +167,7 @@ def parseMovieName2(torName):
         seasonstr = 'S' + ss1
         # seasonsapn = mcns.span(1)
         sstr = sstr.replace(mcns.group(1), '')
-    mep = re.search(r'(\b(S\d+)(E\d+)?|(Ep?\d+-Ep?\d+))\s', sstr, flags=re.A | re.I)
+    mep = re.search(r'(\b(S\d+)(E\d+)?|(Ep?\d+(-Ep?\d+)?))\b', sstr, flags=re.A | re.I)
     if mep:
         seasonstr = mep.group(1)
         if mep.group(2):
