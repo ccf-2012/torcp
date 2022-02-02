@@ -131,7 +131,8 @@ def parseMovieName2(torName):
     sstr = GuessCategoryUtils.cutExt(torName)
 
     sstr = re.sub(
-        r'\b((UHD)?\s+BluRay|Blu-?ray|720p|1080[pi]|2160p|576i|WEB-DL|\.DVD\.|WEBRip|HDTV|Director(\'s)?[ .]Cut|REMASTERED|LIMITED|Complete|SUBBED|TV Series).*$',
+        # r'\b((UHD)?\s+BluRay|Blu-?ray|720p|1080[pi]|2160p|576i|WEB-DL|\.DVD\.|WEBRip|HDTV|Director(\'s)?[ .]Cut|REMASTERED|LIMITED|(The\s+)?Complete|SUBBED|TV Series).*$',
+        r'\b((UHD)?\s+BluRay|Blu-?ray|720p|1080[pi]|2160p|576i|WEB-DL|\.DVD\.|WEBRip|HDTV|Director(\'s)?[ .]Cut|REMASTERED|LIMITED|Complete(?=[. -]\d+)|SUBBED|TV Series).*$',
         '',
         sstr,
         flags=re.I)
@@ -184,12 +185,14 @@ def parseMovieName2(torName):
     m2 = re.search(
         r'\b((19\d{2}\b|20\d{2})-?(19\d{2}|20\d{2})?)\b(?!.*\b\d{4}\b.*)',
         sstr,
-        flags=re.I)
+        flags=re.A | re.I)
     if m2:
         yearstr = m2.group(1)
         yearspan = m2.span(1)
-        if re.search(r'\w.*' + yearstr, sstr):
+        if re.search(r'[\(\[\{]' + yearstr+r'\b', sstr):
             sstr = sstr[:yearspan[0] - 1]
+        elif re.search(r'\w.*' + yearstr+r'\b', sstr):
+            sstr = sstr[:yearspan[0]]
 
     if seasonstr:
         sstr = re.sub(r'\s+'+seasonstr+r'.*$', '', sstr)
