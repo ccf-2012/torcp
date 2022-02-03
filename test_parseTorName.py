@@ -135,5 +135,6 @@ def test_parseTVName(test_input, e1, e2, e3):
     ('花仙子全50集+剧场版.1080p.国日双语.中文字幕', 'TV', None),
 ])
 def test_guessByName(test_input, e1, e2):
-    a1, a2 = GuessCategoryUtils.guessByName(test_input)
+    catutil = GuessCategoryUtils()
+    a1, a2 = catutil.guessByName(test_input)
     assert a1 == e1 and a2 == e2

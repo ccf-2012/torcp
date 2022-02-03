@@ -159,6 +159,8 @@ def copyFiles(fromDir, toDir):
         movieFullPath = os.path.join(fromDir, movieItem)
         targetCopy(movieFullPath, toDir)
 
+def genMovieResGroup(movieName, resolution, group):
+    return movieName + ' - ' + resolution + '_' + group
 
 def copyMovieFolderItems(movieSourceFolder, movieTargeDir):
     if g_args.largest:
@@ -191,16 +193,21 @@ def getLargestFile(dirName):
 
 
 def getCategory(itemName):
+    catutil = GuessCategoryUtils()
     if g_args.tv or g_args.movie:
         if g_args.tv:
             cat = 'TV'
         elif g_args.movie:
             cat = 'Movie'
     else:
-        cat, group = GuessCategoryUtils.guessByName(itemName)
-        if cat == 'MovieWeb4K':
+        cat, group = catutil.guessByName(itemName)
+        if cat == 'Movie4K':
+            cat = 'MovieEncode'
+        elif cat == 'MovieWeb4K':
             cat = 'MovieWebdl'
-    return cat
+        elif cat == 'MovieBDMV4K':
+            cat = 'MovieBDMV'
+    return cat, catutil.group, catutil.resolution
 
 
 def fixSeasonName(seasonStr):
@@ -208,7 +215,7 @@ def fixSeasonName(seasonStr):
 
 
 def processOneDirItem(cpLocation, itemName):
-    cat = getCategory(itemName)
+    cat, group, resolution = getCategory(itemName)
     parseTitle, parseYear, parseSeason, cntitle = parseMovieName(itemName)
     if parseSeason and cat != 'TV':
         print('Category fixed: '+itemName)
@@ -228,13 +235,27 @@ def processOneDirItem(cpLocation, itemName):
         else:
             copyTVFolderItems(os.path.join(cpLocation, itemName),
                               mediaFolderName, parseSeason)
-    elif cat in [
-            'Movie', 'MovieEncode', 'Movie4K', 'MovieWebdl', 'MovieBDMV', 'MovieBDMV4K',
-            'MV'
-    ]:
-        if g_args.quickskip and mediaFolderName in g_gd_movie_list:
-            print('\033[32mQUICK_SKIP: [%s], %s => %s\033[0m' % (cat, mediaSrc, mediaTargeDir))
-            return
+    elif cat in ['MovieEncode', 'MovieWebdl']:
+        newMovieName = genMovieResGroup(parseTitle, resolution, group)
+        mediaTargetFile = os.path.join(mediaTargeDir, newMovieName)
+        if os.path.isfile(mediaSrc):
+            targetCopy(mediaSrc, mediaTargetFile)
+        elif os.path.isdir(mediaSrc):
+            mediaFilePath = getLargestFile(mediaSrc)
+            if mediaFilePath:
+                filename, file_ext = os.path.splitext(mediaFilePath)
+                if file_ext in ['mkv', 'mp4']:
+                    mediaTargetFile = os.path.join(mediaTargeDir, newMovieName)
+                    targetCopy(mediaSrc, mediaTargetFile)
+                else:
+                    print('\033[31mOnly copy *.mkv & *.mp4 : %s \033[0m' % mediaFilePath)
+            else:
+                print('\033[31mNo file found in: %s \033[0m' % mediaSrc)
+        else:
+            print('\033[31mWhat\'s it?  %s \033[0m' % mediaSrc)
+
+
+    elif cat in [ 'MovieBDMV', 'MovieBDMV4K', 'MV' ]:
         if os.path.isfile(mediaSrc):
             targetCopy(mediaSrc, mediaTargeDir)
         else:

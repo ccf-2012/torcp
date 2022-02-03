@@ -1,5 +1,5 @@
 import re
-from torcategory import GuessCategoryUtils
+from torcategory import cutExt
 
 
 def isFullAscii(str):
@@ -128,7 +128,7 @@ def parseMovieName(torName):
 
 
 def parseMovieName2(torName):
-    sstr = GuessCategoryUtils.cutExt(torName)
+    sstr = cutExt(torName)
 
     sstr = re.sub(
         # r'\b((UHD)?\s+BluRay|Blu-?ray|720p|1080[pi]|2160p|576i|WEB-DL|\.DVD\.|WEBRip|HDTV|Director(\'s)?[ .]Cut|REMASTERED|LIMITED|(The\s+)?Complete|SUBBED|TV Series).*$',
