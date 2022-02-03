@@ -162,8 +162,6 @@ class GuessCategoryUtils:
             return ''
 
     def categoryByQuality(self, torName):
-        self.quality = self.getQuality(torName)
-        self.resolution = self.getResolution(torName)
         # 来源为原盘的
         if self.quality == 'BLURAY':
             # Remux, 压制 还是 原盘
@@ -194,6 +192,8 @@ class GuessCategoryUtils:
 
     def guessByName(self, torName):
         self.group = self.parseGroup(torName)
+        self.quality = self.getQuality(torName)
+        self.resolution = self.getResolution(torName)
         if self.categoryByExt(torName):
             return self.category, self.group
 

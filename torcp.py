@@ -20,7 +20,7 @@ from torcategory import GuessCategoryUtils
 from tortitle import parseMovieName
 import logging
 
-g_args = None
+ARGS = None
 
 
 def ensureDir(file_path):
@@ -30,14 +30,17 @@ def ensureDir(file_path):
         os.makedirs(file_path)
 
 
-def hdlinkCopy(fromLoc, toLoc):
+def hdlinkCopy(fromLoc, toLocPath, toLocFile=''):
     if os.path.islink(fromLoc):
         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromLoc)
         return
-    destDir = os.path.join(g_args.hd_path, toLoc)
+    destDir = os.path.join(ARGS.hd_path, toLocPath)
     ensureDir(destDir)
     if os.path.isfile(fromLoc):
-        destFile = os.path.join(destDir, os.path.basename(fromLoc))
+        if toLocFile:
+            destFile = os.path.join(destDir, toLocFile)
+        else:
+            destFile = os.path.join(destDir, os.path.basename(fromLoc))
         if not os.path.exists(destFile):
             print('ln ', fromLoc, destFile)
             os.link(fromLoc, destFile)
@@ -49,62 +52,23 @@ def hdlinkCopy(fromLoc, toLoc):
 
 
 def hdlinkLs(loc):
-    destDir = os.path.join(g_args.hd_path, loc)
+    destDir = os.path.join(ARGS.hd_path, loc)
     ensureDir(destDir)
     return os.listdir(destDir)
 
 
-def targetCopy(fromLoc, toLoc):
+def targetCopy(fromLoc, toLocPath, toLocFile=''):
     if os.path.islink(fromLoc):
         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromLoc)
         return
-    if g_args.no_nfo:
-        if os.path.isfile(fromLoc):
-            filename, file_ext = os.path.splitext(fromLoc)
-            if file_ext == 'nfo':
-                return
 
-    if g_args.dryrun:
-        print(fromLoc, ' ==> ', toLoc)
+    if ARGS.dryrun:
+        print(fromLoc, ' ==> ', toLocPath)
         return
 
-    if g_args.hd_path:
-        hdlinkCopy(fromLoc, toLoc)
-    elif g_args.gd_path:
-        rcloneCopy(fromLoc, toLoc)
+    if ARGS.hd_path:
+        hdlinkCopy(fromLoc, toLocPath, toLocFile)
 
-
-def rcloneCopy(fromLoc, toLoc):
-    print('rclone copy ', fromLoc, g_args.gd_path + toLoc)
-
-    flagList = []
-    if g_args.gd_flags:
-        flagList = g_args.gd_flags.split(' ')
-    result = ''
-    with open(g_args.gd_conf) as f:
-        cfg = f.read()
-    result = rclone.with_config(cfg).copy(fromLoc,
-                                          g_args.gd_path + toLoc,
-                                          flags=flagList)
-    return result
-
-
-def rcloneLs(loc):
-    if not g_args.gd_path:
-        print('forgot --gd_path?')
-        return ''
-
-    with open(g_args.gd_conf) as f:
-        cfg = f.read()
-
-    try:
-        dirStr = rclone.with_config(cfg).lsd(g_args.gd_path +
-                                             loc)['out'].decode("utf-8")
-        dirlist = re.sub(r' +-1\s\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\s+-1\s',
-                         '', dirStr).split('\n')
-    except:
-        dirlist = ''
-    return dirlist
 
 
 def getSeasonFromFolderName(folderName, failDir=''):
@@ -160,19 +124,11 @@ def copyFiles(fromDir, toDir):
         targetCopy(movieFullPath, toDir)
 
 def genMovieResGroup(movieName, resolution, group):
-    return movieName + ' - ' + resolution + '_' + group
+    filename, file_ext = os.path.splitext(movieName)
+    return movieName + ' - ' + (resolution if resolution else '') + '_' + (group if group else '') + file_ext
 
 def copyMovieFolderItems(movieSourceFolder, movieTargeDir):
-    if g_args.largest:
-        mediaFilePath = getLargestFile(movieSourceFolder)
-        if mediaFilePath:
-            filename, file_ext = os.path.splitext(mediaFilePath)
-            if file_ext in ['mkv', 'mp4', 'iso']:
-                targetCopy(mediaFilePath, movieTargeDir)
-            else:
-                copyFiles(movieSourceFolder, movieTargeDir)
-    else:
-        copyFiles(movieSourceFolder, movieTargeDir)
+    copyFiles(movieSourceFolder, movieTargeDir)
 
 
 def getLargestFile(dirName):
@@ -194,10 +150,10 @@ def getLargestFile(dirName):
 
 def getCategory(itemName):
     catutil = GuessCategoryUtils()
-    if g_args.tv or g_args.movie:
-        if g_args.tv:
+    if ARGS.tv or ARGS.movie:
+        if ARGS.tv:
             cat = 'TV'
-        elif g_args.movie:
+        elif ARGS.movie:
             cat = 'Movie'
     else:
         cat, group = catutil.guessByName(itemName)
@@ -227,9 +183,6 @@ def processOneDirItem(cpLocation, itemName):
     mediaSrc = os.path.join(cpLocation, itemName)
     mediaTargeDir = os.path.join(cat, mediaFolderName)
     if cat == 'TV':
-        if g_args.quickskip and mediaFolderName in g_gd_tv_list:
-            print('\033[32mQUICK_SKIP: [%s], %s => %s\033[0m' % (cat, mediaSrc, mediaTargeDir))
-            return
         if os.path.isfile(mediaSrc):
             targetCopy(mediaSrc, mediaTargeDir)
         else:
@@ -237,16 +190,16 @@ def processOneDirItem(cpLocation, itemName):
                               mediaFolderName, parseSeason)
     elif cat in ['MovieEncode', 'MovieWebdl']:
         newMovieName = genMovieResGroup(parseTitle, resolution, group)
-        mediaTargetFile = os.path.join(mediaTargeDir, newMovieName)
+        # mediaTargetFile = os.path.join(mediaTargeDir, newMovieName)
         if os.path.isfile(mediaSrc):
-            targetCopy(mediaSrc, mediaTargetFile)
+            targetCopy(mediaSrc, mediaTargeDir, newMovieName)
         elif os.path.isdir(mediaSrc):
             mediaFilePath = getLargestFile(mediaSrc)
             if mediaFilePath:
                 filename, file_ext = os.path.splitext(mediaFilePath)
-                if file_ext in ['mkv', 'mp4']:
-                    mediaTargetFile = os.path.join(mediaTargeDir, newMovieName)
-                    targetCopy(mediaSrc, mediaTargetFile)
+                if file_ext in ['.mkv', '.mp4']:
+                    # mediaTargetFile = os.path.join(mediaTargeDir, newMovieName)
+                    targetCopy(mediaFilePath, mediaTargeDir, newMovieName)
                 else:
                     print('\033[31mOnly copy *.mkv & *.mp4 : %s \033[0m' % mediaFilePath)
             else:
@@ -272,11 +225,6 @@ def loadArgs():
     parser.add_argument(
         'MEDIA_DIR',
         help='The directory contains TVs and Movies to be copied.')
-    parser.add_argument('--gd_conf',
-                        help='the full path to the rclone config file.',
-                        default=r'/root/.config/rclone/rclone.conf')
-    parser.add_argument('--gd_path', help='the rclone target path.')
-    parser.add_argument('--gd_flags', help='extra rclone flags.')
     parser.add_argument('--hd_path', help='the dest path to create Hard Link.')
     parser.add_argument('--tv',
                         action='store_true',
@@ -284,9 +232,6 @@ def loadArgs():
     parser.add_argument('--movie',
                         action='store_true',
                         help='specify the src directory is Movie.')
-    parser.add_argument('--quickskip',
-                        action='store_true',
-                        help='skip exist dir, rclone only.')
     parser.add_argument('--dryrun',
                         action='store_true',
                         help='print msg instead of real copy.')
@@ -294,35 +239,17 @@ def loadArgs():
                         '-s',
                         action='store_true',
                         help='parse and copy one single folder.')
-    parser.add_argument(
-        '--largest',
-        action='store_true',
-        help='Movie only: copy the largest file, instead all files')
-    parser.add_argument(
-        '--no_nfo',
-        action='store_true',
-        help='Movie only: exclude nfo file')
 
-    global g_args
-    g_args = parser.parse_args()
+    global ARGS
+    ARGS = parser.parse_args()
 
 
 def main():
     loadArgs()
-    cpLocation = g_args.MEDIA_DIR
+    cpLocation = ARGS.MEDIA_DIR
     cpLocation = os.path.abspath(cpLocation)
 
-    global g_gd_tv_list
-    global g_gd_movie_list
-    # global g_gd_mv_list
-    g_gd_tv_list = ''
-    g_gd_movie_list = ''
-    if g_args.quickskip and g_args.gd_path:
-        g_gd_tv_list = rcloneLs('TV')
-        g_gd_movie_list = rcloneLs('MovieEncode')
-        # g_gd_mv_list = rcloneLs('MV')
-
-    if g_args.single:
+    if ARGS.single:
         processOneDirItem(os.path.dirname(cpLocation),
                           os.path.basename(os.path.normpath(cpLocation)))
     else:
