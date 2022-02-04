@@ -14,6 +14,7 @@ import argparse
 import shutil
 from torcategory import GuessCategoryUtils
 from tortitle import parseMovieName
+import glob
 import logging
 
 ARGS = None
@@ -131,6 +132,10 @@ def genMovieResGroup(mediaSrc, movieName, resolution, group):
 def copyMovieFolderItems(movieSourceFolder, movieTargeDir):
     copyFiles(movieSourceFolder, movieTargeDir)
 
+def isTVFilename(filename):
+    cat, group, resolution = getCategory(filename)
+    return cat == 'TV'
+
 
 def getLargestFile(dirName):
     fileSizeTupleList = []
@@ -189,8 +194,7 @@ def processOneDirItem(cpLocation, itemName):
                 mediaSrc, parseTitle, resolution, group)
             targetCopy(mediaSrc, mediaTargeDir, newMovieName)
         else:
-            copyTVFolderItems(os.path.join(cpLocation, itemName),
-                              mediaFolderName, parseSeason)
+            copyTVFolderItems(mediaSrc, mediaFolderName, parseSeason)
     elif cat in ['MovieEncode', 'MovieWebdl']:
         if os.path.isfile(mediaSrc):
             newMovieName = genMovieResGroup(
@@ -199,6 +203,9 @@ def processOneDirItem(cpLocation, itemName):
         elif os.path.isdir(mediaSrc):
             mediaFilePath = getLargestFile(mediaSrc)
             if mediaFilePath:
+                if isTVFilename(mediaFilePath):
+                    copyTVFolderItems(mediaSrc, mediaFolderName, parseSeason)
+                    return
                 filename, file_ext = os.path.splitext(mediaFilePath)
                 if file_ext in ['.mkv', '.mp4']:
                     newMovieName = genMovieResGroup(
