@@ -103,6 +103,8 @@ def copyTVFolderItems(tvSourceFolder, genFolder, parseSeason):
         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % tvSourceFolder)
         return
     # breakpoint()
+    if not parseSeason:
+        parseSeason = 'S01'
     for tvitem in os.listdir(tvSourceFolder):
         if uselessFile(tvitem):
             print('\033[31mSKIP useless file: [%s]\033[0m ' % tvitem)
