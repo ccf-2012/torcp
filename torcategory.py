@@ -108,7 +108,7 @@ class GuessCategoryUtils:
             self.setCategory('TV')
         elif re.search(r'\W[ES]\d+\W|EP\d+\W|\d+季|第\w{1,3}季\W', torName, re.A | re.I):
             self.setCategory('TV')
-        elif re.search(r'Full.Season|全\d+集|\d+集全', torName, re.A | re.I):
+        elif re.search(r'Complete.+Web-?dl|Full.Season|全\d+集|\d+集全', torName, re.A | re.I):
             self.setCategory('TV')
         else:
             return False
