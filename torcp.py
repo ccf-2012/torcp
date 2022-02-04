@@ -77,6 +77,8 @@ def getSeasonFromFolderName(folderName, failDir=''):
 
 def genMediaFolderName(cat, title, year, season):
     if cat == 'TV':
+        if not season:
+            season = 'S01'
         if len(year) == 4 and season == 'S01':
             mediaFolderName = title + ' (' + year + ')'
         else:
@@ -178,7 +180,10 @@ def isCollections(folderName):
     return re.search(r'\b(Pack$|Collection$|国语配音4K动画电影$|movies? collections?)', folderName, flags=re.I)
 
 def fixSeasonName(seasonStr):
-    return re.sub(r'^Ep?\d+(-Ep?\d+)?$', 'S01', seasonStr, flags=re.I)
+    if re.match(r'^Ep?\d+(-Ep?\d+)?$', seasonStr, flags=re.I) or not seasonStr:
+        return 'S01'
+    else:
+        return seasonStr
 
     
 def processMovieDir(mediaSrc, folderCat, folderGenName):
@@ -214,7 +219,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
 
 
         if cat == 'TV':
-            print('\033[31m迷路的TV: [%s]\033[0m ' % mediaSrc)
+            print('\033[31mMiss Categoried TV: [%s]\033[0m ' % mediaSrc)
             parseSeason = fixSeasonName(parseSeason)
             copyTVFolderItems(mediaSrc, folderGenName, parseSeason)
             return
@@ -237,7 +242,8 @@ def processOneDirItem(cpLocation, itemName):
     if parseSeason and cat != 'TV':
         print('Category fixed: '+itemName)
         cat = 'TV'
-    parseSeason = fixSeasonName(parseSeason)
+    if cat == 'TV':
+        parseSeason = fixSeasonName(parseSeason)
     destFolderName = genMediaFolderName(cat, parseTitle, parseYear,
                                         parseSeason)
     destCatFolderName = os.path.join(cat, destFolderName)
