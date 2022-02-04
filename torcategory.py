@@ -151,7 +151,7 @@ class GuessCategoryUtils:
             return ''
 
     def getQuality(self, torName):
-        match = re.search(r'\b(Blu[\-\. ]?Ray|WEB[\-\. ]?DL)\b', torName, re.A | re.I)
+        match = re.search(r'\b(Blu[\-\. ]?Ray|WEB[\-\. ]?DL|WEBRip)\b', torName, re.A | re.I)
         if match:
             groupstr = match.group(0).strip().lower()
             if 'blu' in groupstr:

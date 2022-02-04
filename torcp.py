@@ -5,13 +5,12 @@ A script hardlink media files and directories in Emby-happy naming and structs.
 #   python3 torcp.py -h
 #
 #  Example: hard link to a seperate dir
-#    python3 torcp.py /home/ccf2012/Downloads/  --hd_path=/home/ccf2012/emby/
+#    python3 torcp.py /home/ccf2012/Downloads/  -d=/home/ccf2012/emby/
 #
 #
 import re
 import os
 import argparse
-import rclone
 import shutil
 from torcategory import GuessCategoryUtils
 from tortitle import parseMovieName
@@ -67,7 +66,6 @@ def targetCopy(fromLoc, toLocPath, toLocFile=''):
         hdlinkCopy(fromLoc, toLocPath, toLocFile)
 
 
-
 def getSeasonFromFolderName(folderName, failDir=''):
     m1 = re.search(r'(\bS\d+(-S\d+)?)\b', folderName, flags=re.A | re.I)
     if m1:
@@ -102,7 +100,11 @@ def copyTVFolderItems(tvSourceFolder, genFolder, parseSeason):
     if os.path.islink(tvSourceFolder):
         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % tvSourceFolder)
         return
+    # breakpoint()
     for tvitem in os.listdir(tvSourceFolder):
+        if tvitem in ['@eaDir', '.DS_Store']:
+            print('\033[31mSKIP useless file: [%s]\033[0m ' % tvitem)
+            return
         tvitemPath = os.path.join(tvSourceFolder, tvitem)
         if os.path.isdir(tvitemPath):
             seasonFolder = getSeasonFromFolderName(tvitem, failDir=parseSeason)
@@ -120,9 +122,11 @@ def copyFiles(fromDir, toDir):
         movieFullPath = os.path.join(fromDir, movieItem)
         targetCopy(movieFullPath, toDir)
 
+
 def genMovieResGroup(mediaSrc, movieName, resolution, group):
     filename, file_ext = os.path.splitext(mediaSrc)
-    return movieName + ' - ' + ((resolution+ '_') if resolution else '')  + (group if group else '') + file_ext
+    return movieName + ' - ' + ((resolution + '_') if resolution else '') + (group if group else '') + file_ext
+
 
 def copyMovieFolderItems(movieSourceFolder, movieTargeDir):
     copyFiles(movieSourceFolder, movieTargeDir)
@@ -181,31 +185,34 @@ def processOneDirItem(cpLocation, itemName):
     mediaTargeDir = os.path.join(cat, mediaFolderName)
     if cat == 'TV':
         if os.path.isfile(mediaSrc):
-            newMovieName = genMovieResGroup(mediaSrc, parseTitle, resolution, group)
+            newMovieName = genMovieResGroup(
+                mediaSrc, parseTitle, resolution, group)
             targetCopy(mediaSrc, mediaTargeDir, newMovieName)
         else:
             copyTVFolderItems(os.path.join(cpLocation, itemName),
                               mediaFolderName, parseSeason)
     elif cat in ['MovieEncode', 'MovieWebdl']:
         if os.path.isfile(mediaSrc):
-            newMovieName = genMovieResGroup(mediaSrc, parseTitle, resolution, group)
+            newMovieName = genMovieResGroup(
+                mediaSrc, parseTitle, resolution, group)
             targetCopy(mediaSrc, mediaTargeDir, newMovieName)
         elif os.path.isdir(mediaSrc):
             mediaFilePath = getLargestFile(mediaSrc)
             if mediaFilePath:
                 filename, file_ext = os.path.splitext(mediaFilePath)
                 if file_ext in ['.mkv', '.mp4']:
-                    newMovieName = genMovieResGroup(mediaFilePath, parseTitle, resolution, group)
+                    newMovieName = genMovieResGroup(
+                        mediaFilePath, parseTitle, resolution, group)
                     targetCopy(mediaFilePath, mediaTargeDir, newMovieName)
                 else:
-                    print('\033[31mOnly copy *.mkv & *.mp4 : %s \033[0m' % mediaFilePath)
+                    print(
+                        '\033[31mOnly copy *.mkv & *.mp4 : %s \033[0m' % mediaFilePath)
             else:
                 print('\033[31mNo file found in: %s \033[0m' % mediaSrc)
         else:
             print('\033[31mWhat\'s it?  %s \033[0m' % mediaSrc)
 
-
-    elif cat in [ 'MovieBDMV', 'MV' ]:
+    elif cat in ['MovieBDMV', 'MV']:
         if os.path.isfile(mediaSrc):
             targetCopy(mediaSrc, mediaTargeDir)
         else:
@@ -216,13 +223,13 @@ def processOneDirItem(cpLocation, itemName):
 
 def loadArgs():
     parser = argparse.ArgumentParser(
-        description=
-        'torcp: a script hardlink media files and directories in Emby-happy naming and structs.'
+        description='torcp: a script hardlink media files and directories in Emby-happy naming and structs.'
     )
     parser.add_argument(
         'MEDIA_DIR',
         help='The directory contains TVs and Movies to be copied.')
-    parser.add_argument('-d', '--hd_path', help='the dest path to create Hard Link.')
+    parser.add_argument('-d', '--hd_path',
+                        help='the dest path to create Hard Link.')
     parser.add_argument('--tv',
                         action='store_true',
                         help='specify the src directory is TV.')
