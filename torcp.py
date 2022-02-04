@@ -123,9 +123,9 @@ def copyFiles(fromDir, toDir):
         movieFullPath = os.path.join(fromDir, movieItem)
         targetCopy(movieFullPath, toDir)
 
-def genMovieResGroup(movieName, resolution, group):
-    filename, file_ext = os.path.splitext(movieName)
-    return movieName + ' - ' + (resolution if resolution else '') + '_' + (group if group else '') + file_ext
+def genMovieResGroup(mediaSrc, movieName, resolution, group):
+    filename, file_ext = os.path.splitext(mediaSrc)
+    return movieName + ' - ' + ((resolution+ '_') if resolution else '')  + (group if group else '') + file_ext
 
 def copyMovieFolderItems(movieSourceFolder, movieTargeDir):
     copyFiles(movieSourceFolder, movieTargeDir)
@@ -189,16 +189,16 @@ def processOneDirItem(cpLocation, itemName):
             copyTVFolderItems(os.path.join(cpLocation, itemName),
                               mediaFolderName, parseSeason)
     elif cat in ['MovieEncode', 'MovieWebdl']:
-        newMovieName = genMovieResGroup(parseTitle, resolution, group)
         # mediaTargetFile = os.path.join(mediaTargeDir, newMovieName)
         if os.path.isfile(mediaSrc):
+            newMovieName = genMovieResGroup(mediaSrc, parseTitle, resolution, group)
             targetCopy(mediaSrc, mediaTargeDir, newMovieName)
         elif os.path.isdir(mediaSrc):
             mediaFilePath = getLargestFile(mediaSrc)
             if mediaFilePath:
                 filename, file_ext = os.path.splitext(mediaFilePath)
                 if file_ext in ['.mkv', '.mp4']:
-                    # mediaTargetFile = os.path.join(mediaTargeDir, newMovieName)
+                    newMovieName = genMovieResGroup(mediaFilePath, parseTitle, resolution, group)
                     targetCopy(mediaFilePath, mediaTargeDir, newMovieName)
                 else:
                     print('\033[31mOnly copy *.mkv & *.mp4 : %s \033[0m' % mediaFilePath)
