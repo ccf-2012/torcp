@@ -124,9 +124,9 @@ def copyFiles(fromDir, toDir):
         targetCopy(movieFullPath, toDir)
 
 
-def genMovieResGroup(mediaSrc, movieName, resolution, group):
+def genMovieResGroup(mediaSrc, movieName, year, resolution, group):
     filename, file_ext = os.path.splitext(mediaSrc)
-    return movieName + ' - ' + ((resolution + '_') if resolution else '') + (group if group else '') + file_ext
+    return movieName + ((' (' + year +')') if year else '') + ' - ' + ((resolution + '_') if resolution else '') + (group if group else '') + file_ext
 
 
 def copyMovieFolderItems(movieSourceFolder, movieTargeDir):
@@ -171,10 +171,29 @@ def getCategory(itemName):
             cat = 'MovieBDMV'
     return cat, catutil.group, catutil.resolution
 
+def isCollections(folderName):
+    return re.search(r'\b(Pack$|Collection$|movies? collections?)', folderName, re.I)
 
 def fixSeasonName(seasonStr):
     return re.sub(r'^Ep?\d+-Ep?\d+$', 'S01', seasonStr, re.I)
 
+def processMovieDir(mediaSrc, mediaTargeDir, mediaFolderName):
+    for movieItem in os.listdir(mediaSrc):
+        # mediaFilePath = getLargestFile(mediaSrc)
+        cat, group, resolution = getCategory(movieItem)
+        parseTitle, parseYear, parseSeason, cntitle = parseMovieName(movieItem)
+
+        if cat == 'TV':
+            copyTVFolderItems(mediaSrc, mediaFolderName, parseSeason)
+            return
+        filename, file_ext = os.path.splitext(movieItem)
+        if file_ext in ['.mkv', '.mp4']:
+            newMovieName = genMovieResGroup(
+                movieItem, parseTitle, parseYear, resolution, group)
+            mediaSrcItem = os.path.join(mediaSrc, movieItem)
+            targetCopy(mediaSrcItem, mediaTargeDir, newMovieName)
+        else:
+            print('\033[33mOnly copy *.mkv & *.mp4 : %s \033[0m' % movieItem)
 
 def processOneDirItem(cpLocation, itemName):
     cat, group, resolution = getCategory(itemName)
@@ -190,32 +209,19 @@ def processOneDirItem(cpLocation, itemName):
     mediaTargeDir = os.path.join(cat, mediaFolderName)
     if cat == 'TV':
         if os.path.isfile(mediaSrc):
-            newMovieName = genMovieResGroup(
-                mediaSrc, parseTitle, resolution, group)
-            targetCopy(mediaSrc, mediaTargeDir, newMovieName)
+            print('\033[31mWhat\'s it?  %s \033[0m' % mediaSrc)
+            # newMovieName = genMovieResGroup(
+            #     mediaSrc, parseTitle, parseYear, resolution, group)
+            targetCopy(mediaSrc, mediaTargeDir)
         else:
             copyTVFolderItems(mediaSrc, mediaFolderName, parseSeason)
     elif cat in ['MovieEncode', 'MovieWebdl']:
         if os.path.isfile(mediaSrc):
             newMovieName = genMovieResGroup(
-                mediaSrc, parseTitle, resolution, group)
+                mediaSrc, parseTitle, parseYear, resolution, group)
             targetCopy(mediaSrc, mediaTargeDir, newMovieName)
         elif os.path.isdir(mediaSrc):
-            mediaFilePath = getLargestFile(mediaSrc)
-            if mediaFilePath:
-                if isTVFilename(mediaFilePath):
-                    copyTVFolderItems(mediaSrc, mediaFolderName, parseSeason)
-                    return
-                filename, file_ext = os.path.splitext(mediaFilePath)
-                if file_ext in ['.mkv', '.mp4']:
-                    newMovieName = genMovieResGroup(
-                        mediaFilePath, parseTitle, resolution, group)
-                    targetCopy(mediaFilePath, mediaTargeDir, newMovieName)
-                else:
-                    print(
-                        '\033[31mOnly copy *.mkv & *.mp4 : %s \033[0m' % mediaFilePath)
-            else:
-                print('\033[31mNo file found in: %s \033[0m' % mediaSrc)
+            processMovieDir(mediaSrc, mediaTargeDir, mediaFolderName)
         else:
             print('\033[31mWhat\'s it?  %s \033[0m' % mediaSrc)
 
@@ -265,7 +271,10 @@ def main():
                           os.path.basename(os.path.normpath(cpLocation)))
     else:
         for torFolderItem in os.listdir(cpLocation):
-            processOneDirItem(cpLocation, torFolderItem)
+            if isCollections(torFolderItem):
+                print('\033[31mSkip collections: %s \033[0m' % torFolderItem)
+            else:
+                processOneDirItem(cpLocation, torFolderItem)
 
 
 if __name__ == '__main__':

@@ -58,6 +58,7 @@ from torcategory import GuessCategoryUtils
     ('谍影重重1-5.The.Bourne.2002-2016.1080p.Blu-ray.x265.DTS￡cXcY@FRDS',
      'The Bourne', '2002-2016', ''),
     ('豹.1963.JPN.1080p.意大利语中字￡CMCT风潇潇', '豹', '1963', ''),
+    # ('[迪士尼]2009.飞屋环游记.天外奇迹.冲天救兵.冲天奇兵.3D版.国粤英.原盘中字.BD.Iso', '飞屋环游记', '2009', ''),
     ('过界男女.2013.国粤双语.简繁中字￡CMCT紫卿醺', '过界男女', '2013', ''),
     ('Maleficent Mistress of Evil V2 2019 ULTRAHD Blu-ray 2160p HEVC Atmos TrueHD 7.1-sGnb@CHDBits', 'Maleficent Mistress of Evil V2', '2019', ''),
     ('金刚狼3殊死一战.Logan.2017.BluRay.1080p.x265.10bit.MNHD-FRDS', 'Logan', '2017',
