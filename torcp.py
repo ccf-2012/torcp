@@ -1,13 +1,10 @@
 """
-A script hardlink/rclone copy media files and directories in Emby-happy naming and structs.
+A script hardlink media files and directories in Emby-happy naming and structs.
 """
 #  Usage:
 #   python3 torcp.py -h
 #
-#  Example 1, rclone copy to a gd drive
-#   python3 torcp.py  /home/ccf2012/Downloads/  --gd_path=gd123:/176/
-#
-#  Example 2, hard link to a seperate dir
+#  Example: hard link to a seperate dir
 #    python3 torcp.py /home/ccf2012/Downloads/  --hd_path=/home/ccf2012/emby/
 #
 #
@@ -184,12 +181,12 @@ def processOneDirItem(cpLocation, itemName):
     mediaTargeDir = os.path.join(cat, mediaFolderName)
     if cat == 'TV':
         if os.path.isfile(mediaSrc):
-            targetCopy(mediaSrc, mediaTargeDir)
+            newMovieName = genMovieResGroup(mediaSrc, parseTitle, resolution, group)
+            targetCopy(mediaSrc, mediaTargeDir, newMovieName)
         else:
             copyTVFolderItems(os.path.join(cpLocation, itemName),
                               mediaFolderName, parseSeason)
     elif cat in ['MovieEncode', 'MovieWebdl']:
-        # mediaTargetFile = os.path.join(mediaTargeDir, newMovieName)
         if os.path.isfile(mediaSrc):
             newMovieName = genMovieResGroup(mediaSrc, parseTitle, resolution, group)
             targetCopy(mediaSrc, mediaTargeDir, newMovieName)
@@ -208,7 +205,7 @@ def processOneDirItem(cpLocation, itemName):
             print('\033[31mWhat\'s it?  %s \033[0m' % mediaSrc)
 
 
-    elif cat in [ 'MovieBDMV', 'MovieBDMV4K', 'MV' ]:
+    elif cat in [ 'MovieBDMV', 'MV' ]:
         if os.path.isfile(mediaSrc):
             targetCopy(mediaSrc, mediaTargeDir)
         else:
@@ -220,12 +217,12 @@ def processOneDirItem(cpLocation, itemName):
 def loadArgs():
     parser = argparse.ArgumentParser(
         description=
-        'torcp: a script to organize media files in Emby-happy way, support hardlink and rclone.'
+        'torcp: a script hardlink media files and directories in Emby-happy naming and structs.'
     )
     parser.add_argument(
         'MEDIA_DIR',
         help='The directory contains TVs and Movies to be copied.')
-    parser.add_argument('--hd_path', help='the dest path to create Hard Link.')
+    parser.add_argument('-d', '--hd_path', help='the dest path to create Hard Link.')
     parser.add_argument('--tv',
                         action='store_true',
                         help='specify the src directory is TV.')
@@ -234,7 +231,7 @@ def loadArgs():
                         help='specify the src directory is Movie.')
     parser.add_argument('--dryrun',
                         action='store_true',
-                        help='print msg instead of real copy.')
+                        help='print message instead of real copy.')
     parser.add_argument('--single',
                         '-s',
                         action='store_true',
