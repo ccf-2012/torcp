@@ -111,6 +111,7 @@ def test_parseTVName(test_input, e1, e2, e3):
      'TV', 'FRDS'),
     ('半暖时光.The.Memory.About.You.S01.2021.2160p.WEB-DL.AAC.H265-HDSWEB', 'TV',
      'HDSWEB'),
+    ('The.Smurfs.2.2013.3Audio.DTS-HD.MA5.1.x265.10bit-BeiTai.mkv', 'MovieEncode', 'BeiTai'),
     ('Death.on.the.Nile.1978.1080p.BluRay.FLAC.2.0.x264-PTer.mkv', 'MovieEncode', 'PTer'),    
     ('不惑之旅.To.the.Oak.S01.2021.2160p.WEB-DL.AAC.H265-HDSWEB', 'TV', 'HDSWEB'),
     ('BDRemux+Hakumei+to+Mikochi+JP+7³ACG@OurBits', 'Other', 'OurBits'),

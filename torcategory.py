@@ -150,7 +150,7 @@ class GuessCategoryUtils:
         else:
             return ''
 
-    def getQuality(self, torName):
+    def getSource(self, torName):
         match = re.search(r'\b(Blu[\-\. ]?Ray|WEB[\-\. ]?DL|WEBRip)\b', torName, re.A | re.I)
         if match:
             groupstr = match.group(0).strip().lower()
@@ -187,12 +187,17 @@ class GuessCategoryUtils:
             else:
                 self.setCategory('MovieWebdl')
         else:
-            return False
+            if re.search(r'\WREMUX\W', torName, re.I):
+                self.setCategory('MovieRemux')
+            elif re.search(r'\b(x265|x264)\b', torName, re.I):
+                self.setCategory('MovieEncode')
+            else:
+                return False
         return True
 
     def guessByName(self, torName):
         self.group = self.parseGroup(torName)
-        self.quality = self.getQuality(torName)
+        self.quality = self.getSource(torName)
         self.resolution = self.getResolution(torName)
         if self.categoryByExt(torName):
             return self.category, self.group

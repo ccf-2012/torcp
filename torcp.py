@@ -177,61 +177,75 @@ def isCollections(folderName):
 def fixSeasonName(seasonStr):
     return re.sub(r'^Ep?\d+-Ep?\d+$', 'S01', seasonStr, re.I)
 
-def processMovieDir(mediaSrc, mediaTargeDir, mediaFolderName):
+    
+def processMovieDir(mediaSrc, folderCat):
     for movieItem in os.listdir(mediaSrc):
+        filename, file_ext = os.path.splitext(movieItem)
+        if file_ext not in ['.mkv', '.mp4']:
+            continue
         # mediaFilePath = getLargestFile(mediaSrc)
         cat, group, resolution = getCategory(movieItem)
         parseTitle, parseYear, parseSeason, cntitle = parseMovieName(movieItem)
+        if parseSeason and cat != 'TV':
+            print('Category fixed: '+movieItem)
+            cat = 'TV'
 
+        destFolderName = genMediaFolderName(cat, parseTitle, parseYear,
+                                            parseSeason)
+        destCatFolderName = os.path.join(cat, destFolderName)
         if cat == 'TV':
-            copyTVFolderItems(mediaSrc, mediaFolderName, parseSeason)
+            copyTVFolderItems(mediaSrc, destFolderName, parseSeason)
             return
-        filename, file_ext = os.path.splitext(movieItem)
-        if file_ext in ['.mkv', '.mp4']:
-            newMovieName = genMovieResGroup(
-                movieItem, parseTitle, parseYear, resolution, group)
-            mediaSrcItem = os.path.join(mediaSrc, movieItem)
-            targetCopy(mediaSrcItem, mediaTargeDir, newMovieName)
-        else:
-            print('\033[33mOnly copy *.mkv & *.mp4 : %s \033[0m' % movieItem)
+
+        cat = folderCat
+        newMovieName = genMovieResGroup(
+            movieItem, parseTitle, parseYear, resolution, group)
+        mediaSrcItem = os.path.join(mediaSrc, movieItem)
+        targetCopy(mediaSrcItem, destCatFolderName, newMovieName)
+
 
 def processOneDirItem(cpLocation, itemName):
+    mediaSrc = os.path.join(cpLocation, itemName)
+    if os.path.islink(mediaSrc):
+        print('\033[31mSKIP symbolic link: [%s]\033[0m ' % mediaSrc)
+        return
+
     cat, group, resolution = getCategory(itemName)
     parseTitle, parseYear, parseSeason, cntitle = parseMovieName(itemName)
     if parseSeason and cat != 'TV':
         print('Category fixed: '+itemName)
         cat = 'TV'
     parseSeason = fixSeasonName(parseSeason)
-
-    mediaFolderName = genMediaFolderName(cat, parseTitle, parseYear,
-                                         parseSeason)
-    mediaSrc = os.path.join(cpLocation, itemName)
-    mediaTargeDir = os.path.join(cat, mediaFolderName)
-    if cat == 'TV':
-        if os.path.isfile(mediaSrc):
-            print('\033[31mWhat\'s it?  %s \033[0m' % mediaSrc)
-            # newMovieName = genMovieResGroup(
-            #     mediaSrc, parseTitle, parseYear, resolution, group)
-            targetCopy(mediaSrc, mediaTargeDir)
+    destFolderName = genMediaFolderName(cat, parseTitle, parseYear,
+                                        parseSeason)
+    destCatFolderName = os.path.join(cat, destFolderName)
+        
+    if os.path.isfile(mediaSrc):
+        filename, file_ext = os.path.splitext(itemName)
+        if file_ext in ['.mkv', '.mp4']:
+            if cat == 'TV':
+                print('\033[33mSingle Episode file?  %s \033[0m' % mediaSrc)
+                targetCopy(mediaSrc, destCatFolderName)
+            elif cat in ['MovieEncode', 'MovieWebdl']:
+                newMovieName = genMovieResGroup(
+                    mediaSrc, parseTitle, parseYear, resolution, group)
+                targetCopy(mediaSrc, destCatFolderName, newMovieName)
+            else:
+                print('\033[31mWhat\'s this?  %s \033[0m' % mediaSrc)
+                targetCopy(mediaSrc, destCatFolderName)
         else:
-            copyTVFolderItems(mediaSrc, mediaFolderName, parseSeason)
-    elif cat in ['MovieEncode', 'MovieWebdl']:
-        if os.path.isfile(mediaSrc):
-            newMovieName = genMovieResGroup(
-                mediaSrc, parseTitle, parseYear, resolution, group)
-            targetCopy(mediaSrc, mediaTargeDir, newMovieName)
-        elif os.path.isdir(mediaSrc):
-            processMovieDir(mediaSrc, mediaTargeDir, mediaFolderName)
-        else:
-            print('\033[31mWhat\'s it?  %s \033[0m' % mediaSrc)
-
-    elif cat in ['MovieBDMV', 'MV']:
-        if os.path.isfile(mediaSrc):
-            targetCopy(mediaSrc, mediaTargeDir)
-        else:
-            copyMovieFolderItems(mediaSrc, mediaTargeDir)
+            print('\033[33mOnly copy *.mkv & *.mp4 : %s \033[0m' % mediaSrc)
     else:
-        print('\033[33mSKIP: [%s], %s\033[0m ' % (cat, mediaSrc))
+        if cat == 'TV':
+            copyTVFolderItems(mediaSrc, destFolderName, parseSeason)
+        elif cat in ['MovieEncode', 'MovieWebdl']:
+            processMovieDir(mediaSrc, cat)
+        elif cat in ['MovieBDMV', 'MV']:
+            copyMovieFolderItems(mediaSrc, destCatFolderName)
+        else:
+            print('\033[33mSKIP: [%s], %s\033[0m ' % (cat, mediaSrc))
+
+
 
 
 def loadArgs():
