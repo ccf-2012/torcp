@@ -98,7 +98,7 @@ def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder):
         targetCopy(tv2FullPath, seasonFolderFullPath)
 
 def uselessFile(entryName):
-    return entryName in ['@eaDir', '.DS_Store']
+    return entryName in ['@eaDir', '.DS_Store', '.@__thumb']
 
 def copyTVFolderItems(tvSourceFolder, genFolder, parseSeason):
     if os.path.islink(tvSourceFolder):

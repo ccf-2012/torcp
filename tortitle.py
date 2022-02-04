@@ -198,6 +198,7 @@ def parseMovieName2(torName):
         sstr = re.sub(r'\s+'+seasonstr+r'.*$', '', sstr)
 
     titlestr = re.sub(r' +', ' ', sstr).strip()
+    titlestr = titlestr.replace('(', ' ').strip()
 
     cntitle = titlestr
 

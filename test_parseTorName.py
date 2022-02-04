@@ -72,6 +72,7 @@ from torcategory import GuessCategoryUtils
     ('我是你的眼.I\'m.Your.Eyes.2016.S01.2160p.WEB-DL.H265.AAC-LeagueWEB',
      'I\'m Your Eyes', '2016', 'S01'),
     ('The Fixies Ⅲ 2017 EP01-EP52 1080P WEB-DL AAC x264-GTQing', 'The Fixies Ⅲ', '2017', 'EP01-EP52'),
+    ('人类星球 Human Planet(1080P)', 'Human Planet', '', ''),
     ('The.Owl.House.S01.1080p.DSNP.WEBRip.AAC2.0.x264-LAZY[rartv]', 'The Owl House', '', 'S01'),
     ('The.Owl.House.S02E02.Escaping.Expulsion.1080p.HULU.WEBRip.AAC2.0.H264-LAZY[rarbg]', 'The Owl House', '', 'S02'),
     ('Guard.Jie.Fang.Xi.2022.S03.1080p.WEB-DL.H264.AAC-TJUPT', 'Guard Jie Fang Xi', '2022', 'S03'),
