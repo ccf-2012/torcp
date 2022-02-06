@@ -16,6 +16,7 @@ from torcategory import GuessCategoryUtils
      '2021', 'S01', ''),
     ('当家主母.Marvelous.Women.S01.2021.V3.2160p.WEB-DL.AAC.H265-HDSWEB',
      'Marvelous Women', '2021', 'S01', ''),
+    ('彩虹宝宝第三季.Rainbow.Ruby.S03.2020.WEB-DL.4k.H265.AAC-HDSWEB', 'Rainbow Ruby', '2020', 'S03', ''),
     ('民警老林的幸福生活.The.Happy.Life.of.People\'s.Policeman.Lao.Lin.S01.2021.2160p.WEB-DL.AAC.H265-HDSWEB',
      'The Happy Life of People\'s Policeman Lao Lin', '2021', 'S01', ''),
     ('千古风流人物.Qian.Gu.Feng.Liu.Ren.Wu.S01.2021.2160p.WEB-DL.AAC.H265-HDSWEB',

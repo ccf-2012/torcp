@@ -132,21 +132,6 @@ def parseSeason(sstr):
     seasonspan = [-1, -1]
     episodestr = ''
 
-    mcns = re.search(r'(第\s*((\d+)|([一二三四五六七八九十]))(-\d+)?季)(\s*第\s*((\d+)|([一二三四五六七八九十]))集)?', sstr, flags=re.I)
-    if mcns:
-        # origin_seasonstr = mcns.group(1)
-        seasonspan = mcns.span(1)
-        ssi = mcns.group(2)
-        iss = '一二三四五六七八九'.find(ssi)
-        if iss >= 0:
-            ssi = str(iss+1).zfill(2)
-        seasonstr = 'S' + ssi
-        if mcns.group(6):
-            episodestr = 'E' + mcns.group(7)
-
-        return seasonstr, seasonspan, episodestr
-
-
     # m1 = None
     # for m1 in re.finditer(r'(\bS\d+(-S\d+)?)\b', sstr, flags=re.A | re.I):
     #     pass
@@ -176,6 +161,21 @@ def parseSeason(sstr):
         # if mep.group(2):
         #     seasonstr = mep.group(2)
         #     seasonspan = mep.span(2)
+        return seasonstr, seasonspan, episodestr
+
+
+    mcns = re.search(r'(第\s*((\d+)|([一二三四五六七八九十]))(-\d+)?季)(\s*第\s*((\d+)|([一二三四五六七八九十]))集)?', sstr, flags=re.I)
+    if mcns:
+        # origin_seasonstr = mcns.group(1)
+        seasonspan = mcns.span(1)
+        ssi = mcns.group(2)
+        iss = '一二三四五六七八九'.find(ssi)
+        if iss >= 0:
+            ssi = str(iss+1).zfill(2)
+        seasonstr = 'S' + ssi
+        if mcns.group(6):
+            episodestr = 'E' + mcns.group(7)
+
         return seasonstr, seasonspan, episodestr
 
 
