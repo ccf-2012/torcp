@@ -262,10 +262,10 @@ def processOneDirItem(cpLocation, itemName):
                     mediaSrc, parseTitle, parseYear, resolution, group)
                 targetCopy(mediaSrc, destCatFolderName, newMovieName)
             else:
-                # print('\033[31mRemux?Others?  %s \033[0m' % mediaSrc)
+                print('\033[33mRemux?  %s \033[0m' % mediaSrc)
                 targetCopy(mediaSrc, destCatFolderName)
         else:
-            print('\033[33mCopy *.mkv & *.mp4 only: %s \033[0m' % mediaSrc)
+            print('\033[33mProcess *.mkv & *.mp4 only: %s \033[0m' % mediaSrc)
     else:
         if cat == 'TV':
             copyTVFolderItems(mediaSrc, destFolderName, parseSeason)
@@ -273,8 +273,10 @@ def processOneDirItem(cpLocation, itemName):
             processMovieDir(mediaSrc, cat, destFolderName)
         elif cat in ['MovieBDMV', 'MV']:
             targetCopy(mediaSrc, cat)
+        elif cat in ['eBook', 'Music', 'Audio', 'HDTV']:
+            print('\033[33mSkip eBoook, Music, Audio, HDTV: [%s], %s\033[0m ' % (cat, mediaSrc))
         else:
-            print('\033[33mWARN, treat as movie folder: [%s], %s\033[0m ' % (cat, mediaSrc))
+            print('\033[33mWARN, Other treat as movie folder: [%s], %s\033[0m ' % (cat, mediaSrc))
             processMovieDir(mediaSrc, cat, destFolderName)
 
 
