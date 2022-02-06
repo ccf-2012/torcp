@@ -93,6 +93,11 @@ class GuessCategoryUtils:
             self.setCategory('Music')
         elif re.search(r'(乐团|交响曲|协奏曲|二重奏|专辑\b)', torName):
             self.setCategory('Music')
+        elif re.search(r'(\bThe.Movie.\d{4}|电影版)\b', torName, flags=re.A | re.I):
+            if self.quality == 'WEBDL':
+                self.setCategory('MovieWebdl')
+            else:
+                self.setCategory('MovieEncode')
         else:
             return False
         return True
