@@ -218,16 +218,9 @@ def parseMovieName2(torName):
 
     sstr = re.sub(r'\W?(IMAX|Extended Cut)\s*$', '', sstr, flags=re.I)
 
-    dilimers = {
-        '[': ' ',
-        ']': ' ',
-        '.': ' ',
-        '{': ' ',
-        '}': ' ',
-        '_': ' ',
-    }
-    for original, replacement in dilimers.items():
-        sstr = sstr.replace(original, replacement)
+    dilimers = ['[', ']', '.', '{', '}', '_']
+    for dchar in dilimers:
+        sstr = sstr.replace(dchar, ' ')
 
     sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d(HD)?|[A-Z]{1,5}TV)\W*',
                   '',
@@ -245,6 +238,7 @@ def parseMovieName2(torName):
     sstr = cutspan(sstr, yearspan[0], yearspan[1])
     # if seasonstr:
     #     sstr = re.sub(origin_seasonstr+r'.*$', '', sstr)
+    sstr = re.sub(r'\b(剧集|全\d集|\d集全)\b', '', sstr, flags=re.I)
 
     titlestr = re.sub(r' +', ' ', sstr).strip()
     titlestr = titlestr.replace('(', ' ').strip()
