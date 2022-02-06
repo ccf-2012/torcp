@@ -208,7 +208,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
 
         # mediaFilePath = getLargestFile(mediaSrc)
         cat, group, resolution = getCategory(movieItem)
-        parseTitle, parseYear, parseSeason, cntitle = parseMovieName(movieItem)
+        parseTitle, parseYear, parseSeason, parseEpisode, cntitle = parseMovieName(movieItem)
         if parseSeason and cat != 'TV':
             print('Category fixed: '+movieItem)
             cat = 'TV'
@@ -221,7 +221,10 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
         if cat == 'TV':
             print('\033[31mMiss Categoried TV: [%s]\033[0m ' % mediaSrc)
             parseSeason = fixSeasonName(parseSeason)
-            copyTVFolderItems(mediaSrc, folderGenName, parseSeason)
+            if cat != folderCat:
+                copyTVFolderItems(mediaSrc, destFolderName, parseSeason)
+            else:
+                copyTVFolderItems(mediaSrc, folderGenName, parseSeason)
             return
 
         cat = folderCat
@@ -238,7 +241,7 @@ def processOneDirItem(cpLocation, itemName):
         return
 
     cat, group, resolution = getCategory(itemName)
-    parseTitle, parseYear, parseSeason, cntitle = parseMovieName(itemName)
+    parseTitle, parseYear, parseSeason, parseEpisode, cntitle = parseMovieName(itemName)
     if parseSeason and cat != 'TV':
         print('Category fixed: '+itemName)
         cat = 'TV'
@@ -259,7 +262,7 @@ def processOneDirItem(cpLocation, itemName):
                     mediaSrc, parseTitle, parseYear, resolution, group)
                 targetCopy(mediaSrc, destCatFolderName, newMovieName)
             else:
-                print('\033[31mWhat\'s this?  %s \033[0m' % mediaSrc)
+                # print('\033[31mRemux?Others?  %s \033[0m' % mediaSrc)
                 targetCopy(mediaSrc, destCatFolderName)
         else:
             print('\033[33mCopy *.mkv & *.mp4 only: %s \033[0m' % mediaSrc)

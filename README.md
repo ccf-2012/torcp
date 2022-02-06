@@ -51,3 +51,16 @@ python3 torcp.py /home/ccf2012/Downloads/权力的游戏.第1-8季.Game.Of.Thron
 ## Acknowledgement 
 @NishinoKana @Esc @Hangsijing
 
+
+## Update 2022.2.5 #dev 
+
+* 减了rclone copy功能，只作硬链。需要rclone copy就硬链出来另外命令拷
+* 还有quickskip, no_nfo等功能也都减了
+* MovieEncode只收mkv, mp4, 其它jpg,nfo等小文件都不链了
+
+* 主要变化是各目录进去看里面文件进行识别。
+    里面有BDMV目录或iso都移到MovieBDMV目录
+    外面目录识别不出tv，到里面可能识别出，movie tv识别有概率更稳了
+    还有目录中有多文件的，比如smurf 1-3 这样的目录会进去挨个识别分别开出3个目录
+    还有是带collections pack这样的目录会进去分别识别
+
