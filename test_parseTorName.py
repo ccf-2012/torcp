@@ -103,6 +103,7 @@ from torcategory import GuessCategoryUtils
     ('[堀與宮村][Horimiya][ホリミヤ][加流重灌 (Modded Blu-rays)][1080P][Vol.1-Vol.7 Fin][SweetDreamDay]', 'Horimiya', '', '', ''),
     ('[剧场版 Healin\' Good 光之美少女 梦想的小镇心动不已! GoGo! 大变身!!][Eiga Healin\' Good Precure Yume no Machi de Kyun! Tto Go Go! Dai Henshin!!][映画ヒーリングっど プリキュア ゆめのまちでキュン!っとGoGo!大変身!!/(短編)映画トロピカル~ジュ!プリキュアとびこめ!コラボダンスパーティ!][BDMV][MOVIE][U2娘@Share]', 'Eiga Healin\' Good Precure Yume no Machi de Kyun! Tto Go Go! Dai Henshin!!', '', '', ''),
     ('[鲁邦三世VS名侦探柯南 THE MOVIE]Lupin the 3rd vs Detective Conan THE MOVIE / Lupin Sansei vs. Meitantei Conan The Movie[ルパン三世vs名探偵コナン THE MOVIE][BDMV][1080p][MOVIE][AVC][ITA]', 'Lupin the 3rd vs Detective Conan THE MOVIE', '', '', ''),
+    ('Metal Gear Solid 3D - Snake Eater (USA) (En,Fr,Es).zip', 'Metal Gear Solid 3D - Snake Eater', '', '', ''),
 ])
 def test_parseTVName(test_input, e1, e2, e3, e4):
     a1, a2, a3, a4, a5 = tortitle.parseMovieName(test_input)
@@ -144,6 +145,12 @@ def test_parseTVName(test_input, e1, e2, e3, e4):
     ('[猫和老鼠1992电影版].Tom.and.Jerry.The.Movie.1992.WEB-DL.1080p.HEVC.AAC-CMCTV.mp4', 'MovieWebdl', 'CMCTV'),
     ('Lucile Boulanger - Bach & Abel_ Solo [FLAC 192kHz-24bit]', 'Music', None),
     ('Dana Zemtsov & Anna Fedorova - Silhouettes 2020 DSF', 'Music', None),
+    ('Sabotage [BD25] (1939)', 'MovieBDMV', None),
+    ('QUINTET 1979 DVD9 NTSC', 'MovieDVD', None),
+    ('RETURN_TO_NEVER_LAND DVD', 'MovieDVD', None),
+    ('My.Blueberry.Nights.2007.NTSC.DVD9', 'MovieDVD', None),
+    ('Megazone 23 1985 BD', 'MovieBDMV', None),
+    ('Metal Gear Solid 3D - Snake Eater (USA) (En,Fr,Es).zip', 'Other', None),
     # ('Sonata Arctica - Acoustic Adventures  - Volume One (2022)', 'Music', None),
     # ('Sara K.-No Cover-Chesky-0196', 'Music', None),
 ])
