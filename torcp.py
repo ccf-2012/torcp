@@ -13,7 +13,7 @@ import os
 import argparse
 import shutil
 from torcategory import GuessCategoryUtils
-from tortitle import parseMovieName
+from .tortitle import parseMovieName
 import logging
 
 ARGS = None

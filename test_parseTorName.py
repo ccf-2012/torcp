@@ -151,6 +151,8 @@ def test_parseTVName(test_input, e1, e2, e3, e4):
     ('My.Blueberry.Nights.2007.NTSC.DVD9', 'MovieDVD', None),
     ('Megazone 23 1985 BD', 'MovieBDMV', None),
     ('Metal Gear Solid 3D - Snake Eater (USA) (En,Fr,Es).zip', 'Other', None),
+    ('To.Sir.With.Love.II.1996.DVD.NTSC-CL8', 'MovieDVD', 'CL8'),
+    ('Babka_Yozhka_i_drugiye_2008_BD', 'MovieBDMV', None),
     # ('Sonata Arctica - Acoustic Adventures  - Volume One (2022)', 'Music', None),
     # ('Sara K.-No Cover-Chesky-0196', 'Music', None),
 ])

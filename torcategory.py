@@ -70,11 +70,11 @@ class GuessCategoryUtils:
             self.setCategory('eBook')
         elif re.search(r'\.(mpg)\b', torName, re.I):
             self.setCategory('MV')
-        elif re.search(r'\b(FLAC.{0,3}|DSF.{0,3}|DSD(\d{1,3})?)$', torName, re.I):
+        elif re.search(r'(\b|_)(FLAC.{0,3}|DSF.{0,3}|DSD(\d{1,3})?)$', torName, re.I):
             self.setCategory('Music')
-        elif re.search(r'\b(BD25\b|BD50\b|BD66\b|BD$)', torName, re.I):
+        elif re.search(r'(\b|_)(BD25\b|BD50\b|BD66\b|BD$)', torName, re.I):
             self.setCategory('MovieBDMV')
-        elif re.search(r'\b(DVD(\d+)?(\W*)|DVD\d*\W+\w+)$', torName, re.I):
+        elif re.search(r'(\b|_)(DVD(\d+)?)\b', torName, re.I):
             self.setCategory('MovieDVD')
         else:
             return False
