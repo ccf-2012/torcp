@@ -69,7 +69,7 @@ class GuessCategoryUtils:
             self.setCategory('eBook')
         elif re.search(r'\.(mpg)\b', torName, re.I):
             self.setCategory('MV')
-        elif re.search(r'\b(FLAC.{0,3}|DSD(\d{1,3})?)$', torName, re.I):
+        elif re.search(r'\b(FLAC.{0,3}|DSF.{0,3}|DSD(\d{1,3})?)$', torName, re.I):
             self.setCategory('Music')
         else:
             return False

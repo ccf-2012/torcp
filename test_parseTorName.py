@@ -142,6 +142,10 @@ def test_parseTVName(test_input, e1, e2, e3, e4):
     ('Fiksik 螺丝钉1-3季 1080P 国语中字', 'TV', None),
     ('花仙子全50集+剧场版.1080p.国日双语.中文字幕', 'TV', None),
     ('[猫和老鼠1992电影版].Tom.and.Jerry.The.Movie.1992.WEB-DL.1080p.HEVC.AAC-CMCTV.mp4', 'MovieWebdl', 'CMCTV'),
+    ('Lucile Boulanger - Bach & Abel_ Solo [FLAC 192kHz-24bit]', 'Music', None),
+    ('Dana Zemtsov & Anna Fedorova - Silhouettes 2020 DSF', 'Music', None),
+    # ('Sonata Arctica - Acoustic Adventures  - Volume One (2022)', 'Music', None),
+    # ('Sara K.-No Cover-Chesky-0196', 'Music', None),
 ])
 def test_guessByName(test_input, e1, e2):
     catutil = GuessCategoryUtils()
