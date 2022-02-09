@@ -1,5 +1,5 @@
 import re
-from torcategory import GuessCategoryUtils
+from torcategory import cutExt
 
 
 def isFullAscii(str):
@@ -66,7 +66,7 @@ def parseJpAniName(torName):
 def getUnbracketedTitle(strLeft, items):
     yearstr, titlestr = getYearStr(strLeft)
 
-    return cutAKA(titlestr), yearstr, '', ''
+    return cutAKA(titlestr), yearstr, '', '', ''
 
 
 def get1SectionJpAniName(items):
@@ -77,7 +77,7 @@ def get1SectionJpAniName(items):
     else:
         titlestr = items[0]
 
-    return cutAKA(titlestr), yearstr, '', ''
+    return cutAKA(titlestr), yearstr, '', '', ''
 
 
 def getYearStr(str):
@@ -116,8 +116,9 @@ def get3SectionJpAniName(items, titleIndex):
         yearstr, titlestr = getYearStr(titlestr)
         # seasonstr = getIndexItem(items, jptitleIndex+1)
     seasonstr = ''
+    episodestr = ''
 
-    return cutAKA(titlestr), yearstr, seasonstr, cntitle
+    return cutAKA(titlestr), yearstr, seasonstr, episodestr, cntitle
 
 
 def parseMovieName(torName):
@@ -126,62 +127,63 @@ def parseMovieName(torName):
     else:
         return parseMovieName2(torName)
 
-
-def parseMovieName2(torName):
-    sstr = GuessCategoryUtils.cutExt(torName)
-
-    sstr = re.sub(
-        # r'\b((UHD)?\s+BluRay|Blu-?ray|720p|1080[pi]|2160p|576i|WEB-DL|\.DVD\.|WEBRip|HDTV|Director(\'s)?[ .]Cut|REMASTERED|LIMITED|(The\s+)?Complete|SUBBED|TV Series).*$',
-        r'\b((UHD)?\s+BluRay|Blu-?ray|720p|1080[pi]|2160p|576i|WEB-DL|\.DVD\.|WEBRip|HDTV|Director(\'s)?[ .]Cut|REMASTERED|LIMITED|Complete(?=[. -]\d+)|SUBBED|TV Series).*$',
-        '',
-        sstr,
-        flags=re.I)
-    sstr = re.sub(r'\[Vol.*\]$', '', sstr, flags=re.I)
-
-    sstr = re.sub(r'\W?(IMAX|Extended Cut)\s*$', '', sstr, flags=re.I)
-
-    dilimers = {
-        '[': ' ',
-        ']': ' ',
-        '.': ' ',
-        '{': ' ',
-        '}': ' ',
-        '_': ' ',
-    }
-    for original, replacement in dilimers.items():
-        sstr = sstr.replace(original, replacement)
-
-    sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d(HD)?|[A-Z]{1,5}TV)\W*',
-                  '',
-                  sstr,
-                  flags=re.I)
+def parseSeason(sstr):
     seasonstr = ''
-    yearstr = ''
-    titlestr = sstr
-
-    mcns = re.search(r'(第\s*((\d+)|([一二三四五六七八九]))(-\d+)?季)\b', sstr, flags=re.I)
-    if mcns:
-        ss1 = mcns.group(2)
-        iss = '一二三四五六七八九'.find(ss1)
-        if iss >= 0:
-            ss1 = str(iss+1).zfill(2)
-        seasonstr = 'S' + ss1
-        # seasonsapn = mcns.span(1)
-        sstr = sstr.replace(mcns.group(1), '')
-    mep = re.search(r'(\b(S\d+)(E\d+)?|(Ep?\d+(-Ep?\d+)?))\b', sstr, flags=re.A | re.I)
-    if mep:
-        seasonstr = mep.group(1)
-        if mep.group(2):
-            seasonstr = mep.group(2)
+    seasonspan = [-1, -1]
+    episodestr = ''
 
     # m1 = None
     # for m1 in re.finditer(r'(\bS\d+(-S\d+)?)\b', sstr, flags=re.A | re.I):
     #     pass
-    m1 = re.search(r'(\bS\d+(-S?\d+))\s', sstr, flags=re.A | re.I)
+    m1 = re.search(r'(\bS\d+(-S?\d+))\s(?!.*\bS\d+)', sstr, flags=re.A | re.I)
     if m1:
         seasonstr = m1.group(1)
+        seasonspan = m1.span(1)
         sstr = sstr.replace(seasonstr, '')
+        return seasonstr, seasonspan, episodestr
 
+    m2 = re.search(r'(\b(S\d+)(E\d+)?)\b', sstr, flags=re.A | re.I)
+    if m2:
+        seasonstr = m2.group(1)
+        seasonspan = m2.span(1)
+        if m2.group(3):
+            seasonstr = m2.group(2)
+            episodestr = m2.group(3)
+        return seasonstr, seasonspan, episodestr
+
+        # seasonsapn = mcns.span(1)
+        # sstr = sstr.replace(mcns.group(1), '')
+    mep = re.search(r'(Ep?\d+(-Ep?\d+)?)\b', sstr, flags=re.A | re.I)
+    if mep:
+        seasonstr = 'S01'
+        episodestr = mep.group(1)
+        seasonspan = mep.span(1)
+        # if mep.group(2):
+        #     seasonstr = mep.group(2)
+        #     seasonspan = mep.span(2)
+        return seasonstr, seasonspan, episodestr
+
+
+    mcns = re.search(r'(第\s*((\d+)|([一二三四五六七八九十]))(-\d+)?季)(\s*第\s*((\d+)|([一二三四五六七八九十]))集)?', sstr, flags=re.I)
+    if mcns:
+        # origin_seasonstr = mcns.group(1)
+        seasonspan = mcns.span(1)
+        ssi = mcns.group(2)
+        iss = '一二三四五六七八九'.find(ssi)
+        if iss >= 0:
+            ssi = str(iss+1).zfill(2)
+        seasonstr = 'S' + ssi
+        if mcns.group(6):
+            episodestr = 'E' + mcns.group(7)
+
+        return seasonstr, seasonspan, episodestr
+
+
+    return seasonstr, seasonspan, episodestr
+
+def parseYear(sstr):
+    yearstr = ''
+    yearspan = [-1, -1]
     m2 = re.search(
         r'\b((19\d{2}\b|20\d{2})-?(19\d{2}|20\d{2})?)\b(?!.*\b\d{4}\b.*)',
         sstr,
@@ -190,17 +192,62 @@ def parseMovieName2(torName):
         yearstr = m2.group(1)
         yearspan = m2.span(1)
         if re.search(r'[\(\[\{]' + yearstr+r'\b', sstr):
-            sstr = sstr[:yearspan[0] - 1]
-        elif re.search(r'\w.*' + yearstr+r'\b', sstr):
-            sstr = sstr[:yearspan[0]]
+            # sstr = sstr[:yearspan[0] - 1]
+            yearspan = [yearspan[0]-1, yearspan[1]+1 ]
+        # elif re.search(r'\w.*' + yearstr+r'\b', sstr):
+        #     sstr = sstr[:yearspan[0]]
 
-    if seasonstr:
-        sstr = re.sub(r'\s+'+seasonstr+r'.*$', '', sstr)
+    return yearstr, yearspan
+
+def cutspan(sstr, ifrom, ito):
+    if (ifrom > 0) and (len(sstr) > ito):
+        sstr = sstr[0 : ifrom: ] + sstr[ito + 1 : :]
+    return sstr
+
+
+def parseMovieName2(torName):
+    sstr = cutExt(torName)
+
+    sstr = re.sub(
+        r'\b((UHD)?\s+BluRay|Blu-?ray|720p|1080[pi]|2160p|576i|WEB-DL|\.DVD\.|WEBRip|HDTV|Director(\'s)?[ .]Cut|REMASTERED|LIMITED|Complete(?=[. -]\d+)|SUBBED|TV Series).*$',
+        '',
+        sstr,
+        flags=re.I)
+    sstr = re.sub(r'\[Vol.*\]$', '', sstr, flags=re.I)
+
+    sstr = re.sub(r'\W?(IMAX|Extended Cut)\s*$', '', sstr, flags=re.I)
+
+    if sstr[-1] in ['(', '[', '{']:
+        sstr = sstr[:-1]
+
+    dilimers = ['[', ']', '.', '{', '}', '_', ',']
+    for dchar in dilimers:
+        sstr = sstr.replace(dchar, ' ')
+
+    sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d(HD)?|[A-Z]{1,5}TV)\W*',
+                  '',
+                  sstr,
+                  flags=re.I)
+
+    seasonstr, seasonspan, episodestr = parseSeason(sstr)
+    yearstr, yearspan = parseYear(sstr)
+
+    t = max(seasonspan[0], yearspan[0])
+    if t > 0:
+        sstr = sstr[:t]
+
+    sstr = cutspan(sstr, seasonspan[0], seasonspan[1])
+    sstr = cutspan(sstr, yearspan[0], yearspan[1])
+    # if seasonstr:
+    #     sstr = re.sub(origin_seasonstr+r'.*$', '', sstr)
+    sstr = re.sub(r'\b(剧集|全\d集|\d集全)\b', '', sstr, flags=re.I)
 
     titlestr = re.sub(r' +', ' ', sstr).strip()
 
-    cntitle = titlestr
+    if titlestr.endswith(')'):
+        titlestr = re.sub(r'\(.*$', '', sstr).strip()
 
+    cntitle = titlestr
     m = re.search(
         r'^.*[^a-zA-Z_\- &0-9](S\d+|\s|\.|\d|-)*\b(?=[A-Z])',
         # m = re.search(r'^.*[^\x00-\x7F](S\d+|\s|\.|\d|-)*\b(?=[A-Z])',
@@ -214,4 +261,4 @@ def parseMovieName2(torName):
     # if titlestr.endswith(' JP'):
     #     titlestr = titlestr.replace(' JP', '')
 
-    return cutAKA(titlestr), yearstr, seasonstr, cntitle
+    return cutAKA(titlestr), yearstr, seasonstr, episodestr, cntitle
