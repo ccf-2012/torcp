@@ -214,7 +214,7 @@ def processBDMV(mediaSrc, folderGenName, targetFolder):
         largestStreams = getLargestFiles(bdmvDir)
         for stream in largestStreams:
             # fn, ext = os.path.splitext(stream)
-            tsname = os.path.basename(mediaSrc) + ' - '+ stream
+            tsname = os.path.basename(mediaSrc) + ' - '+ os.path.basename(stream)
             targetCopy(stream, os.path.join(targetFolder, folderGenName), tsname)
     else:
         if ARGS.extract_bdmv:
