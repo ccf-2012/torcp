@@ -93,14 +93,21 @@ def genMediaFolderName(cat, title, year, season):
 
 
 def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName):
+    if os.path.isdir(os.path.join(tvSourceFullPath, 'BDMV')):
+        # break, process BDMV dir for this dir 
+        bdmvTVFolder = os.path.join('BDMV_TV', tvFolder)
+        processBDMV(tvSourceFullPath, seasonFolder, bdmvTVFolder)
+        return                
+
     for tv2item in os.listdir(tvSourceFullPath):
         tv2itemPath = os.path.join(tvSourceFullPath, tv2item)
         if os.path.isdir(tv2itemPath):
-            if tv2item == 'BDMV':
-                # break, process BDMV dir for this dir 
-                bdmvTVFolder = os.path.join('BDMV_TV', tvFolder)
-                processBDMV(tvSourceFullPath, seasonFolder, bdmvTVFolder)
-                return
+            print('\033[31mSKIP dir in TV: [%s]\033[0m ' % tv2itemPath)
+            # if tv2item == 'BDMV':
+            #     # break, process BDMV dir for this dir 
+            #     bdmvTVFolder = os.path.join('BDMV_TV', tvFolder)
+            #     processBDMV(tvSourceFullPath, seasonFolder, bdmvTVFolder)
+            #     return
         else:
             filename, file_ext = os.path.splitext(tv2item) 
             if file_ext.lower() in ['.mkv', '.mp4']:
@@ -122,6 +129,11 @@ def copyTVFolderItems(tvSourceFolder, genFolder, parseSeason, groupName):
     if os.path.islink(tvSourceFolder):
         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % tvSourceFolder)
         return
+    if os.path.isdir(os.path.join(tvSourceFolder, 'BDMV')):
+        # a BDMV dir in a TV folder, treat as Movie
+        processBDMV(tvSourceFolder, genFolder, 'BDMV_Movie')
+        return                
+
     if not parseSeason:
         parseSeason = 'S01'
     for tvitem in os.listdir(tvSourceFolder):
@@ -224,21 +236,26 @@ def processBDMV(mediaSrc, folderGenName, targetFolder):
         # targetCopy(mediaSrc, 'ISO')
 
 def processMovieDir(mediaSrc, folderCat, folderGenName):
+    if os.path.isdir(os.path.join(mediaSrc, 'BDMV')):
+        # break, process BDMV dir for this dir 
+        processBDMV(mediaSrc, folderGenName, 'BDMV_Movie')
+        return                
+
     for movieItem in os.listdir(mediaSrc):
         if uselessFile(movieItem):
             continue
         # destCatFolderName = os.path.join('MovieBDMV', os.path.basename(os.path.normpath(mediaSrc)))
         if (os.path.isdir(os.path.join(mediaSrc, movieItem))):
-            if movieItem == 'BDMV':
-                # break, process BDMV dir for this dir 
-                processBDMV(mediaSrc, folderGenName, 'BDMV_Movie')
-                return
+            # if movieItem == 'BDMV':
+            #     # break, process BDMV dir for this dir 
+            #     processBDMV(mediaSrc, folderGenName, 'BDMV_Movie')
+            #     return
             continue
 
         filename, file_ext = os.path.splitext(movieItem)
         if file_ext.lower() in ['.iso']:
-            print('\033[34miso file: [%s]\033[0m ' % movieItem)
-            targetCopy(mediaSrc, 'MovieBDMV')
+            print('\033[31mSKip iso file: [%s]\033[0m ' % movieItem)
+            # targetCopy(mediaSrc, 'MovieBDMV')
             continue
 
         if file_ext.lower() not in ['.mkv', '.mp4']:

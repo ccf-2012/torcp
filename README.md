@@ -87,8 +87,9 @@ python3 torcp.py /home/ccf2012/Downloads/权力的游戏.第1-8季.Game.Of.Thron
 * New `--extract-bdmv` param, Extract Largest file(s) from BDMV dir, of movie/tv
   
 ### Sample
+* Command:
 ```sh
-python torcp.py  /share/CACHEDEV1_DATA/Video/QB/TV  --hd_path=/share/CACHEDEV1_DATA/Video/emby/  --extract-bdmv 
+python torcp.py  /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Video/emby/  --extract-bdmv 
 ```
 * Before:
 ```
