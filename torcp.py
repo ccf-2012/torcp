@@ -13,7 +13,7 @@ import os
 import argparse
 import shutil
 from torcategory import GuessCategoryUtils
-from .tortitle import parseMovieName
+from tortitle import parseMovieName
 import logging
 
 ARGS = None
@@ -185,7 +185,24 @@ def fixSeasonName(seasonStr):
     else:
         return seasonStr
 
-    
+def extractBDMV(mediaSrc, folderGenName):
+    bdmvDir = os.path.join(mediaSrc, 'BDMV', 'STREAM')
+    if os.path.exists(bdmvDir):
+        largestStream = getLargestFile(bdmvDir)
+        targetCopy(largestStream, os.path.join('BDMV_Extracted', folderGenName))
+    else:
+        targetCopy(mediaSrc, 'MovieBDMV')
+
+
+def processBDMV(mediaSrc, folderGenName):
+    bdmvDir = os.path.join(mediaSrc, 'BDMV', 'STREAM')
+    if ARGS.extract_bdmv and os.path.exists(bdmvDir):
+        largestStream = getLargestFile(bdmvDir)
+        tsname = os.path.basename(mediaSrc) + os.path.splitext(largestStream)[1]
+        targetCopy(largestStream, os.path.join('BDMV_Extracted', folderGenName), tsname)
+    else:
+        targetCopy(mediaSrc, 'ISO')
+
 def processMovieDir(mediaSrc, folderCat, folderGenName):
     for movieItem in os.listdir(mediaSrc):
         if uselessFile(movieItem):
@@ -193,7 +210,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
         # destCatFolderName = os.path.join('MovieBDMV', os.path.basename(os.path.normpath(mediaSrc)))
         if (os.path.isdir(os.path.join(mediaSrc, movieItem))):
             if movieItem == 'BDMV':
-                targetCopy(mediaSrc, 'MovieBDMV')
+                processBDMV(mediaSrc, folderGenName)
                 return
             continue
 
@@ -271,12 +288,14 @@ def processOneDirItem(cpLocation, itemName):
             copyTVFolderItems(mediaSrc, destFolderName, parseSeason)
         elif cat in ['MovieEncode', 'MovieWebdl']:
             processMovieDir(mediaSrc, cat, destFolderName)
-        elif cat in ['MovieBDMV', 'MV']:
+        elif cat in ['MovieBDMV']:
+            processBDMV(mediaSrc, destFolderName)
+        elif cat in ['MV']:
             targetCopy(mediaSrc, cat)
         elif cat in ['eBook', 'Music', 'Audio', 'HDTV']:
             print('\033[33mSkip eBoook, Music, Audio, HDTV: [%s], %s\033[0m ' % (cat, mediaSrc))
         else:
-            print('\033[33mWARN, Other treat as movie folder: [%s], %s\033[0m ' % (cat, mediaSrc))
+            print('\033[33mWARN, Other(Unknown) treat as movie folder: [%s], %s\033[0m ' % (cat, mediaSrc))
             processMovieDir(mediaSrc, cat, destFolderName)
 
 
@@ -304,6 +323,9 @@ def loadArgs():
                         '-s',
                         action='store_true',
                         help='parse and copy one single folder.')
+    parser.add_argument('--extract-bdmv',
+                        action='store_true',
+                        help='extract largest file in bdmv dir.')
 
     global ARGS
     ARGS = parser.parse_args()
