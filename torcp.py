@@ -174,7 +174,7 @@ def getLargestFiles(dirName):
 
         a, largestSize = fileSizeTupleList[0]
         for fileName, fileSize in fileSizeTupleList:
-            if fileSize > (largestSize * 0.8):
+            if fileSize > (largestSize * 0.6):
                 largestFiles.append(fileName)
         return largestFiles
     else:
