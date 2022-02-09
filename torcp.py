@@ -132,9 +132,8 @@ def copyTVFolderItems(tvSourceFolder, genFolder, parseSeason, groupName):
         tvitemPath = os.path.join(tvSourceFolder, tvitem)
         if os.path.isdir(tvitemPath):
             if tvitem == 'BDMV':
-                breakpoint()
                 # a BDMV dir in a TV folder, treat as Movie
-                processBDMV(tvSourceFolder, genFolder, 'BDMV_Extract')
+                processBDMV(tvSourceFolder, genFolder, 'BDMV_Movie')
                 return                
             seasonFolder = getSeasonFromFolderName(tvitem, failDir=parseSeason)
             copyTVSeasonItems(tvitemPath, genFolder, seasonFolder, groupName)
@@ -170,7 +169,6 @@ def getLargestFiles(dirName):
         if os.path.isfile(p):
             fileSizeTupleList.append((p, os.path.getsize(p)))
 
-    breakpoint()
     if len(fileSizeTupleList) > 0:
         fileSizeTupleList.sort(key=lambda x:x[1], reverse=True)
 
