@@ -153,6 +153,7 @@ def test_parseTVName(test_input, e1, e2, e3, e4):
     ('Metal Gear Solid 3D - Snake Eater (USA) (En,Fr,Es).zip', 'Other', None),
     ('To.Sir.With.Love.II.1996.DVD.NTSC-CL8', 'MovieDVD', 'CL8'),
     ('Babka_Yozhka_i_drugiye_2008_BD', 'MovieBDMV', None),
+    ('别有用心的单身女.Cunning.Single.Lady.S01E05.1080p.NF.WEB-DL.DDP2.0.x264-Ao.mkv', 'TV', 'Ao'),
     # ('[AI-Raws] HELLO WORLD (BD HEVC 3840x2160 yuv444p10le Atmos／FLAC／FLAC[バリアフリー] 日本語字幕)[52F61BDB].mkv', 'MovieBDMV', None),
     # ('Sonata Arctica - Acoustic Adventures  - Volume One (2022)', 'Music', None),
     # ('Sara K.-No Cover-Chesky-0196', 'Music', None),

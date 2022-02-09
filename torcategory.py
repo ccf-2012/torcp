@@ -143,7 +143,7 @@ class GuessCategoryUtils:
 
     def parseGroup(self, torName):
         sstr = cutExt(torName)
-        match = re.search(r'[@\-￡]\s?(\w{3,12})\b(?!.*[@\-￡].*)$', sstr, re.I)
+        match = re.search(r'[@\-￡]\s?(\w+)\b(?!.*[@\-￡].*)$', sstr, re.I)
         if match:
             groupName = match.group(1).strip()
             if groupName.startswith('CMCT'):
