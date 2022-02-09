@@ -212,8 +212,9 @@ def processBDMV(mediaSrc, folderGenName, targetFolder):
     bdmvDir = os.path.join(mediaSrc, 'BDMV', 'STREAM')
     if ARGS.extract_bdmv and os.path.exists(bdmvDir):
         largestStreams = getLargestFiles(bdmvDir)
-        for idx, stream in enumerate(largestStreams):
-            tsname = os.path.basename(mediaSrc) + ' - '+ str(idx) + os.path.splitext(stream)[1]
+        for stream in largestStreams:
+            # fn, ext = os.path.splitext(stream)
+            tsname = os.path.basename(mediaSrc) + ' - '+ stream
             targetCopy(stream, os.path.join(targetFolder, folderGenName), tsname)
     else:
         if ARGS.extract_bdmv:
