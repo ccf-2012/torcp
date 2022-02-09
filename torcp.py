@@ -211,7 +211,7 @@ def getCategory(itemName):
     return cat, catutil.group, catutil.resolution
 
 def isCollections(folderName):
-    return re.search(r'\b(Pack$|Collection$|国语配音4K动画电影$|movies? collections?)', folderName, flags=re.I)
+    return re.search(r'\b(Pack$|合集|Collection$|国语配音4K动画电影$|movies? collections?)', folderName, flags=re.I)
 
 def fixSeasonName(seasonStr):
     if re.match(r'^Ep?\d+(-Ep?\d+)?$', seasonStr, flags=re.I) or not seasonStr:
