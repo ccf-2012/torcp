@@ -12,11 +12,11 @@ python3 torcp.py -h
 ```
 
 ```
-usage: torcp.py [-h] [-d HD_PATH] [--tv] [--movie] [--dryrun] [--single]
+usage: torcp.py [-h] [-d HD_PATH] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv] [--full-bdmv]
+                [--origin-name]
                 MEDIA_DIR
 
-torcp: a script hardlink media files and directories in Emby-happy naming and
-structs.
+torcp: a script hardlink media files and directories in Emby-happy naming and structs.
 
 positional arguments:
   MEDIA_DIR             The directory contains TVs and Movies to be copied.
@@ -29,6 +29,9 @@ optional arguments:
   --movie               specify the src directory is Movie.
   --dryrun              print message instead of real copy.
   --single, -s          parse and copy one single folder.
+  --extract-bdmv        extract largest file in BDMV dir.
+  --full-bdmv           copy full BDMV dir and iso files.
+  --origin-name         keep origin file name.
 ```
 ##  Examples:
 
@@ -46,6 +49,19 @@ python3 torcp.py /home/ccf2012/Downloads/RSSMovie/ --hd_path=/home/ccf2012/emby/
 ```sh
 python3 torcp.py /home/ccf2012/Downloads/权力的游戏.第1-8季.Game.Of.Thrones.S01-S08.1080p.Blu-Ray.AC3.x265.10bit-Yumi --hd_path=/home/ccf2012/emby/ -s --tv
 ```
+
+
+### BDMV option summary:
+1. default, skip all dir with `BDMV` inside and `.iso` file
+```sh
+python3 torcp.py /volume1/video/emby/test --hd_path=/volume1/video/emby/testdir
+```
+2. `--extract-bdmv` option, extract largest file(s) from BDMV dir, of movie/tv
+```sh
+python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir --extract-bdmv
+```
+3. `--full-bdmv` option, copy the full BDMV dir and `.iso` file 
+
 
 
 ## Acknowledgement 
@@ -175,3 +191,7 @@ python torcp.py  /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Vid
     └── [ 14G]  CIVILISATIONS_D3\ -\ 00004.m2ts
 
 ```
+
+## Update 2022.2.10 @dev
+* add `--full-bdmv` option: copy the full BDMV dir and `.iso` file 
+* add `--origin-name` option: keep the origin filename of `.mkv` and `.mp4`, both for movie and tv
