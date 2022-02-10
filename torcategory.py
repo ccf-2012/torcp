@@ -3,6 +3,8 @@ import os
 
 
 def cutExt(torName):
+    if not torName:
+        return ''
     tortup = os.path.splitext(torName)
     torext = tortup[1].lower()
     mvext = ['.mkv', '.ts', '.m2ts', '.vob', '.mpg', '.mp4', '.3gp', '.mov', '.tp', '.zip', '.pdf']
