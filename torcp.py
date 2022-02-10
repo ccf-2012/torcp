@@ -191,13 +191,14 @@ def getLargestFile(dirName):
 
 
 def getCategory(itemName):
+    catutil = GuessCategoryUtils()
+    cat, group = catutil.guessByName(itemName)
     if g_args.tv or g_args.movie:
         if g_args.tv:
             cat = 'TV'
         elif g_args.movie:
             cat = 'Movie'
     else:
-        cat, group = GuessCategoryUtils.guessByName(itemName)
         if cat == 'MovieWeb4K':
             cat = 'MovieWebdl'
     return cat
@@ -209,7 +210,7 @@ def fixSeasonName(seasonStr):
 
 def processOneDirItem(cpLocation, itemName):
     cat = getCategory(itemName)
-    parseTitle, parseYear, parseSeason, cntitle = parseMovieName(itemName)
+    parseTitle, parseYear, parseSeason, parseEpisode, cntitle = parseMovieName(itemName)
     if parseSeason and cat != 'TV':
         print('Category fixed: '+itemName)
         cat = 'TV'
