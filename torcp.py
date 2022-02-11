@@ -168,7 +168,7 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName):
         return
     if os.path.isdir(os.path.join(tvSourceFolder, 'BDMV')):
         # a BDMV dir in a TV folder, treat as Movie
-        processBDMV(tvSourceFolder, genFolder, 'BDMV_Movie')
+        processBDMV(tvSourceFolder, genFolder, 'MovieM2TS')
         return
 
     parseSeason, parseGroup = fixSeasonGroupWithFilename(tvSourceFolder, folderSeason, groupName)
@@ -285,7 +285,7 @@ def processBDMV(mediaSrc, folderGenName, catFolder):
 def processMovieDir(mediaSrc, folderCat, folderGenName):
     if os.path.isdir(os.path.join(mediaSrc, 'BDMV')):
         # break, process BDMV dir for this dir
-        processBDMV(mediaSrc, folderGenName, 'BDMV_Movie')
+        processBDMV(mediaSrc, folderGenName, 'MovieM2TS')
         return
 
     for movieItem in os.listdir(mediaSrc):
@@ -295,7 +295,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
         if (os.path.isdir(os.path.join(mediaSrc, movieItem))):
             # Dir in movie folder
             if os.path.isdir(os.path.join(mediaSrc, movieItem, 'BDMV')):
-                processBDMV(os.path.join(mediaSrc, movieItem), os.path.join(folderGenName, movieItem), 'BDMV_Movie')
+                processBDMV(os.path.join(mediaSrc, movieItem), os.path.join(folderGenName, movieItem), 'MovieM2TS')
             else:
                 print('\033[34mSKip dir in movie folder: [%s]\033[0m ' % movieItem)
             continue
@@ -304,7 +304,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
         if file_ext.lower() in ['.iso']:
             # TODO: aruba need iso when extract_bdmv
             if ARGS.full_bdmv or ARGS.extract_bdmv:
-                destCatFolderName = os.path.join('FULL_BDMV', folderGenName)
+                destCatFolderName = os.path.join('BDMVISO', folderGenName)
                 targetCopy(os.path.join(mediaSrc, movieItem), destCatFolderName)
             else:
                 print('\033[31mSKip iso file: [%s]\033[0m ' % movieItem)
@@ -381,7 +381,8 @@ def processOneDirItem(cpLocation, itemName):
         elif file_ext.lower() in ['.iso']:
             #  TODO: aruba need iso when extract_bdmv
             if ARGS.full_bdmv or ARGS.extract_bdmv:
-                targetCopy(mediaSrc, destCatFolderName)
+                bdmvFolder = os.path.join('BDMVISO', destFolderName)
+                targetCopy(mediaSrc, bdmvFolder)
             else:
                 print('\033[33mSkip .iso file:  %s \033[0m' % mediaSrc)
         else:
