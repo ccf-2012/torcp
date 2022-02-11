@@ -96,7 +96,7 @@ def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName):
     if os.path.isdir(os.path.join(tvSourceFullPath, 'BDMV')):
         # break, process BDMV dir for this dir
         bdmvTVFolder = os.path.join( tvFolder, seasonFolder)
-        processBDMV(tvSourceFullPath, bdmvTVFolder, 'BDMV_TV')
+        processBDMV(tvSourceFullPath, bdmvTVFolder, 'TV')
         return
 
     for tv2item in os.listdir(tvSourceFullPath):

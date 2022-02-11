@@ -51,7 +51,7 @@ python3 torcp.py /home/ccf2012/Downloads/权力的游戏.第1-8季.Game.Of.Thron
 ```
 
 
-## BDMV option:
+### BDMV option:
 1. default, skip all dir with `BDMV` inside and `.iso` file
 ```sh
 python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir
@@ -69,7 +69,8 @@ python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir --full-
 
 
 ## Acknowledgement 
-@NishinoKana @Esc @Hangsijing @Aruba
+Special thank to Aruba@hutongyouwu
+@NishinoKana @Esc @Hangsijing 
 
 
 ## Update 2022.2.5 @dev 
