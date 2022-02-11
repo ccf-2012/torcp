@@ -114,7 +114,8 @@ def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName):
                     newTVFileName = genTVSeasonEpisonGroup(tv2item, groupName)
                 targetCopy(tv2itemPath, seasonFolderFullPath, newTVFileName)
             elif file_ext.lower() in ['.iso']:
-                if ARGS.full_bdmv:
+                # TODO: aruba need iso when extract_bdmv
+                if ARGS.full_bdmv or ARGS.extract_bdmv:
                     targetCopy(tv2itemPath, seasonFolderFullPath)
 
 
@@ -265,8 +266,12 @@ def processBDMV(mediaSrc, folderGenName, catFolder):
             targetCopy(fullBdmvItem, destCatFolderName)
         return 
         
-    bdmvDir = os.path.join(mediaSrc, 'BDMV', 'STREAM')
-    if ARGS.extract_bdmv and os.path.exists(bdmvDir):
+    if ARGS.extract_bdmv:
+        bdmvDir = os.path.join(mediaSrc, 'BDMV', 'STREAM')
+        if not os.path.isdir(bdmvDir):
+            print('\033[31m BDMV/STREAM/ dir not found in   %s \033[0m' % mediaSrc)
+            return 
+
         largestStreams = getLargestFiles(bdmvDir)
         for stream in largestStreams:
             # fn, ext = os.path.splitext(stream)
@@ -274,10 +279,7 @@ def processBDMV(mediaSrc, folderGenName, catFolder):
             targetCopy(stream, os.path.join(
                 catFolder, folderGenName), tsname)
     else:
-        if ARGS.extract_bdmv:
-            print('\033[31mSkip ISO  %s \033[0m' % mediaSrc)
-        else:
-            print('\033[31mSkip BDMV/ISO  %s \033[0m' % mediaSrc)
+        print('\033[31mSkip BDMV/ISO  %s \033[0m' % mediaSrc)
 
 
 def processMovieDir(mediaSrc, folderCat, folderGenName):
@@ -294,7 +296,8 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
 
         filename, file_ext = os.path.splitext(movieItem)
         if file_ext.lower() in ['.iso']:
-            if ARGS.full_bdmv:
+            # TODO: aruba need iso when extract_bdmv
+            if ARGS.full_bdmv or ARGS.extract_bdmv:
                 destCatFolderName = os.path.join('FULL_BDMV', folderGenName)
                 targetCopy(mediaSrc, destCatFolderName)
             else:
@@ -369,7 +372,8 @@ def processOneDirItem(cpLocation, itemName):
                 print('\033[33mRemux?  %s \033[0m' % mediaSrc)
                 targetCopy(mediaSrc, destCatFolderName)
         elif file_ext.lower() in ['.iso']:
-            if ARGS.full_bdmv:
+            #  TODO: aruba need iso when extract_bdmv
+            if ARGS.full_bdmv or ARGS.extract_bdmv:
                 targetCopy(mediaSrc, destCatFolderName)
             else:
                 print('\033[33mSkip .iso file:  %s \033[0m' % mediaSrc)
