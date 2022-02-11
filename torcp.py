@@ -132,8 +132,11 @@ def genTVSeasonEpisonGroup(mediaFilename, groupName):
 def getMediaFile(filePath):
     types = ('*.mp4', '*.mkv')
     files_grabbed = []
+    curdir = os.getcwd()
+    os.chdir(filePath)
     for files in types:
-        files_grabbed.extend(glob.glob(os.path.join(filePath, files)))
+        files_grabbed.extend(glob.glob(files))
+    os.chdir(curdir)
     if files_grabbed:
         return os.path.basename(files_grabbed[0])
     else:
