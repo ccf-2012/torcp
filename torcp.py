@@ -385,7 +385,7 @@ def processOneDirItem(cpLocation, itemName):
         elif cat in ['MovieEncode', 'MovieWebdl']:
             processMovieDir(mediaSrc, cat, destFolderName)
         elif cat in ['MovieBDMV']:
-            processBDMV(mediaSrc, destFolderName, 'BDMV_Movie')
+            processMovieDir(mediaSrc, cat, destFolderName)
         elif cat in ['MV']:
             targetCopy(mediaSrc, cat)
         elif cat in ['eBook', 'Music', 'Audio', 'HDTV']:
