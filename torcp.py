@@ -290,8 +290,14 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
 
     for movieItem in os.listdir(mediaSrc):
         if uselessFile(movieItem):
+            print('\033[34mSKIP useless file: [%s]\033[0m ' % movieItem)
             continue
         if (os.path.isdir(os.path.join(mediaSrc, movieItem))):
+            # Dir in movie folder
+            if os.path.isdir(os.path.join(mediaSrc, movieItem, 'BDMV')):
+                processBDMV(os.path.join(mediaSrc, movieItem), os.path.join(folderGenName, movieItem), 'BDMV_Movie')
+            else:
+                print('\033[34mSKip dir in movie folder: [%s]\033[0m ' % movieItem)
             continue
 
         filename, file_ext = os.path.splitext(movieItem)
@@ -299,12 +305,13 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
             # TODO: aruba need iso when extract_bdmv
             if ARGS.full_bdmv or ARGS.extract_bdmv:
                 destCatFolderName = os.path.join('FULL_BDMV', folderGenName)
-                targetCopy(mediaSrc, destCatFolderName)
+                targetCopy(os.path.join(mediaSrc, movieItem), destCatFolderName)
             else:
                 print('\033[31mSKip iso file: [%s]\033[0m ' % movieItem)
             continue
 
         if file_ext.lower() not in ['.mkv', '.mp4']:
+            print('\033[34mSkip, process *.mkv & *.mp4 only: %s \033[0m' % movieItem)
             continue
 
         cat, group, resolution = getCategory(movieItem)
@@ -378,7 +385,7 @@ def processOneDirItem(cpLocation, itemName):
             else:
                 print('\033[33mSkip .iso file:  %s \033[0m' % mediaSrc)
         else:
-            print('\033[33mProcess *.mkv & *.mp4 only: %s \033[0m' % mediaSrc)
+            print('\033[34mSkip, process *.mkv & *.mp4 only: %s \033[0m' % mediaSrc)
     else:
         if cat == 'TV':
             copyTVFolderItems(mediaSrc, destFolderName, parseSeason, group)

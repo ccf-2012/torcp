@@ -37,35 +37,39 @@ optional arguments:
 
 * hardlink whole dir to a seperate dir, with guessed category:
 ```sh 
-python3 torcp.py /home/ccf2012/Downloads/  --hd_path=/home/ccf2012/emby/ 
+python3 torcp.py /home/ccf2012/Downloads/  -d /home/ccf2012/emby/ 
 ```
 
 * hardlink, specify ALL subdirs are Movie:
 ```sh
-python3 torcp.py /home/ccf2012/Downloads/RSSMovie/ --hd_path=/home/ccf2012/emby/ --movie
+python3 torcp.py /home/ccf2012/Downloads/RSSMovie/ -d /home/ccf2012/emby/ --movie
 ```
 
 * hardlink, specify one SINGLE dir is TV:
 ```sh
-python3 torcp.py /home/ccf2012/Downloads/权力的游戏.第1-8季.Game.Of.Thrones.S01-S08.1080p.Blu-Ray.AC3.x265.10bit-Yumi --hd_path=/home/ccf2012/emby/ -s --tv
+python3 torcp.py /home/ccf2012/Downloads/权力的游戏.第1-8季.Game.Of.Thrones.S01-S08.1080p.Blu-Ray.AC3.x265.10bit-Yumi -d /home/ccf2012/emby/ -s --tv
 ```
 
 
-### BDMV option summary:
+## BDMV option:
 1. default, skip all dir with `BDMV` inside and `.iso` file
 ```sh
-python3 torcp.py /volume1/video/emby/test --hd_path=/volume1/video/emby/testdir
+python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir
 ```
 2. `--extract-bdmv` option, extract largest file(s) from BDMV dir, of movie/tv
+> with `iso` files copy to sepereate dir
 ```sh
 python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir --extract-bdmv
 ```
 3. `--full-bdmv` option, copy the full BDMV dir and `.iso` file 
+```sh
+python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir --full-bdmv
+```
 
 
 
 ## Acknowledgement 
-@NishinoKana @Esc @Hangsijing
+@NishinoKana @Esc @Hangsijing @Aruba
 
 
 ## Update 2022.2.5 @dev 
