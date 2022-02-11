@@ -156,6 +156,7 @@ def test_parseTVName(test_input, e1, e2, e3, e4):
     ('Babka_Yozhka_i_drugiye_2008_BD', 'MovieBDMV', None),
     ('别有用心的单身女.Cunning.Single.Lady.S01E05.1080p.NF.WEB-DL.DDP2.0.x264-Ao.mkv', 'TV', 'Ao'),
     ('The.Ice.Age.Adventures.of.Buck.Wild.2022.2160p.DSNP.WEB-DL.DDP5.1.Atmos.DV.H.265-Lee@CHDWEB.mp4', 'MovieWeb4K', 'CHDWEB'),
+    ('我爱冒牌机器女友.I.Love.Fake.Robot.Girlfriends.2021.1080p.WEB-DL.H264.AAC-CHDWEB.mp4', 'MovieWebdl', 'CHDWEB'),
     # ('[AI-Raws] HELLO WORLD (BD HEVC 3840x2160 yuv444p10le Atmos／FLAC／FLAC[バリアフリー] 日本語字幕)[52F61BDB].mkv', 'MovieBDMV', None),
     # ('Sonata Arctica - Acoustic Adventures  - Volume One (2022)', 'Music', None),
     # ('Sara K.-No Cover-Chesky-0196', 'Music', None),

@@ -311,7 +311,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
             continue
 
         if file_ext.lower() not in ['.mkv', '.mp4']:
-            print('\033[34mSkip, process *.mkv & *.mp4 only: %s \033[0m' % movieItem)
+            print('\033[34mSkip : %s \033[0m' % movieItem)
             continue
 
         cat, group, resolution = getCategory(movieItem)
@@ -320,6 +320,17 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
         if parseSeason and (cat != 'TV'):
             print('Category fixed: '+movieItem)
             cat = 'TV'
+
+        
+        movieCatList = ['MovieEncode', 'MovieWebdl', 'MovieRemux']
+        if cat in movieCatList:
+            resultCat = cat
+        elif folderCat in movieCatList:
+            resultCat = folderCat
+        else:
+            # since it's a .mkv(mp4) file, no x264/5, not tv and no BDMV dir
+            print('\033[33mMaybe remux? : %s \033[0m' % movieItem)
+            cat = 'MovieRemux'
 
         destFolderName = genMediaFolderName(cat, parseTitle, parseYear,
                                             parseSeason)
@@ -334,7 +345,6 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
                 copyTVFolderItems(mediaSrc, folderGenName, parseSeason, group)
             return
 
-        cat = folderCat
         if ARGS.origin_name:
             newMovieName = os.path.basename(movieItem)
         else:
@@ -368,7 +378,7 @@ def processOneDirItem(cpLocation, itemName):
             if cat == 'TV':
                 print('\033[33mSingle Episode file?  %s \033[0m' % mediaSrc)
                 targetCopy(mediaSrc, destCatFolderName)
-            elif cat in ['MovieEncode', 'MovieWebdl']:
+            elif cat in ['MovieEncode', 'MovieWebdl',  'MovieRemux']:
                 if ARGS.origin_name:
                     newMovieName = os.path.basename(itemName)
                 else:
@@ -376,7 +386,7 @@ def processOneDirItem(cpLocation, itemName):
                         mediaSrc, parseTitle, parseYear, resolution, group)
                 targetCopy(mediaSrc, destCatFolderName, newMovieName)
             else:
-                print('\033[33mRemux?  %s \033[0m' % mediaSrc)
+                print('\033[33mSingle media file : [ %s ] %s \033[0m' % (cat, mediaSrc))
                 targetCopy(mediaSrc, destCatFolderName)
         elif file_ext.lower() in ['.iso']:
             #  TODO: aruba need iso when extract_bdmv
@@ -386,13 +396,14 @@ def processOneDirItem(cpLocation, itemName):
             else:
                 print('\033[33mSkip .iso file:  %s \033[0m' % mediaSrc)
         else:
-            print('\033[34mSkip, process *.mkv & *.mp4 only: %s \033[0m' % mediaSrc)
+            print('\033[34mSkip file:  %s \033[0m' % mediaSrc)
     else:
         if cat == 'TV':
             copyTVFolderItems(mediaSrc, destFolderName, parseSeason, group)
         elif cat in ['MovieEncode', 'MovieWebdl']:
             processMovieDir(mediaSrc, cat, destFolderName)
-        elif cat in ['MovieBDMV']:
+        # TODO: merge
+        elif cat in ['MovieBDMV', 'MovieRemux']:
             processMovieDir(mediaSrc, cat, destFolderName)
         elif cat in ['MV']:
             targetCopy(mediaSrc, cat)
@@ -402,7 +413,7 @@ def processOneDirItem(cpLocation, itemName):
             # if you don't want to skip these, comment up and uncomment below
             # targetCopy(mediaSrc, cat)
         else:
-            print('\033[33mWARN, treat as movie folder: [%s], %s\033[0m ' % (
+            print('\033[33mDir treat as movie folder: [ %s ], %s\033[0m ' % (
                 cat, mediaSrc))
             processMovieDir(mediaSrc, cat, destFolderName)
 
