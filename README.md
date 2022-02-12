@@ -58,7 +58,7 @@ python3 torcp.py /home/ccf2012/Downloads/权力的游戏.第1-8季.Game.Of.Thron
 ```sh
 python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir
 ```
-2. `--extract-bdmv` 参数，可能是 Emby 或 Kodi 用家的最爱，它将会从 `BDMV` 目录中挑出最大的几个 `.m2ts` 文件硬链出来，对于 movie/tv 都行。见[下面的例子](#-extract-bdmv-的例子)
+1. `--extract-bdmv` 参数，可能是 Emby 或 Kodi 用家的最爱，它将会从 `BDMV` 目录中挑出最大的几个 `.m2ts` 文件硬链出来，对于 movie/tv 都行。见[下面的例子](#--extract-bdmv-%E7%9A%84%E4%BE%8B%E5%AD%90)
 > with `iso` files copy to sepereate dir
 ```sh
 python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir --extract-bdmv
