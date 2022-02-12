@@ -205,7 +205,8 @@ def copyFiles(fromDir, toDir):
 
 def genMovieResGroup(mediaSrc, movieName, year, resolution, group):
     filename, file_ext = os.path.splitext(mediaSrc)
-    return movieName + ((' (' + year + ')') if year else '') + ' - ' + ((resolution + '_') if resolution else '') + (group if group else '') + file_ext
+    ch = ' - 'if  (resolution or group) else ''
+    return movieName + ((' (' + year + ')') if year else '') + ch + ((resolution + '_') if resolution else '') + (group if group else '') + file_ext
 
 
 def getLargestFiles(dirName):
@@ -377,10 +378,14 @@ def processOneDirItem(cpLocation, itemName):
         if file_ext.lower() in ['.mkv', '.mp4']:
             if cat == 'TV':
                 print('\033[33mSingle Episode file?  %s \033[0m' % mediaSrc)
-                targetCopy(mediaSrc, destCatFolderName)
+                if ARGS.origin_name:
+                    newTVFileName = itemName
+                else:
+                    newTVFileName = genTVSeasonEpisonGroup(itemName, group)
+                targetCopy(mediaSrc, destCatFolderName, newTVFileName)
             elif cat in ['MovieEncode', 'MovieWebdl',  'MovieRemux']:
                 if ARGS.origin_name:
-                    newMovieName = os.path.basename(itemName)
+                    newMovieName = itemName
                 else:
                     newMovieName = genMovieResGroup(
                         mediaSrc, parseTitle, parseYear, resolution, group)
