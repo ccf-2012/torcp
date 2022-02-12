@@ -205,8 +205,9 @@ def copyFiles(fromDir, toDir):
 
 def genMovieResGroup(mediaSrc, movieName, year, resolution, group):
     filename, file_ext = os.path.splitext(mediaSrc)
-    ch = ' - 'if  (resolution or group) else ''
-    return movieName + ((' (' + year + ')') if year else '') + ch + ((resolution + '_') if resolution else '') + (group if group else '') + file_ext
+    ch1 = ' - 'if  (resolution or group) else ''
+    ch2 = '_'if  (resolution and group) else ''
+    return movieName + ((' (' + year + ')') if year else '') + ch1 + (resolution if resolution else '') + ch2 + (group if group else '') + file_ext
 
 
 def getLargestFiles(dirName):
