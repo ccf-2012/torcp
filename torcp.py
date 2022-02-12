@@ -128,7 +128,7 @@ def genTVSeasonEpisonGroup(mediaFilename, groupName):
         mediaFilename)
 
     filename, file_ext = os.path.splitext(mediaFilename)
-    return tvTitle + ' ' + (tvSeason if tvSeason else '') + (tvEpisode if tvEpisode else '') + ((' - '+groupName) if groupName else '') + file_ext
+    return tvTitle + ' ' + (tvSeason.upper() if tvSeason else '') + (tvEpisode.upper() if tvEpisode else '') + ((' - '+groupName) if groupName else '') + file_ext
 
 def getMediaFile(filePath):
     types = ('*.mp4', '*.mkv')
@@ -257,7 +257,7 @@ def fixSeasonName(seasonStr):
     if re.match(r'^Ep?\d+(-Ep?\d+)?$', seasonStr, flags=re.I) or not seasonStr:
         return 'S01'
     else:
-        return seasonStr
+        return seasonStr.upper()
 
 
 def processBDMV(mediaSrc, folderGenName, catFolder):
