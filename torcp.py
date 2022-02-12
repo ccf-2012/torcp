@@ -383,7 +383,8 @@ def processOneDirItem(cpLocation, itemName):
                     newTVFileName = itemName
                 else:
                     newTVFileName = genTVSeasonEpisonGroup(itemName, group)
-                targetCopy(mediaSrc, destCatFolderName, newTVFileName)
+                seasonFolderFullPath = os.path.join('TV', destFolderName, parseSeason)
+                targetCopy(mediaSrc, seasonFolderFullPath, newTVFileName)
             elif cat in ['MovieEncode', 'MovieWebdl',  'MovieRemux']:
                 if ARGS.origin_name:
                     newMovieName = itemName
