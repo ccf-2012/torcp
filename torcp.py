@@ -390,6 +390,10 @@ def processOneDirItem(cpLocation, itemName):
                     newMovieName = genMovieResGroup(
                         mediaSrc, parseTitle, parseYear, resolution, group)
                 targetCopy(mediaSrc, destCatFolderName, newMovieName)
+            elif cat in ['MovieBDMV']:
+                # since it's a .mkv(mp4) file, no x264/5, not tv and no BDMV dir
+                print('\033[33mMaybe remux? : %s \033[0m' % itemName)
+                targetCopy(mediaSrc, os.path.join('MovieRemux', destFolderName))
             else:
                 print('\033[33mSingle media file : [ %s ] %s \033[0m' % (cat, mediaSrc))
                 targetCopy(mediaSrc, destCatFolderName)
