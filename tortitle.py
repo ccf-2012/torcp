@@ -1,5 +1,6 @@
 from distutils.spawn import spawn
 import re
+from tkinter import Y
 from torcategory import cutExt
 
 
@@ -28,6 +29,11 @@ def getIndexItem(items, index):
     else:
         return ''
 
+def is0Dayname(itemstr):
+    # CoComelon.S03.1080p.NF.WEB-DL.DDP2.0.H.264-NPMS
+    m = re.match(r'^\w+.*\b(BluRay|Blu-?ray|720p|1080[pi]|2160p|576i|WEB-DL|\.DVD\.|WEBRip|HDTV)\b.*', itemstr, flags=re.A | re.I)
+    return m
+        
 
 def getNoBracketedStr(torName, items):
     ss = torName
@@ -42,6 +48,10 @@ def getNoBracketedStr(torName, items):
 
 def parseJpAniName(torName):
     items = re.findall(r'\[([^]]*)\]', torName)
+    for s in items:
+        if is0Dayname(s):
+            return parseMovieName(s)
+
     if len(items) < 2:
         return parseMovieName2(torName)
 
@@ -224,6 +234,11 @@ def parseMovieName2(torName):
 
     sstr = re.sub(r'\W?(IMAX|Extended Cut)\s*$', '', sstr, flags=re.I)
 
+    sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d(HD)?|[A-Z]{1,5}TV|CC_)\W*',
+                  '',
+                  sstr,
+                  flags=re.I)
+
     if sstr[-1] in ['(', '[', '{']:
         sstr = sstr[:-1]
 
@@ -231,20 +246,22 @@ def parseMovieName2(torName):
     for dchar in dilimers:
         sstr = sstr.replace(dchar, ' ')
 
-    sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d(HD)?|[A-Z]{1,5}TV)\W*',
-                  '',
-                  sstr,
-                  flags=re.I)
-
     seasonstr, seasonspan, episodestr = parseSeason(sstr)
     yearstr, yearspan = parseYear(sstr)
 
-    t = max(seasonspan[0], yearspan[0])
-    if t > 0:
-        sstr = sstr[:t]
+    if seasonspan[0] > yearspan[0]:
+        syspan = seasonspan
+        systr = seasonstr
+    else:
+        syspan = yearspan
+        systr = yearstr
+    if syspan[0] > 0:
+        spanstrs = sstr.split(systr)
+        # sstr = spanstrs[1] if len(spanstrs[1]) > len(spanstrs[0]) else spanstrs[0]
+        sstr = sstr[:syspan[0]]
 
-    sstr = cutspan(sstr, seasonspan[0], seasonspan[1])
-    sstr = cutspan(sstr, yearspan[0], yearspan[1])
+        sstr = cutspan(sstr, seasonspan[0], seasonspan[1])
+        sstr = cutspan(sstr, yearspan[0], yearspan[1])
     # if seasonstr:
     #     sstr = re.sub(origin_seasonstr+r'.*$', '', sstr)
     sstr = re.sub(r'\b(剧集|全\d集|\d集全)\b', '', sstr, flags=re.I)
