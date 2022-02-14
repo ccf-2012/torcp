@@ -250,7 +250,7 @@ def getCategory(itemName):
 
 
 def isCollections(folderName):
-    return re.search(r'\b(Pack$|合集|Collection$|国语配音4K动画电影$|movies? collections?)', folderName, flags=re.I)
+    return re.search(r'\b(Pack$|合集|Collections?|国语配音4K动画电影$)', folderName, flags=re.I)
 
 
 def fixSeasonName(seasonStr):
