@@ -50,7 +50,7 @@ def parseJpAniName(torName):
     items = re.findall(r'\[([^]]*)\]', torName)
     for s in items:
         if is0Dayname(s):
-            return parseMovieName(s)
+            return parseMovieName2(s)
 
     if len(items) < 2:
         return parseMovieName2(torName)
