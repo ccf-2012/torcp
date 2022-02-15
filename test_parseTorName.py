@@ -120,6 +120,7 @@ from torcategory import GuessCategoryUtils
     ('张国荣 - H₂O 1984 480i MPEG AC3-PTerMV.VOB', '张国荣 H₂O', '1984', '', ''),
     ('WINNER - EVERYD4Y (FLAC)', 'WINNER EVERYD4Y', '', '', ''),
     ('Dee-Mack-Doin_It_My_Way-CD-FLAC-1995-AUDiOFiLE', 'Dee Mack Doin It My Way', '1995', '', ''),
+    ('Andrea Bocelli-Super Hits-2CD-WEB-2004-playMUSIC', 'Andrea Bocelli Super Hits', '2004', '', ''),
 ])
 def test_parseTVName(test_input, e1, e2, e3, e4):
     a1, a2, a3, a4, a5 = tortitle.parseMovieName(test_input)
