@@ -76,6 +76,7 @@ def parseJpAniName(torName):
 
 def getUnbracketedTitle(strLeft, items):
     yearstr, titlestr = getYearStr(strLeft)
+    titlestr = bracketToBlank(titlestr)
 
     return cutAKA(titlestr), yearstr, '', '', ''
 
@@ -87,6 +88,7 @@ def get1SectionJpAniName(items):
         yearstr, titlestr = getYearStr(titlestr)
     else:
         titlestr = items[0]
+    titlestr = bracketToBlank(titlestr)
 
     return cutAKA(titlestr), yearstr, '', '', ''
 
@@ -129,7 +131,15 @@ def get3SectionJpAniName(items, titleIndex):
     seasonstr = ''
     episodestr = ''
 
+    titlestr = bracketToBlank(titlestr)
+
     return cutAKA(titlestr), yearstr, seasonstr, episodestr, cntitle
+
+def bracketToBlank(sstr):
+    dilimers = ['(', ')', '-']
+    for dchar in dilimers:
+        sstr = sstr.replace(dchar, ' ')
+    return re.sub(r' +', ' ', sstr).strip()
 
 
 def parseMovieName(torName):
@@ -234,7 +244,7 @@ def parseMovieName2(torName):
 
     sstr = re.sub(r'\W?(IMAX|Extended Cut)\s*$', '', sstr, flags=re.I)
 
-    sstr = re.sub(r'(\b[\s\.-]\d+CD[\.-]FLAC|[\s\.-]\[FLAC\]).*$', '', sstr, flags=re.I)
+    sstr = re.sub(r'([\s\.-](\d+)?CD[\.-]FLAC|[\s\.-][\[\(\{]FLAC[\]\)\}]).*$', '', sstr, flags=re.I)
 
     sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d(HD)?|[A-Z]{1,5}TV)\W*',
                   '',
@@ -270,7 +280,7 @@ def parseMovieName2(torName):
 
     sstr = re.sub(r'\b(剧集|全\d集|\d集全)\b', '', sstr, flags=re.I)
 
-    titlestr = re.sub(r' +', ' ', sstr).strip()
+    titlestr = bracketToBlank(sstr)
 
     # if titlestr.endswith(')'):
     #     titlestr = re.sub(r'\(.*$', '', sstr).strip()
