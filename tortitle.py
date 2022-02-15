@@ -1,6 +1,5 @@
 from distutils.spawn import spawn
 import re
-from tkinter import Y
 from torcategory import cutExt
 
 
@@ -283,7 +282,8 @@ def parseMovieName2(torName):
     #               titlestr)
     if m:
         cntitle = m.group(0)
-        titlestr = titlestr.replace(cntitle, '')
+        if len(titlestr)-len(cntitle) > 3:
+            titlestr = titlestr.replace(cntitle, '')
 
 
     return cutAKA(titlestr), yearstr, seasonstr, episodestr, cntitle

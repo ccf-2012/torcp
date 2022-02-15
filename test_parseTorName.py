@@ -117,6 +117,7 @@ from torcategory import GuessCategoryUtils
     ('[2021.05.28] にじさんじ - PALETTE 003 - Virtual Strike (フル・シングル) [FLAC]', 'にじさんじ - PALETTE 003 - Virtual Strike (フル・シングル)', '', '', ''),
     ('Peggy_Lee-The_Legendary_Peggy_Lee-3CD-FLAC-1999-FLACME', 'Peggy Lee-The Legendary Peggy Lee', '1999', '', ''),
     ('Bob Dylan - Bringing It All Back Home (1965) [FLAC] {2013 MFSL}', 'Bob Dylan - Bringing It All Back Home', '1965', '', ''),
+    ('张国荣 - H₂O 1984 480i MPEG AC3-PTerMV.VOB', '张国荣 - H₂O', '1984', '', ''),
 ])
 def test_parseTVName(test_input, e1, e2, e3, e4):
     a1, a2, a3, a4, a5 = tortitle.parseMovieName(test_input)
