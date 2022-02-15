@@ -19,8 +19,8 @@ def notTitle(str):
 def cutAKA(titlestr):
     m = re.search(r'\s(/|AKA)\s', titlestr, re.I)
     if m:
-        titlestr = titlestr.split(m.group(0))[0].strip()
-    return titlestr
+        titlestr = titlestr.split(m.group(0))[0]
+    return titlestr.strip()
 
 
 def getIndexItem(items, index):
@@ -203,7 +203,7 @@ def parseYear(sstr):
     yearstr = ''
     yearspan = [-1, -1]
     m2 = re.search(
-        r'\b((19\d{2}\b|20\d{2})-?(19\d{2}|20\d{2})?)\b(?!.*\b\d{4}\b.*)',
+        r'\b((19\d{2}\b|20\d{2})(-19\d{2}|-20\d{2})?)\b(?!.*\b\d{4}\b.*)',
         sstr,
         flags=re.A | re.I)
     if m2:
@@ -218,7 +218,7 @@ def parseYear(sstr):
     return yearstr, yearspan
 
 def cutspan(sstr, ifrom, ito):
-    if (ifrom > 0) and (len(sstr) > ito):
+    if (ifrom >= 0) and (len(sstr) > ito):
         sstr = sstr[0 : ifrom: ] + sstr[ito + 1 : :]
     return sstr
 
@@ -235,11 +235,14 @@ def parseMovieName2(torName):
 
     sstr = re.sub(r'\W?(IMAX|Extended Cut)\s*$', '', sstr, flags=re.I)
 
-    sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d(HD)?|[A-Z]{1,5}TV|CC_?)\W*',
+    sstr = re.sub(r'(\b[\s\.-]\d+CD[\.-]FLAC|[\s\.-]\[FLAC\]).*$', '', sstr, flags=re.I)
+
+    sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d(HD)?|[A-Z]{1,5}TV)\W*',
                   '',
                   sstr,
                   flags=re.I)
 
+    sstr = re.sub(r'^\W?CC_?\b', '', sstr, flags=re.I)
     if sstr[-1] in ['(', '[', '{']:
         sstr = sstr[:-1]
 
@@ -249,6 +252,8 @@ def parseMovieName2(torName):
 
     seasonstr, seasonspan, episodestr = parseSeason(sstr)
     yearstr, yearspan = parseYear(sstr)
+    if not yearstr:
+        yearstr, yearspan = parseYear(torName)
 
     if seasonspan[0] > yearspan[0]:
         syspan = seasonspan
@@ -256,34 +261,29 @@ def parseMovieName2(torName):
     else:
         syspan = yearspan
         systr = yearstr
-    if syspan[0] > 0:
+    if syspan and syspan[0] > 1:
         spanstrs = sstr.split(systr)
         # sstr = spanstrs[1] if len(spanstrs[1]) > len(spanstrs[0]) else spanstrs[0]
         sstr = sstr[:syspan[0]]
 
-        sstr = cutspan(sstr, seasonspan[0], seasonspan[1])
-        sstr = cutspan(sstr, yearspan[0], yearspan[1])
-    # if seasonstr:
-    #     sstr = re.sub(origin_seasonstr+r'.*$', '', sstr)
+    sstr = cutspan(sstr, seasonspan[0], seasonspan[1])
+    sstr = cutspan(sstr, yearspan[0], yearspan[1])
+
     sstr = re.sub(r'\b(剧集|全\d集|\d集全)\b', '', sstr, flags=re.I)
 
     titlestr = re.sub(r' +', ' ', sstr).strip()
 
-    if titlestr.endswith(')'):
-        titlestr = re.sub(r'\(.*$', '', sstr).strip()
+    # if titlestr.endswith(')'):
+    #     titlestr = re.sub(r'\(.*$', '', sstr).strip()
 
     cntitle = titlestr
-    m = re.search(
-        r'^.*[^a-zA-Z_\- &0-9](S\d+|\s|\.|\d|-)*\b(?=[A-Z])',
-        # m = re.search(r'^.*[^\x00-\x7F](S\d+|\s|\.|\d|-)*\b(?=[A-Z])',
-        titlestr,
-        flags=re.A)
+    m = re.search(r'^.*[^\x00-\x7F](S\d+|\s|\.|\d|-|\))*\b(?=[A-Z])', titlestr, flags=re.A)
+    # m = re.search( r'^.*[^a-zA-Z_\- &0-9](S\d+|\s|\.|\d|-)*\b(?=[A-Z])', titlestr, flags=re.A)
     # m = re.search(r'^.*[\u4e00-\u9fa5\u3041-\u30fc](S\d+| |\.|\d|-)*(?=[A-Z])',
     #               titlestr)
     if m:
         cntitle = m.group(0)
         titlestr = titlestr.replace(cntitle, '')
-    # if titlestr.endswith(' JP'):
-    #     titlestr = titlestr.replace(' JP', '')
+
 
     return cutAKA(titlestr), yearstr, seasonstr, episodestr, cntitle
