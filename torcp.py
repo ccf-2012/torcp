@@ -195,7 +195,7 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName):
             copyTVSeasonItems(tvitemPath, genFolder, seasonFolder, parseGroup)
         else:
             filename, file_ext = os.path.splitext(tvitemPath)
-            if isMediaFileType(tvitemPath):
+            if isMediaFileType(file_ext):
                 if ARGS.origin_name:
                     newTVFileName = os.path.basename(tvitemPath)
                 else:
@@ -332,7 +332,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
                 print('\033[31mSKip iso file: [%s]\033[0m ' % movieItem)
             continue
 
-        if not isMediaFileType(movieItem):
+        if not isMediaFileType(file_ext):
             print('\033[34mSkip : %s \033[0m' % movieItem)
             continue
 
@@ -391,7 +391,7 @@ def processOneDirItem(cpLocation, itemName):
 
     if os.path.isfile(mediaSrc):
         filename, file_ext = os.path.splitext(itemName)
-        if isMediaFileType(itemName):
+        if isMediaFileType(file_ext):
             if cat == 'TV':
                 print('\033[33mSingle Episode file?  %s \033[0m' % mediaSrc)
                 if ARGS.origin_name:
