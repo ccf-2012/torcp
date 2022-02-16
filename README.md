@@ -13,11 +13,12 @@ python3 torcp.py -h
 ```
 
 ```
-usage: torcp.py [-h] [-d HD_PATH] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv] [--full-bdmv]
-                [--origin-name]
+usage: torcp.py [-h] [-d HD_PATH] [-e KEEP_EXT] [--tv] [--movie] [--dryrun]
+                [--single] [--extract-bdmv] [--full-bdmv] [--origin-name]
                 MEDIA_DIR
 
-torcp: a script hardlink media files and directories in Emby-happy naming and structs.
+torcp: a script hardlink media files and directories in Emby-happy naming and
+structs.
 
 positional arguments:
   MEDIA_DIR             The directory contains TVs and Movies to be copied.
@@ -26,6 +27,8 @@ optional arguments:
   -h, --help            show this help message and exit
   -d HD_PATH, --hd_path HD_PATH
                         the dest path to create Hard Link.
+  -e KEEP_EXT, --keep-ext KEEP_EXT
+                        keep files with these extention('srt,ass').
   --tv                  specify the src directory is TV.
   --movie               specify the src directory is Movie.
   --dryrun              print message instead of real copy.
@@ -162,4 +165,4 @@ python torcp.py  /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Vid
 
 ## Acknowledgement 
  * @Aruba  
- * @NishinoKana @Esc @Hangsijing 
+ * @NishinoKana @Esc @Hangsijing @Inu
