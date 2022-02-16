@@ -93,7 +93,7 @@ from torcategory import GuessCategoryUtils
     ('[BDMV][Bokutachi no Remake][Vol.01-02]', 'Bokutachi no Remake', '', '', ''),
     ('[吸血鬼同盟][Dance In The Vampire Bund][ダンスインザヴァンパイアバンド][BDMV][1080p][DISC×2][GER]', 'Dance In The Vampire Bund', '', '', ''),
     ('1917 2019 V2 ULTRAHD BluRay 2160p HEVC Atmos TrueHD7.1-sGnb@CHDBits', '1917', '2019', '', ''),
-    ('[和楽器バンド (Wagakki Band) – TOKYO SINGING [初回限定映像盤 2Blu-ray]][BDMV][1080P][MPEG-4 AVC / LPCM]', '和楽器バンド Wagakki Band – TOKYO SINGING', '', '', ''),
+    ('[和楽器バンド (Wagakki Band) – TOKYO SINGING [初回限定映像盤 2Blu-ray]][BDMV][1080P][MPEG-4 AVC / LPCM]', '和楽器バンド Wagakki Band TOKYO SINGING', '', '', ''),
     ('[酷爱电影的庞波小姐][Eiga Daisuki Pompo-san][映画大好きポンポさん][BDRip][1920x1040][Movie][x264 Hi10P TrueHD MKV][TTGA]', 'Eiga Daisuki Pompo san', '', '', ''),
     ('[柳林风声][The Wind in the Willows][BDMV][1080p][MOVIE][AVC LPCM][UK]', 'The Wind in the Willows', '', '', ''),
     ('[BanG Dream! Episode of Roselia][劇場版 BanG Dream! Episode of Roselia][BDRip][1920x1080][Movie 01-02 Fin+SP][H264 FLAC DTS-HDMA MKV][自壓]', 'BanG Dream! Episode of Roselia', '', '', ''),
@@ -136,7 +136,19 @@ from torcategory import GuessCategoryUtils
     ('A Raisin in the Sun (1961) NTSC DVD9+DVD5', 'A Raisin in the Sun', '1961', '', ''),
     ('Little Nikita [1988] by Richard Benjamin [R2]', 'Little Nikita', '1988', '', ''),
     ('1991.2018.BluRay.Remux.1080p.AVC.DTS-HD.MA.5.1-HDH', '1991', '2018', '', ''),
-
+    ('[备长炭][Binchou-tan][びんちょうタン][DVDISO][720x480][Vol.1-Vol.3 Fin][R2J]', 'Binchou tan', '', '', ''),
+    ('[龙珠Z剧场版 01-13][Dragonball Z – The Movies –][ドラゴンボールZ 劇場版][BDMV][1080p][BD-BOX 1-3 Disc*6 Fin][MPEG-4 AVC][GER][iFPD]', 'Dragonball Z The Movies', '', '', ''),
+    ('[EAC][合集][菅野洋子作曲专辑合集][Vol.5][17张]', '菅野洋子作曲专辑合集', '', '', ''),
+    ('[To LOVEる][To LOVERu][HDTVrip][1280x720][01-26FIN][MKV][澄空学园字幕组内嵌]', 'To LOVERu', '', '', ''),
+    ('Ikumi Ogasawara - Tears Of Joy (2019) [DSF] DSD512', 'Ikumi Ogasawara Tears Of Joy', '2019', '', ''),
+    ('VA-The_Best_80s_Album_In_The_World_Ever-3CD-FLAC-2020-ERP', 'VA The Best 80s Album In The World Ever', '2020', '', ''),
+    ('Chihayafuru Part 3 2018 JPN Blu-ray 1080p AVC DTS-HD MA 5.1-UserExperience-Raws', 'Chihayafuru Part 3', '2018', '', ''),
+    ('[Hi-Res] Evan Call - VIOLET EVERGARDEN_Echo Through Eternity [FLAC 96kHz-24bit]', 'Evan Call VIOLET EVERGARDEN Echo Through Eternity', '', '', ''),
+    ('10000 Chopin, Liszt, Debussy Piano Peaces (Miyuji Kaneko)', '10000 Chopin Liszt Debussy Piano Peaces Miyuji Kaneko', '', '', ''),
+    ('2004-原来我爱你那么多 新歌+精选 2CD[引进版][WAV]', '原来我爱你那么多 新歌 精选', '2004', '', ''),
+    ('滅火器 (Fire EX.) - On Fire Day 2020 - Fire Next 新篇章：滅火器20 週年演唱會 (2021)', 'Fire EX On Fire Day 2020 Fire Next 新篇章：滅火器20 週年演唱會', '2021', '', ''),
+    # ('Grateful Dead - Listen to the River：St. Louis \'71 \'72 \'73 (Live) (2021) (24-192)', 'Grateful Dead - Listen to the River：St. Louis', '2021', '', ''),
+    # ('32.迪卡唱片.-.《极致：勃拉姆斯选集》.(5CDs.Box-set)', '32 迪卡唱片 《极致：勃拉姆斯选集》', '', '', ''),
 ])
 def test_parseTVName(test_input, e1, e2, e3, e4):
     a1, a2, a3, a4, a5 = tortitle.parseMovieName(test_input)
