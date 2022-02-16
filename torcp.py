@@ -93,7 +93,7 @@ def genMediaFolderName(cat, title, year, season):
 
 
 def isMediaFileType(file_ext):
-    return file_ext.lower() in ['.mkv', '.mp4']
+    return file_ext.lower() in KEEPEXTS
 
 
 def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName):
@@ -448,6 +448,19 @@ def processOneDirItem(cpLocation, itemName):
             processMovieDir(mediaSrc, cat, destFolderName)
 
 
+def makeKeepExts():
+    global KEEPEXTS = ['.mkv', '.mp4']
+    if ARGS.keep_ext:
+        argExts = ARGS.keep_ext.split(',')
+        for ext in argExts:
+            ext = ext.strip()
+            if ext:
+                if ext[0] == '.':
+                    KEEPEXTS.append(ext)
+                else:
+                    KEEPEXTS.append('.'+ext)
+
+
 def loadArgs():
     parser = argparse.ArgumentParser(
         description=
@@ -459,6 +472,9 @@ def loadArgs():
     parser.add_argument('-d',
                         '--hd_path',
                         help='the dest path to create Hard Link.')
+    parser.add_argument('-e',
+                        '--keep-ext',
+                        help='keep files with these extention(\'srt,ass\').')
     parser.add_argument('--tv',
                         action='store_true',
                         help='specify the src directory is TV.')
@@ -484,7 +500,7 @@ def loadArgs():
 
     global ARGS
     ARGS = parser.parse_args()
-
+    makeKeepExts()
 
 def main():
     loadArgs()
