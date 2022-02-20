@@ -148,6 +148,11 @@ def bracketToBlank(sstr):
         sstr = sstr.replace(dchar, ' ')
     return re.sub(r' +', ' ', sstr).strip()
 
+def delimerToBlank(sstr):
+    dilimers = ['[', ']', '.', '{', '}', '_', ',']
+    for dchar in dilimers:
+        sstr = sstr.replace(dchar, ' ')
+    return sstr
 
 def parseMovieName(torName):
     if torName.startswith('[') and torName.endswith('SP'):
@@ -242,6 +247,8 @@ def cutspan(sstr, ifrom, ito):
 def parse0DayMovieName(torName):
     sstr = cutExt(torName)
 
+    failsafeTitle = sstr
+
     sstr = re.sub(
         r'\b((UHD)?\s+BluRay|Blu-?ray|720p|1080[pi]|2160p|576i|WEB-DL|\.DVD\.|WEBRip|HDTV|Director(\'s)?[ .]Cut|REMASTERED|LIMITED|Complete(?=[. -]\d+)|SUBBED|TV Series).*$',
         '',
@@ -263,9 +270,9 @@ def parse0DayMovieName(torName):
     if sstr and sstr[-1] in ['(', '[', '{']:
         sstr = sstr[:-1]
 
-    dilimers = ['[', ']', '.', '{', '}', '_', ',']
-    for dchar in dilimers:
-        sstr = sstr.replace(dchar, ' ')
+    sstr = delimerToBlank(sstr)
+    if sstr:
+        failsafeTitle = sstr
 
     seasonstr, seasonspan, episodestr = parseSeason(sstr)
     yearstr, yearspan = parseYear(sstr)
@@ -312,5 +319,8 @@ def parse0DayMovieName(torName):
                 sstr = sstr.replace(cntitle, '')
 
     titlestr = bracketToBlank(sstr)
+    titlestr = cutAKA(titlestr)
+    if len(titlestr) == 0:
+        titlestr = bracketToBlank(failsafeTitle)
 
-    return cutAKA(titlestr), yearstr, seasonstr, episodestr, cntitle
+    return titlestr, yearstr, seasonstr, episodestr, cntitle
