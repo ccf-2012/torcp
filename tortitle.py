@@ -10,7 +10,7 @@ def containsCJK(str):
     return re.search(r'[\u4e00-\u9fa5\u3041-\u30fc]', str)
 
 def containdCJKKeyword(str):
-    return re.search(r'(迪士尼)', str)
+    return re.search(r'^(.迪士尼\b)', str)
 
 def notTitle(str):
     return re.search(r'^(BDMV|1080[pi]|MOVIE|DISC|Vol)', str, re.A | re.I)
@@ -109,37 +109,6 @@ def parseJpAniName(torName):
     titlestr = bracketToBlank(titlestr)
 
     return cutAKAJP(titlestr), yearstr, '', '', jptitle
-
-
-
-# def get3SectionJpAniName(items, titleIndex):
-#     prevstr = getIndexItem(items, titleIndex - 1)
-#     if prevstr and containsCJK(prevstr):
-#         cntitle = prevstr
-#     else:
-#         cntitle = ''
-
-#     titlestr = getIndexItem(items, titleIndex)
-
-#     nextstr = getIndexItem(items, titleIndex + 1)
-#     if nextstr and containsCJK(nextstr):
-#         jptitle = nextstr
-#         jptitleIndex = titleIndex + 1
-#     else:
-#         jptitle = ''
-#         jptitleIndex = titleIndex
-
-#     nextstr2 = getIndexItem(items, jptitleIndex + 1)
-#     if re.search(r'\b((19\d{2}\b|20\d{2})-?(19\d{2}|20\d{2})?)\b', nextstr2):
-#         yearstr = nextstr2
-#     else:
-#         yearstr, titlestr = getYearStr(titlestr)
-#     seasonstr = ''
-#     episodestr = ''
-
-#     titlestr = bracketToBlank(titlestr)
-
-#     return cutAKA(titlestr), yearstr, seasonstr, episodestr, cntitle
 
 
 def bracketToBlank(sstr):
