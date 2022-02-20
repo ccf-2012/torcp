@@ -267,8 +267,6 @@ def parse0DayMovieName(torName):
 
 
     sstr = re.sub(r'^\W?CC_?\b', '', sstr, flags=re.I)
-    if sstr and sstr[-1] in ['(', '[', '{']:
-        sstr = sstr[:-1]
 
     sstr = delimerToBlank(sstr)
     if sstr:
@@ -302,6 +300,8 @@ def parse0DayMovieName(torName):
 
     sstr = re.sub(r'\b(剧集|全\d集|\d集全|BD\d*)$', '', sstr, flags=re.I)
 
+    if sstr and sstr[-1] in ['(', '[', '{', '（', '【']:
+        sstr = sstr[:-1]
 
     # if titlestr.endswith(')'):
     #     titlestr = re.sub(r'\(.*$', '', sstr).strip()
