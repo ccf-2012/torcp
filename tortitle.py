@@ -9,6 +9,8 @@ def isFullAscii(str):
 def containsCJK(str):
     return re.search(r'[\u4e00-\u9fa5\u3041-\u30fc]', str)
 
+def containdCJKKeyword(str):
+    return re.search(r'(迪士尼)', str)
 
 def notTitle(str):
     return re.search(r'^(BDMV|1080[pi]|MOVIE|DISC|Vol)', str, re.A | re.I)
@@ -277,15 +279,21 @@ def parse0DayMovieName(torName):
     else:
         syspan = yearspan
         systr = yearstr
-    if syspan and syspan[0] > 1:
+
+    skipcut = False
+    if syspan and syspan[0] > 1 :
         spanstrs = sstr.split(systr)
-        # sstr = spanstrs[1] if len(spanstrs[1]) > len(spanstrs[0]) else spanstrs[0]
-        sstr = sstr[:syspan[0]]
+        if containdCJKKeyword(sstr[:syspan[0]]):
+            sstr = sstr[syspan[1]:]
+            skipcut = True
+        else:
+            sstr = sstr[:syspan[0]]
 
-    sstr = cutspan(sstr, seasonspan[0], seasonspan[1])
-    sstr = cutspan(sstr, yearspan[0], yearspan[1])
+    if not skipcut:
+        sstr = cutspan(sstr, seasonspan[0], seasonspan[1])
+        sstr = cutspan(sstr, yearspan[0], yearspan[1])
 
-    sstr = re.sub(r'\b(剧集|全\d集|\d集全)\b', '', sstr, flags=re.I)
+    sstr = re.sub(r'\b(剧集|全\d集|\d集全|BD\d*)$', '', sstr, flags=re.I)
 
 
     # if titlestr.endswith(')'):

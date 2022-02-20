@@ -151,6 +151,7 @@ from torcategory import GuessCategoryUtils
     ('Twice - #TWICE (CD-FLAC)', 'Twice #TWICE', '', '', ''),
     ('风潮唱片-《马修.连恩系列-驯鹿宣言》(Caribou Commons)专辑[APE整轨]', '风潮唱片 《马修 连恩系列 驯鹿宣言》 Caribou Commons 专辑', '', '', ''),
     ('Bach - Vionlin Concertos - Isabelle Faust {HMM 902335.36} (2019) [FLAC]', 'Bach Vionlin Concertos Isabelle Faust', '2019', '', ''),
+    ('[迪士尼]2015.恐龙当家.恐龙大时代.美好的恐龙世界.善良的恐龙.恐龙管家.3D港版.国语简繁中字.BD.ISO', '恐龙当家 恐龙大时代 美好的恐龙世界 善良的恐龙 恐龙管家 3D港版 国语简繁中字', '2015', '', ''),
     # ('Grateful Dead - Listen to the River：St. Louis \'71 \'72 \'73 (Live) (2021) (24-192)', 'Grateful Dead - Listen to the River：St. Louis', '2021', '', ''),
     # ('32.迪卡唱片.-.《极致：勃拉姆斯选集》.(5CDs.Box-set)', '32 迪卡唱片 《极致：勃拉姆斯选集》', '', '', ''),
 ])
