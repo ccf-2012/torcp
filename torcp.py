@@ -126,6 +126,9 @@ def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName):
 def uselessFile(entryName):
     return entryName in ['@eaDir', '.DS_Store', '.@__thumb']
 
+def selfGenCategoryDir(dirName):
+    return dirName in ['MovieEncode', 'MovieRemux', 'MovieWebdl', 'MovieBDMV', 'BDMVISO', 'TV']
+
 
 def genTVSeasonEpisonGroup(mediaFilename, groupName):
     tvTitle, tvYear, tvSeason, tvEpisode, cntitle = parseMovieName(
@@ -187,6 +190,9 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName):
     for tvitem in os.listdir(tvSourceFolder):
         if uselessFile(tvitem):
             print('\033[34mSKIP useless file: [%s]\033[0m ' % tvitem)
+            continue
+        if selfGenCategoryDir(tvitem):
+            print('\033[34mSKIP self-generated dir: [%s]\033[0m ' % tvitem)
             continue
 
         tvitemPath = os.path.join(tvSourceFolder, tvitem)
@@ -310,6 +316,11 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
         if uselessFile(movieItem):
             print('\033[34mSKIP useless file: [%s]\033[0m ' % movieItem)
             continue
+        if selfGenCategoryDir(movieItem):
+            print('\033[34mSKIP self-generated dir: [%s]\033[0m ' % movieItem)
+            continue
+
+
         if (os.path.isdir(os.path.join(mediaSrc, movieItem))):
             # Dir in movie folder
             if os.path.isdir(os.path.join(mediaSrc, movieItem, 'BDMV')):
@@ -501,6 +512,7 @@ def loadArgs():
 
     global ARGS
     ARGS = parser.parse_args()
+    ARGS.MEDIA_DIR = os.path.expanduser(ARGS.MEDIA_DIR)
     makeKeepExts()
 
 def main():

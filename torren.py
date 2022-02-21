@@ -1,11 +1,11 @@
 """
-A script hardlink media files and directories in Emby-happy naming and structs.
+A script rename/move media files and directories in Emby-happy naming and structs.
 """
 #  Usage:
-#   python3 torcp.py -h
+#   python3 torren.py -h
 #
-#  Example: hard link to a seperate dir
-#    python3 torcp.py /home/ccf2012/Downloads/  -d=/home/ccf2012/emby/
+#  Example: rename/move to a seperate dir
+#    python3 torren.py /home/ccf2012/Downloads/  
 #
 #
 import re
@@ -161,6 +161,8 @@ def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName):
 def uselessFile(entryName):
     return entryName in ['@eaDir', '.DS_Store', '.@__thumb']
 
+def selfGenCategoryDir(dirName):
+    return dirName in ['MovieEncode', 'MovieRemux', 'MovieWebdl', 'MovieBDMV', 'BDMVISO', 'TV']
 
 def genTVSeasonEpisonGroup(mediaFilename, groupName):
     tvTitle, tvYear, tvSeason, tvEpisode, cntitle = parseMovieName(
@@ -222,6 +224,9 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName):
     for tvitem in os.listdir(tvSourceFolder):
         if uselessFile(tvitem):
             print('\033[34mSKIP useless file: [%s]\033[0m ' % tvitem)
+            continue
+        if selfGenCategoryDir(tvitem):
+            print('\033[34mSKIP self-generated dir: [%s]\033[0m ' % tvitem)
             continue
 
         tvitemPath = os.path.join(tvSourceFolder, tvitem)
@@ -338,13 +343,16 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
         if uselessFile(movieItem):
             print('\033[34mSKIP useless file: [%s]\033[0m ' % movieItem)
             continue
+        if selfGenCategoryDir(movieItem):
+            print('\033[34mSKIP self-generated dir: [%s]\033[0m ' % movieItem)
+            continue
+
         if (os.path.isdir(os.path.join(mediaSrc, movieItem))):
             # Dir in movie folder
             if os.path.isdir(os.path.join(mediaSrc, movieItem, 'BDMV')):
                 processBDMV(os.path.join(mediaSrc, movieItem),
                             os.path.join(folderGenName, movieItem),
                             'MovieM2TS')
-                # print('\033[34mSKip BDMV: [%s]\033[0m ' % mediaSrc)
             else:
                 print('\033[34mSKip dir in movie folder: [%s]\033[0m ' %
                       movieItem)
@@ -391,7 +399,6 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
             newMovieName = genMovieResGroup(movieItem, parseTitle, parseYear,
                                             resolution, group)
         mediaSrcItem = os.path.join(mediaSrc, movieItem)
-        # renameFolderAndFile(mediaSrcItem, destFolderName, newMovieName)
         targetMove(mediaSrcItem, destCatFolderName, newMovieName)
 
 
@@ -423,7 +430,6 @@ def processOneDirItem(cpLocation, itemName):
                 else:
                     newTVFileName = genTVSeasonEpisonGroup(itemName, group)
                 seasonFolderFullPath = os.path.join('TV', destFolderName, parseSeason)
-                # makeDirAndMoveFile(mediaSrc, seasonFolderFullPath, newTVFileName)
                 targetMove(mediaSrc, seasonFolderFullPath, newTVFileName)
             elif cat in ['MovieEncode', 'MovieWebdl', 'MovieRemux', 'HDTV']:
                 if ARGS.origin_name:
@@ -432,7 +438,6 @@ def processOneDirItem(cpLocation, itemName):
                     newMovieName = genMovieResGroup(mediaSrc, parseTitle,
                                                     parseYear, resolution,
                                                     group)
-                # makeDirAndMoveFile(mediaSrc, destFolderName, newMovieName)
                 targetMove(mediaSrc, destCatFolderName, newMovieName)
             elif cat in ['MovieBDMV']:
                 # since it's a .mkv(mp4) file, no x264/5, not tv and no BDMV dir
@@ -442,7 +447,6 @@ def processOneDirItem(cpLocation, itemName):
             else:
                 print('\033[33mSingle media file : [ %s ] %s \033[0m' %
                       (cat, mediaSrc))
-                # makeDirAndMoveFile(mediaSrc, destFolderName, itemName)
                 targetMove(mediaSrc, destCatFolderName)
         elif file_ext.lower() in ['.iso']:
             #  TODO: aruba need iso when extract_bdmv
