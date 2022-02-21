@@ -173,7 +173,7 @@ def parseSeason(sstr):
         sstr = sstr.replace(seasonstr, '')
         return seasonstr, seasonspan, episodestr
 
-    m2 = re.search(r'(\b(S\d+)(E\d+)?)\b', sstr, flags=re.A | re.I)
+    m2 = re.search(r'(\b(S\d+)([\. ]?Ep?\d+)?)\b', sstr, flags=re.A | re.I)
     if m2:
         seasonstr = m2.group(1)
         seasonspan = m2.span(1)
