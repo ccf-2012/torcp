@@ -155,6 +155,7 @@ from torcategory import GuessCategoryUtils
     ('E3.2018.Press.Conference.WEB-DL.1080p.H264.AAC-CMCTV', 'E3 2018 Press Conference', '2018', 'S01', 'E3'),
     ('踢馆秘笈（第六季）—测试样片', '踢馆秘笈', '', 'S06', ''),
     ('海绵宝宝 国语 12季', '海绵宝宝', '', 'S12', ''),
+    ('[阿涅斯论瓦尔达].Varda.by.Agnès.2019.CC.BluRay.1080p.x264.DTS-CMCT', 'Varda by Agnès', '2019', '', ''), 
     ('[艾娃].Ava.2020.AUS.BluRay.1080p.x264.DTS-CMCT', 'Ava', '2020', '', ''),
     ('[Jose与虎与鱼们].josee.the.tiger.and.the.fish.2003.KOR.BluRay.1080p.x264.FLAC-CMCT.mkv', 'josee the tiger and the fish', '2003', '', ''),
     # ('Grateful Dead - Listen to the River：St. Louis \'71 \'72 \'73 (Live) (2021) (24-192)', 'Grateful Dead - Listen to the River：St. Louis', '2021', '', ''),

@@ -276,10 +276,10 @@ def parse0DayMovieName(torName):
     #     titlestr = re.sub(r'\(.*$', '', sstr).strip()
 
     cntitle = sstr
-    m = re.search(r'^.*[^\x00-\x7F](S\d+|\s|\.|\d|-|\))*\b(?=[a-zA-Z])', sstr, flags=re.A)
+    # m = re.search(r'^.*[^\x00-\x7F](S\d+|\s|\.|\d|-|\))*\b(?=[a-zA-Z])', sstr, flags=re.A)
     # m = re.search( r'^.*[^a-zA-Z_\- &0-9](S\d+|\s|\.|\d|-)*\b(?=[A-Z])', titlestr, flags=re.A)
-    # m = re.search(r'^.*[\u4e00-\u9fa5\u3041-\u30fc](S\d+| |\.|\d|-)*(?=[A-Z])',
-    #               titlestr)
+    m = re.search(r'^.*[\u4e00-\u9fa5\u3041-\u30fc](S\d+|\s|\.|\d|-|\))*\b(?=[a-zA-Z])',
+                  sstr, flags=re.A)
     if m:
         # ['(', ')', '-', '–', '_', '+']
         cntitle = m.group(0)
