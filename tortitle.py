@@ -284,8 +284,8 @@ def parse0DayMovieName(torName):
         # ['(', ')', '-', '–', '_', '+']
         cntitle = m.group(0)
         if not re.search(r'\s[\-\+]\s', cntitle):
-            if len(sstr)-len(cntitle) > 4:
-                sstr = sstr.replace(cntitle, '')
+            # if len(sstr)-len(cntitle) > 4:
+            sstr = sstr.replace(cntitle, '')
 
     titlestr = bracketToBlank(sstr)
     titlestr = cutAKA(titlestr)
