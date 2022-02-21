@@ -172,7 +172,7 @@ def parseSeason(sstr):
         return seasonstr, seasonspan, episodestr
 
 
-    mcns = re.search(r'(第\s*((\d+)|([一二三四五六七八九十]))(-\d+)?季)(\s*第\s*((\d+)|([一二三四五六七八九十]))集)?', sstr, flags=re.I)
+    mcns = re.search(r'(第?\s*((\d+)|([一二三四五六七八九十]))(-\d+)?季)(\s*第\s*((\d+)|([一二三四五六七八九十]))集)?', sstr, flags=re.I)
     if mcns:
         # origin_seasonstr = mcns.group(1)
         seasonspan = mcns.span(1)
@@ -267,7 +267,7 @@ def parse0DayMovieName(torName):
         sstr = cutspan(sstr, seasonspan[0], seasonspan[1])
         sstr = cutspan(sstr, yearspan[0], yearspan[1])
 
-    sstr = re.sub(r'\b(剧集|全\d集|\d集全|BD\d*)$', '', sstr, flags=re.I)
+    sstr = re.sub(r'\b(剧集|全\d集|\d集全|国语|BD\d*)$', '', sstr, flags=re.I)
 
     if sstr and sstr[-1] in ['(', '[', '{', '（', '【']:
         sstr = sstr[:-1]
