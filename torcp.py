@@ -68,7 +68,7 @@ def targetCopy(fromLoc, toLocPath, toLocFile=''):
 
 
 def getSeasonFromFolderName(folderName, failDir=''):
-    m1 = re.search(r'(\bS\d+(-S\d+)?|第(\d)季)', folderName, flags=re.A | re.I)
+    m1 = re.search(r'(\bS\d+(-S\d+)?|第(\d+)季)', folderName, flags=re.A | re.I)
     if m1:
         if m1.group(3):
             return 'S'+m1.group(3)
