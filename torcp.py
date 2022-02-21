@@ -109,9 +109,9 @@ def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName):
             print('\033[31mSKIP dir in TV: [%s]\033[0m ' % tv2itemPath)
         else:
             filename, file_ext = os.path.splitext(tv2item)
+            seasonFolderFullPath = os.path.join('TV', tvFolder,
+                                                seasonFolder)
             if isMediaFileType(file_ext):
-                seasonFolderFullPath = os.path.join('TV', tvFolder,
-                                                    seasonFolder)
                 if ARGS.origin_name:
                     newTVFileName = os.path.basename(tv2item)
                 else:
