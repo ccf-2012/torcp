@@ -102,9 +102,12 @@ def targetMove(fromLoc, toLocPath, toLocFile=''):
     pathMove(fromLoc, toLocPath, toLocFile)
 
 def getSeasonFromFolderName(folderName, failDir=''):
-    m1 = re.search(r'(\bS\d+(-S\d+)?)\b', folderName, flags=re.A | re.I)
+    m1 = re.search(r'(\bS\d+(-S\d+)?|第(\d+)季)', folderName, flags=re.A | re.I)
     if m1:
-        return m1.group(1)
+        if m1.group(3):
+            return 'S'+m1.group(3)
+        else:
+            return m1.group(1)
     else:
         return folderName
         # return failDir
@@ -143,14 +146,13 @@ def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName):
             print('\033[31mSKIP dir in TV: [%s]\033[0m ' % tv2itemPath)
         else:
             filename, file_ext = os.path.splitext(tv2item)
-            if isMediaFileType(file_ext):
-                seasonFolderFullPath = os.path.join('TV', tvFolder,
+            seasonFolderFullPath = os.path.join('TV', tvFolder,
                                                     seasonFolder)
+            if isMediaFileType(file_ext):
                 if ARGS.origin_name:
                     newTVFileName = os.path.basename(tv2item)
                 else:
                     newTVFileName = genTVSeasonEpisonGroup(tv2item, groupName)
-                # makeDirAndMoveFile(tv2itemPath, seasonFolderFullPath, newTVFileName)
                 targetMove(tv2itemPath, seasonFolderFullPath, newTVFileName)
             elif file_ext.lower() in ['.iso']:
                 # TODO: aruba need iso when extract_bdmv
@@ -163,6 +165,7 @@ def uselessFile(entryName):
 
 def selfGenCategoryDir(dirName):
     return dirName in ['MovieEncode', 'MovieRemux', 'MovieWebdl', 'MovieBDMV', 'BDMVISO', 'TV']
+
 
 def genTVSeasonEpisonGroup(mediaFilename, groupName):
     tvTitle, tvYear, tvSeason, tvEpisode, cntitle = parseMovieName(
@@ -199,7 +202,7 @@ def fixSeasonGroupWithFilename(folderPath, folderSeason, folderGroup):
 
         if cat != 'TV':
             print('\033[33mWarn, is this TV? :  %s \033[0m' % testFile)
-            print('\033[33Process anyway ... \033[0m')
+            print('\033[33mProcess anyway ... \033[0m')
         if not folderGroup:
             group = fileGroup
         if not folderSeason:
@@ -241,7 +244,6 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName):
                 else:
                     newTVFileName = genTVSeasonEpisonGroup(tvitem, parseGroup)
                 seasonFolderFullPath = os.path.join('TV', genFolder, parseSeason)
-                # makeDirAndMoveFile(tvitemPath, seasonFolderFullPath, newTVFileName)
                 targetMove(tvitemPath, seasonFolderFullPath, newTVFileName)
 
 
@@ -336,7 +338,6 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
     if os.path.isdir(os.path.join(mediaSrc, 'BDMV')):
         # break, process BDMV dir for this dir
         processBDMV(mediaSrc, folderGenName, 'MovieM2TS')
-        # print('\033[34mSKip BDMV: [%s]\033[0m ' % mediaSrc)
         return
 
     for movieItem in os.listdir(mediaSrc):
@@ -346,6 +347,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
         if selfGenCategoryDir(movieItem):
             print('\033[34mSKIP self-generated dir: [%s]\033[0m ' % movieItem)
             continue
+
 
         if (os.path.isdir(os.path.join(mediaSrc, movieItem))):
             # Dir in movie folder

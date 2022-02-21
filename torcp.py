@@ -168,7 +168,7 @@ def fixSeasonGroupWithFilename(folderPath, folderSeason, folderGroup):
 
         if cat != 'TV':
             print('\033[33mWarn, is this TV? :  %s \033[0m' % testFile)
-            print('\033[33Process anyway ... \033[0m')
+            print('\033[33mProcess anyway ... \033[0m')
         if not folderGroup:
             group = fileGroup
         if not folderSeason:
@@ -214,13 +214,6 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName):
                 targetCopy(tvitemPath, seasonFolderFullPath, newTVFileName)
 
 
-def copyFiles(fromDir, toDir):
-    if os.path.islink(fromDir):
-        print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromDir)
-        return
-    for movieItem in os.listdir(fromDir):
-        movieFullPath = os.path.join(fromDir, movieItem)
-        targetCopy(movieFullPath, toDir)
 
 
 def genMovieResGroup(mediaSrc, movieName, year, resolution, group):
@@ -356,12 +349,6 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
         if parseSeason and (cat != 'TV'):
             print('Category fixed: ' + movieItem)
             cat = 'TV'
-
-        # movieCatList = ['MovieEncode', 'MovieWebdl', 'MovieRemux', 'Movie', 'TV']
-        # if (cat not in movieCatList) and (folderCat not in movieCatList):
-        #     # since it's a .mkv(mp4) file, no x264/5, not tv and no BDMV dir
-        #     print('\033[33mMaybe remux? : %s \033[0m' % movieItem)
-        #     cat = 'MovieRemux'
 
         destFolderName = genMediaFolderName(cat, parseTitle, parseYear,
                                             parseSeason)
