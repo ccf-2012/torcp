@@ -103,7 +103,7 @@ class GuessCategoryUtils:
         elif re.search(r'(\b\d+ ?CD|(\[|\()\s*(16|24)\b|\-(44\.1|88.2|48|192)|24Bit|44\s*\]|FLAC.*(16|24|48|CUE|WEB|Album)|WAV.*CUE|CD.*FLAC|(\[|\()\s*FLAC)', torName, re.A | re.I):
         # elif re.search(r'(\b\d+ ?CD|24\-|\-44\.1|24Bit|\[[\d\s]*44\s*\]|FLAC.*44|FLAC.*48|WAV.*CUE|FLAC.*CUE|\[.*FLAC\]|FLAC.+WEB\b|FLAC.*Album|CD[\s-]+FLAC|FLAC[\s-]+CD)', torName, re.A | re.I):
             self.setCategory('Music')
-        elif re.search(r'^(Beethoven|Schubert)\s*\-', torName, re.I):
+        elif re.search(r'^(Beethoven|Schubert)\s*[\-_]', torName, re.I):
             self.setCategory('Music')
         elif re.search(r'(乐团|交响曲|协奏曲|奏鸣曲|[二三四]重奏|专辑\b)', torName):
             self.setCategory('Music')
@@ -197,15 +197,17 @@ class GuessCategoryUtils:
         if self.quality == 'BLURAY':
             # Remux, 压制 还是 原盘
             if re.search(r'\WREMUX\W', torName, re.I):
-                if self.resolution == '2160p':
-                    self.setCategory('Movie4K')
-                else:
-                    self.setCategory('MovieRemux')
+                # if self.resolution == '2160p':
+                #     self.setCategory('Movie4K')
+                # else:
+                #     self.setCategory('MovieRemux')
+                self.setCategory('MovieRemux')
             elif re.search(r'\b(x265|x264)\b', torName, re.I):
-                if self.resolution == '2160p':
-                    self.setCategory('Movie4K')
-                else:
-                    self.setCategory('MovieEncode')
+                # if self.resolution == '2160p':
+                #     self.setCategory('Movie4K')
+                # else:
+                #     self.setCategory('MovieEncode')
+                self.setCategory('MovieEncode')
             else:
                 if self.resolution == '2160p':
                     self.setCategory('MovieBDMV4K')
@@ -213,10 +215,11 @@ class GuessCategoryUtils:
                     self.setCategory('MovieBDMV')
         # 来源是 WEB-DL
         elif self.quality == 'WEBDL': 
-            if self.resolution == '2160p':
-                self.setCategory('MovieWeb4K')
-            else:
-                self.setCategory('MovieWebdl')
+            # if self.resolution == '2160p':
+            #     self.setCategory('MovieWeb4K')
+            # else:
+            #     self.setCategory('MovieWebdl')
+            self.setCategory('MovieWebdl')
         else:
             if re.search(r'\WREMUX\W', torName, re.I):
                 self.setCategory('MovieRemux')

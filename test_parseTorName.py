@@ -210,7 +210,7 @@ def test_parseTVName(test_input, e1, e2, e3, e4):
     ('To.Sir.With.Love.II.1996.DVD.NTSC-CL8', 'MovieDVD', 'CL8'),
     ('Babka_Yozhka_i_drugiye_2008_BD', 'MovieBDMV', None),
     ('别有用心的单身女.Cunning.Single.Lady.S01E05.1080p.NF.WEB-DL.DDP2.0.x264-Ao.mkv', 'TV', 'Ao'),
-    ('The.Ice.Age.Adventures.of.Buck.Wild.2022.2160p.DSNP.WEB-DL.DDP5.1.Atmos.DV.H.265-Lee@CHDWEB.mp4', 'MovieWeb4K', 'CHDWEB'),
+    ('The.Ice.Age.Adventures.of.Buck.Wild.2022.2160p.DSNP.WEB-DL.DDP5.1.Atmos.DV.H.265-Lee@CHDWEB.mp4', 'MovieWebdl', 'CHDWEB'),
     ('我爱冒牌机器女友.I.Love.Fake.Robot.Girlfriends.2021.1080p.WEB-DL.H264.AAC-CHDWEB.mp4', 'MovieWebdl', 'CHDWEB'),
     ('譚詠麟 - 情人 1994 480i DVD MPEG AC3-PTerMV.vob', 'MV', 'PTerMV'),
     ('[局内人].Inside.Men.2015.BluRay.1080p.x264.DTS-CMCT.mkv', 'MovieEncode', 'CMCT'),
