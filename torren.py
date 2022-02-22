@@ -28,25 +28,25 @@ def ensureDir(file_path):
         os.makedirs(file_path)
 
 
-def hdlinkCopy(fromLoc, toLocPath, toLocFile=''):
-    if os.path.islink(fromLoc):
-        print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromLoc)
-        return
-    destDir = os.path.join(ARGS.hd_path, toLocPath)
-    ensureDir(destDir)
-    if os.path.isfile(fromLoc):
-        if toLocFile:
-            destFile = os.path.join(destDir, toLocFile)
-        else:
-            destFile = os.path.join(destDir, os.path.basename(fromLoc))
-        if not os.path.exists(destFile):
-            print('ln ', fromLoc, destFile)
-            os.link(fromLoc, destFile)
-    else:
-        destDir = os.path.join(destDir, os.path.basename(fromLoc))
-        if not os.path.exists(destDir):
-            print('copytree ', fromLoc, destDir)
-            shutil.copytree(fromLoc, destDir, copy_function=os.link)
+# def hdlinkCopy(fromLoc, toLocPath, toLocFile=''):
+#     if os.path.islink(fromLoc):
+#         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromLoc)
+#         return
+#     destDir = os.path.join(ARGS.hd_path, toLocPath)
+#     ensureDir(destDir)
+#     if os.path.isfile(fromLoc):
+#         if toLocFile:
+#             destFile = os.path.join(destDir, toLocFile)
+#         else:
+#             destFile = os.path.join(destDir, os.path.basename(fromLoc))
+#         if not os.path.exists(destFile):
+#             print('ln ', fromLoc, destFile)
+#             os.link(fromLoc, destFile)
+#     else:
+#         destDir = os.path.join(destDir, os.path.basename(fromLoc))
+#         if not os.path.exists(destDir):
+#             print('copytree ', fromLoc, destDir)
+#             shutil.copytree(fromLoc, destDir, copy_function=os.link)
 
 
 def pathMove(fromLoc, toLocFolder, toLocFile=''):
@@ -55,7 +55,7 @@ def pathMove(fromLoc, toLocFolder, toLocFile=''):
         return
     if ARGS.sleep:
         time.sleep(2)
-    destDir = os.path.join(ARGS.MEDIA_DIR, toLocFolder)
+    destDir = os.path.join(ARGS.dst_path, toLocFolder)
     ensureDir(destDir)
     if os.path.isfile(fromLoc):
         if toLocFile:
@@ -80,17 +80,17 @@ def hdlinkLs(loc):
     return os.listdir(destDir)
 
 
-def targetCopy(fromLoc, toLocPath, toLocFile=''):
-    if os.path.islink(fromLoc):
-        print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromLoc)
-        return
+# def targetCopy(fromLoc, toLocPath, toLocFile=''):
+#     if os.path.islink(fromLoc):
+#         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromLoc)
+#         return
 
-    if not ARGS.run:
-        print(fromLoc, ' ==> ', toLocPath)
-        return
+#     if not ARGS.run:
+#         print(fromLoc, ' ==> ', toLocPath)
+#         return
 
-    if ARGS.hd_path:
-        hdlinkCopy(fromLoc, toLocPath, toLocFile)
+#     if ARGS.hd_path:
+#         hdlinkCopy(fromLoc, toLocPath, toLocFile)
 
 
 def targetMove(fromLoc, toLocPath, toLocFile=''):
@@ -368,7 +368,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
             # TODO: aruba need iso when extract_bdmv
             if ARGS.full_bdmv or ARGS.extract_bdmv:
                 destCatFolderName = os.path.join('BDMVISO', folderGenName)
-                targetCopy(os.path.join(mediaSrc, movieItem),
+                targetMove(os.path.join(mediaSrc, movieItem),
                            destCatFolderName)
             else:
                 print('\033[31mSKip iso file: [%s]\033[0m ' % movieItem)
@@ -447,7 +447,7 @@ def processOneDirItem(cpLocation, itemName):
             elif cat in ['MovieBDMV']:
                 # since it's a .mkv(mp4) file, no x264/5, not tv and no BDMV dir
                 print('\033[33mMaybe remux? : %s \033[0m' % itemName)
-                targetCopy(mediaSrc, os.path.join('MovieRemux',
+                targetMove(mediaSrc, os.path.join('MovieRemux',
                                                   destFolderName))
             else:
                 print('\033[33mSingle media file : [ %s ] %s \033[0m' %
@@ -457,7 +457,7 @@ def processOneDirItem(cpLocation, itemName):
             #  TODO: aruba need iso when extract_bdmv
             if ARGS.full_bdmv or ARGS.extract_bdmv:
                 bdmvFolder = os.path.join('BDMVISO', destFolderName)
-                targetCopy(mediaSrc, bdmvFolder)
+                targetMove(mediaSrc, bdmvFolder)
             else:
                 print('\033[33mSkip .iso file:  %s \033[0m' % mediaSrc)
         else:
@@ -506,9 +506,9 @@ def loadArgs():
     parser.add_argument(
         'MEDIA_DIR',
         help='The directory contains TVs and Movies to be copied.')
-    # parser.add_argument('-d',
-    #                     '--hd_path',
-    #                     help='the dest path to create Hard Link.')
+    parser.add_argument('-d',
+                        '--dst-path',
+                        help='the dest path to move.')
     parser.add_argument('-e',
                         '--keep-ext',
                         help='keep files with these extention(\'srt,ass\').')
