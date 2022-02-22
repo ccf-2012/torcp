@@ -7,7 +7,7 @@ def cutExt(torName):
         return ''
     tortup = os.path.splitext(torName)
     torext = tortup[1].lower()
-    mvext = ['.mkv', '.ts', '.m2ts', '.vob', '.mpg', '.mp4', '.3gp', '.mov', '.tp', '.zip', '.pdf', '.iso']
+    mvext = ['.mkv', '.ts', '.m2ts', '.vob', '.mpg', '.mp4', '.3gp', '.mov', '.tp', '.zip', '.pdf', '.iso', '.7z', '.rar']
     if torext.lower() in mvext:
         return tortup[0].strip()
     else:
@@ -70,6 +70,10 @@ class GuessCategoryUtils:
                 r'(pdf|epub|mobi|txt|chm|azw3|CatEDU|eBook-\w{4,8}|mobi|doc|docx).?$',
                 torName, re.I):
             self.setCategory('eBook')
+        elif re.search(
+                r'(zip|7z|rar).?$',
+                torName, re.I):
+            self.setCategory('Other')
         elif re.search(r'\.(mpg)\b', torName, re.I):
             self.setCategory('MV')
         elif re.search(r'(\b|_)(FLAC.{0,3}|DSF.{0,3}|DSD(\d{1,3})?)$', torName, re.I):
@@ -93,13 +97,18 @@ class GuessCategoryUtils:
             self.setCategory('MV')
         elif re.search(r'\bBugs!.?\.mp4', torName, re.I):
             self.setCategory('MV')
-        elif re.search(r'(\bVarious Artists|\bMQA\b|整轨|\b分轨|\b无损|\bLPCD|\bSACD|XRCD\d{1,3})',
+        elif re.search(r'(\bVarious Artists|\bMQA\b|整轨|\b分轨|\b无损|\bLPCD|\bSACD|\bMP3|XRCD\d{1,3})',
                        torName, re.A | re.I):
             self.setCategory('Music')
-        elif re.search(r'(\b\d+ ?CD|24-96|24\-192|24\-44\.1|FLAC.*24bit|FLAC.*44|FLAC.*48|WAV.*CUE|FLAC.*CUE|\[FLAC\]|FLAC.+WEB\b|FLAC.*Album|CD[\s-]+FLAC|FLAC[\s-]+CD)', torName, re.A | re.I):
+        elif re.search(r'(\b\d+ ?CD|(\[|\()\s*(16|24)\b|\-(44\.1|88.2|48|192)|24Bit|44\s*\]|FLAC.*(16|24|48|CUE|WEB|Album)|WAV.*CUE|CD.*FLAC|(\[|\()\s*FLAC)', torName, re.A | re.I):
+        # elif re.search(r'(\b\d+ ?CD|24\-|\-44\.1|24Bit|\[[\d\s]*44\s*\]|FLAC.*44|FLAC.*48|WAV.*CUE|FLAC.*CUE|\[.*FLAC\]|FLAC.+WEB\b|FLAC.*Album|CD[\s-]+FLAC|FLAC[\s-]+CD)', torName, re.A | re.I):
+            self.setCategory('Music')
+        elif re.search(r'^(Beethoven|Schubert)\s*\-', torName, re.I):
             self.setCategory('Music')
         elif re.search(r'(乐团|交响曲|协奏曲|奏鸣曲|[二三四]重奏|专辑\b)', torName):
             self.setCategory('Music')
+        elif re.search(r'(\[BDMV\])', torName, re.I):
+            self.setCategory('MovieBDMV')
         elif re.search(r'(\bThe.Movie.\d{4}|电影版)\b', torName, flags=re.A | re.I):
             if self.quality == 'WEBDL':
                 self.setCategory('MovieWebdl')
