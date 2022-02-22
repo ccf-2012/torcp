@@ -16,6 +16,7 @@ from torcategory import GuessCategoryUtils
 from tortitle import parseMovieName
 import logging
 import glob
+import time
 
 ARGS = None
 
@@ -52,6 +53,8 @@ def pathMove(fromLoc, toLocFolder, toLocFile=''):
     if os.path.islink(fromLoc):
         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromLoc)
         return
+    if ARGS.sleep:
+        time.sleep(2)
     destDir = os.path.join(ARGS.MEDIA_DIR, toLocFolder)
     ensureDir(destDir)
     if os.path.isfile(fromLoc):
@@ -531,6 +534,9 @@ def loadArgs():
     parser.add_argument('--origin-name',
                         action='store_true',
                         help='keep origin file name.')
+    parser.add_argument('--sleep',
+                        action='store_true',
+                        help='sleep 2 seconds after operation.')
 
     global ARGS
     ARGS = parser.parse_args()
