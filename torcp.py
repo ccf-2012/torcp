@@ -473,6 +473,7 @@ def loadArgs():
         help='The directory contains TVs and Movies to be copied.')
     parser.add_argument('-d',
                         '--hd_path',
+                        required=True,
                         help='the dest path to create Hard Link.')
     parser.add_argument('-e',
                         '--keep-ext',
