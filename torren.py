@@ -508,6 +508,7 @@ def loadArgs():
         help='The directory contains TVs and Movies to be copied.')
     parser.add_argument('-d',
                         '--dst-path',
+                        required=True,
                         help='the dest path to move.')
     parser.add_argument('-e',
                         '--keep-ext',
