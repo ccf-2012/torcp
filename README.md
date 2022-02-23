@@ -175,4 +175,4 @@ python3 tormv.py ../test/ -d ../test/finished/ -e srt,ass --sleep 2 --run
 
 ## Acknowledgement 
  * @Aruba  
- * @NishinoKana @Esc @Hangsijing @Inu
+ * @NishinoKana @Esc @Hangsijing @Inu @ozz
