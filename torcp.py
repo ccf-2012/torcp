@@ -517,7 +517,7 @@ def main():
         for torFolderItem in os.listdir(cpLocation):
             if uselessFile(torFolderItem):
                 continue
-            if isCollections(torFolderItem):
+            if isCollections(torFolderItem) and os.path.isdir(os.path.join(cpLocation, torFolderItem)):
                 print('\033[35mProcess collections: %s \033[0m' %
                       torFolderItem)
                 packDir = os.path.join(cpLocation, torFolderItem)
