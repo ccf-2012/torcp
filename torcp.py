@@ -138,9 +138,7 @@ def genTVSeasonEpisonGroup(mediaFilename, groupName):
         mediaFilename)
 
     filename, file_ext = os.path.splitext(mediaFilename)
-    return tvTitle + ' ' + (tvSeason.upper() if tvSeason else '') + (
-        tvEpisode.upper() if tvEpisode else '') + (
-            (' - ' + groupName) if groupName else '') + file_ext
+    return tvTitle + ' ' + (tvYear if tvYear else '') +  (' ' +tvSeason.upper() if tvSeason else '') + (tvEpisode.upper() if tvEpisode else '') + ((' - ' + groupName) if groupName else '') + file_ext
 
 
 def getMediaFile(filePath):

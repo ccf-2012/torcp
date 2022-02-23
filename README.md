@@ -161,15 +161,15 @@ python torcp.py  /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Vid
 
 ```
 
-## torren.py 
+## tormv.py 
 * 不作硬链，直接进行move和改名操作的版本，用于对已经放在gd中的文件进行整理
 * `-d` 指定要搬移的目标位置，请自己把握不跨区 
-* 加了一个`--sleep`参数，可以每次操作搬移一个文件后暂停2秒，如果需要可在 `torren.py`中 `57`行自行修改时间
+* 加了一个`--sleep`参数，可以每次操作搬移一个文件后暂停 `SLEEP` 秒
 * 由于这样的操作不可逆，所以默认是不执行的，查看输出结果后，加 `--run` 参数后才执行
 
 ### 例子
 ```sh
-python3 torren.py ../test/ -d ../test/finished/ -e srt,ass --run
+python3 tormv.py ../test/ -d ../test/finished/ -e srt,ass --sleep 2 --run
 ```
 
 

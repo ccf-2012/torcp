@@ -54,7 +54,7 @@ def pathMove(fromLoc, toLocFolder, toLocFile=''):
         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromLoc)
         return
     if ARGS.sleep:
-        time.sleep(2)
+        time.sleep(ARGS.sleep)
     destDir = os.path.join(ARGS.dst_path, toLocFolder)
     ensureDir(destDir)
     if os.path.isfile(fromLoc):
@@ -63,13 +63,13 @@ def pathMove(fromLoc, toLocFolder, toLocFile=''):
         else:
             destFile = os.path.join(destDir, os.path.basename(fromLoc))
         if not os.path.exists(destFile):
-            print('ren ', fromLoc, destFile)
+            print('mv ', fromLoc, destFile)
             # os.link(fromLoc, destFile)
             os.rename(fromLoc, destFile)
     else:
         destDir = os.path.join(destDir, os.path.basename(fromLoc))
         if not os.path.exists(destDir):
-            print('mv ', fromLoc, destDir)
+            print('mvdir ', fromLoc, destDir)
             shutil.move(fromLoc, destDir)
             # shutil.copytree(fromLoc, destDir, copy_function=os.link)
 
@@ -175,9 +175,7 @@ def genTVSeasonEpisonGroup(mediaFilename, groupName):
         mediaFilename)
 
     filename, file_ext = os.path.splitext(mediaFilename)
-    return tvTitle + ' ' + (tvSeason.upper() if tvSeason else '') + (
-        tvEpisode.upper() if tvEpisode else '') + (
-            (' - ' + groupName) if groupName else '') + file_ext
+    return tvTitle + ' ' + (tvYear if tvYear else '') +  (' ' +tvSeason.upper() if tvSeason else '') + (tvEpisode.upper() if tvEpisode else '') + ((' - ' + groupName) if groupName else '') + file_ext
 
 
 def getMediaFile(filePath):
@@ -536,8 +534,8 @@ def loadArgs():
                         action='store_true',
                         help='keep origin file name.')
     parser.add_argument('--sleep',
-                        action='store_true',
-                        help='sleep 2 seconds after operation.')
+                        type=int,
+                        help='sleep x seconds after operation.')
 
     global ARGS
     ARGS = parser.parse_args()
