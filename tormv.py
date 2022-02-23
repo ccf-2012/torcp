@@ -173,6 +173,8 @@ def selfGenCategoryDir(dirName):
 def genTVSeasonEpisonGroup(mediaFilename, groupName):
     tvTitle, tvYear, tvSeason, tvEpisode, cntitle = parseMovieName(
         mediaFilename)
+    if ARGS.cntitle:
+        tvTitle = cntitle
 
     filename, file_ext = os.path.splitext(mediaFilename)
     return tvTitle + ' ' + (tvYear if tvYear else '') +  (' ' +tvSeason.upper() if tvSeason else '') + (tvEpisode.upper() if tvEpisode else '') + ((' - ' + groupName) if groupName else '') + file_ext
@@ -200,6 +202,8 @@ def fixSeasonGroupWithFilename(folderPath, folderSeason, folderGroup):
         cat, fileGroup, resolution = getCategory(testFile)
         parseTitle, parseYear, parseSeason, parseEpisode, cntitle = parseMovieName(
             testFile)
+        if ARGS.cntitle:
+            parseTitle = cntitle
 
         if cat != 'TV':
             print('\033[33mWarn, is this TV? :  %s \033[0m' % testFile)
@@ -379,6 +383,9 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
         cat, group, resolution = getCategory(movieItem)
         parseTitle, parseYear, parseSeason, parseEpisode, cntitle = parseMovieName(
             movieItem)
+        if ARGS.cntitle:
+            parseTitle = cntitle
+
         if parseSeason and (cat != 'TV'):
             print('Category fixed: ' + movieItem)
             cat = 'TV'
@@ -414,6 +421,8 @@ def processOneDirItem(cpLocation, itemName):
     cat, group, resolution = getCategory(itemName)
     parseTitle, parseYear, parseSeason, parseEpisode, cntitle = parseMovieName(
         itemName)
+    if ARGS.cntitle:
+        parseTitle = cntitle
     if parseSeason and cat != 'TV':
         print('Category fixed: ' + itemName)
         cat = 'TV'
@@ -536,6 +545,9 @@ def loadArgs():
     parser.add_argument('--sleep',
                         type=int,
                         help='sleep x seconds after operation.')
+    parser.add_argument('--cntitle',
+                        action='store_true',
+                        help='use CJK title.')
 
     global ARGS
     ARGS = parser.parse_args()
