@@ -67,24 +67,27 @@ class TMDbNameParser():
         else:
             return seasonStr.upper()
 
-    def verifyYear(self, resultDate):
+    def verifyYear(self, resultDate, cat):
         match = False
         m = re.match('^(\d+)', resultDate)
         if m:
-            resyear = m.group(0)
-            if self.year and self.year != resyear:
+            resyear = int(m.group(0))
+            if cat == 'tv':
+                match = not (self.season == 'S01' and self.year and self.year != resyear)
+            else:
+                match = self.year or (self.year not in [str(resyear-1), str(resyear), str(resyear+1)])
+            if not match:
                 print('\033[33mNot match in tmdb: [%s]\033[0m ' % (self.title))
             else:
-                match = True
                 self.year = resyear
         return match
 
     def saveTmdbTVResult(self, result):
         match = False
         if hasattr(result, 'first_air_date'):
-            match = self.verifyYear(result.first_air_date)
+            match = self.verifyYear(result.first_air_date, 'tv')
         elif hasattr(result, 'release_date'):
-            match = self.verifyYear(result.release_date)
+            match = self.verifyYear(result.release_date, 'tv')
 
         if match:
             if hasattr(result, 'name'):
@@ -103,9 +106,9 @@ class TMDbNameParser():
     def saveTmdbMovieResult(self, result):
         match = False
         if hasattr(result, 'release_date'):
-            match = self.verifyYear(result.release_date)
+            match = self.verifyYear(result.release_date, 'movie')
         elif hasattr(result, 'first_air_date'):
-            match = self.verifyYear(result.first_air_date)
+            match = self.verifyYear(result.first_air_date, 'movie')
 
         if match:
             if hasattr(result, 'title'):
@@ -192,7 +195,7 @@ class TMDbNameParser():
 
 if __name__ == '__main__':
     # itemName = '[我要打篮球].Game.On.2019.Complete.WEB-DL.1080p.H264.AAC-CMCTV'
-    itemName = '胜者即是正义SP.2015.720p.日语.简体中字￡WiKi(feat.CMCT)'
+    itemName = 'An.Enemy.Should.Be.Solve.2021.2160p.WEB-DL.H265.AAC-PTerWEB.mkv'
     print(itemName)
     # export TMDB_API_KEY='YOUR_API_KEY'
     p = TMDbNameParser('', 'zh-CN')
