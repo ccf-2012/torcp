@@ -122,7 +122,7 @@ from torcategory import GuessCategoryUtils
     ('Dee-Mack-Doin_It_My_Way-CD-FLAC-1995-AUDiOFiLE', 'Dee Mack Doin It My Way', '1995', '', ''),
     ('Andrea Bocelli-Super Hits-2CD-WEB-2004-playMUSIC', 'Andrea Bocelli Super Hits', '2004', '', ''),
     ('范玮琪 - 我们的纪念日 FLAC', '范玮琪 我们的纪念日', '', '', ''),
-    ('[EAC][180613][SINGLE][藍井エイル][流星／約束][VVCL-1252~4][FLAC+CUE+LOG+PNG+ISO]', '藍井エイル', '', '',''), 
+    ('[EAC][180613][SINGLE][藍井エイル][流星／約束][VVCL-1252~4][FLAC+CUE+LOG+PNG+ISO]', '藍井エイル', '', '', ''), 
     ('[EAC][170927][SINGLE][V.A.][SWORD ART ONLINE THE MOVIE ORDINAL SCALE CHARACTER SONGS][ANZX-14002][FLAC+CUE+LOG]', 'SWORD ART ONLINE THE MOVIE ORDINAL SCALE CHARACTER SONGS', '', '', ''),
     ('[EAC][170927][ALBUM][能登麻美子][地獄少女 ENDING SONG COLLECTION][SBCV-80273][FLAC+CUE+LOG+PNG]', '地獄少女 ENDING SONG COLLECTION', '', '', ''),
     ('[银魂°(第3期)][Gintama Season3][銀魂°][BDrip][1920x1080][TV 01-51(266-316)Fin+SP][H264 FLAC MKV][自壓(付相關專輯)]', 'Gintama Season3', '', '', ''),

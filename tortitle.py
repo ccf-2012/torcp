@@ -294,5 +294,6 @@ def parse0DayMovieName(torName):
     titlestr = cutAKA(titlestr)
     if len(titlestr) == 0:
         titlestr = bracketToBlank(failsafeTitle)
+    cntitle = cntitle.strip()
 
     return titlestr, yearstr, seasonstr, episodestr, cntitle
