@@ -188,7 +188,7 @@ class TMDbNameParser():
 
 if __name__ == '__main__':
     # itemName = '[我要打篮球].Game.On.2019.Complete.WEB-DL.1080p.H264.AAC-CMCTV'
-    itemName = '胜者即是正义SP.2013.720p.日语.简体中字￡WiKi(feat.CMCT)'
+    itemName = '胜者即是正义SP.2015.720p.日语.简体中字￡WiKi(feat.CMCT)'
     print(itemName)
     # export TMDB_API_KEY='YOUR_API_KEY'
     p = TMDbNameParser('', 'zh-CN')

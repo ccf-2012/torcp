@@ -313,6 +313,12 @@ def getLargestFiles(dirName):
 #             cat = 'MovieBDMV'
 #     return cat, group, catutil.resolution
 
+def setArgsCategory(parser):
+    if ARGS.tv:
+        parser.ccfcat = 'TV'
+    elif ARGS.movie:
+        parser.ccfcat = 'Movie'
+
 
 def isCollections(folderName):
     return re.search(r'\b(Pack$|合集|Collections?|国语配音4K动画电影$)',
@@ -426,6 +432,7 @@ def processOneDirItem(cpLocation, itemName):
     #     itemName)
     p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang)
     p.parse(itemName, TMDb=(ARGS.tmdb_api_key is not None))
+    setArgsCategory(p)
 
     destFolderName = genMediaFolderName(p.ccfcat, p.title, p.year, p.season, p.tmdbid)
     destCatFolderName = os.path.join(p.ccfcat, destFolderName)
