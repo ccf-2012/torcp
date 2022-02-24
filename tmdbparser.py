@@ -71,11 +71,12 @@ class TMDbNameParser():
         match = False
         m = re.match('^(\d+)', resultDate)
         if m:
-            resyear = int(m.group(0))
+            resyear = m.group(0)
             if cat == 'tv':
                 match = not (self.season == 'S01' and self.year and self.year != resyear)
             else:
-                match = self.year or (self.year not in [str(resyear-1), str(resyear), str(resyear+1)])
+                intyear = int(resyear)
+                match = not self.year or (self.year in [str(intyear-1), str(intyear), str(intyear+1)])
             if not match:
                 print('\033[33mNot match in tmdb: [%s]\033[0m ' % (self.title))
             else:
@@ -195,7 +196,7 @@ class TMDbNameParser():
 
 if __name__ == '__main__':
     # itemName = '[我要打篮球].Game.On.2019.Complete.WEB-DL.1080p.H264.AAC-CMCTV'
-    itemName = 'An.Enemy.Should.Be.Solve.2021.2160p.WEB-DL.H265.AAC-PTerWEB.mkv'
+    itemName = 'Say.No.For.Youth.2015.Complete.WEB-DL.4K.HEVC.AAC-CMCTV'
     print(itemName)
     # export TMDB_API_KEY='YOUR_API_KEY'
     p = TMDbNameParser('', 'zh-CN')
