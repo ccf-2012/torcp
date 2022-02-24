@@ -13,8 +13,10 @@ python3 torcp.py -h
 ```
 
 ```
-usage: torcp.py [-h] [-d HD_PATH] [-e KEEP_EXT] [--tv] [--movie] [--dryrun]
-                [--single] [--extract-bdmv] [--full-bdmv] [--origin-name]
+usage: torcp.py [-h] -d HD_PATH [-e KEEP_EXT] [--tmdb-api-key TMDB_API_KEY]
+                [--tmdb-lang TMDB_LANG] [--tv] [--movie] [--dryrun] [--single]
+                [--extract-bdmv] [--full-bdmv] [--origin-name] [--sleep SLEEP]
+                [--move-run] [--emby-bracket] [--plex-bracket]
                 MEDIA_DIR
 
 torcp: a script hardlink media files and directories in Emby-happy naming and
@@ -29,6 +31,11 @@ optional arguments:
                         the dest path to create Hard Link.
   -e KEEP_EXT, --keep-ext KEEP_EXT
                         keep files with these extention('srt,ass').
+  --tmdb-api-key TMDB_API_KEY
+                        Search API for the tmdb id, and gen dirname as Name
+                        (year)\{tmdbid=xxx\}
+  --tmdb-lang TMDB_LANG
+                        specify the TMDb language
   --tv                  specify the src directory is TV.
   --movie               specify the src directory is Movie.
   --dryrun              print message instead of real copy.
@@ -36,6 +43,10 @@ optional arguments:
   --extract-bdmv        extract largest file in BDMV dir.
   --full-bdmv           copy full BDMV dir and iso files.
   --origin-name         keep origin file name.
+  --sleep SLEEP         sleep x seconds after operation.
+  --move-run            WARN: REAL MOVE...with NO REGRET.
+  --emby-bracket        Ex: Alone (2020) [tmdbid=509635]
+  --plex-bracket        Ex: Alone (2020) {tmdbid=509635}
 ```
 
 ## 例子
@@ -161,17 +172,28 @@ python torcp.py  /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Vid
 
 ```
 
-## tormv.py 
+## move-run 直接改名和移动 
 * 不作硬链，直接进行move和改名操作的版本，用于对已经放在gd中的文件进行整理
 * `-d` 指定要搬移的目标位置，请自己把握不跨区 
-* 加了一个`--sleep`参数，可以每次操作搬移一个文件后暂停 `SLEEP` 秒
-* 由于这样的操作不可逆，所以默认是不执行的，查看输出结果后，加 `--run` 参数后才执行
+* 加了一个`--sleep`参数，可以每次操作搬移一个文件后暂停 `SLEEP` 秒，此参数仅在 `--move-run` 时有效
+* 由于这样的操作不可逆，请一定先作 `--dry-run` 确认后才执行
 
 ### 例子
 ```sh
-python3 tormv.py ../test/ -d ../test/finished/ -e srt,ass --sleep 2 --run
+python3 torcp.py ../test/ -d ../test/result5/ --move-run --dryrun
 ```
 
+## TMDb 查询
+* 通过The Movie Database (TMDb) API 查询，得到确切的tmdbid, 确保生成的文件夹可被刮削
+* 可选 `--tmdb-lang` 参数，默认是 `zh-CN`
+```sh
+python3 torcp.py ../test/ -d ../test/result3/ --tmdb-api-key='your TMDb api key'
+```
+
+* 组合 `--move-run` 的例子
+```sh
+python3 torcp.py ../test/ -d ../test/result2/ --tmdb-api-key='your TMDb api key' --plex-bracket --move-run  --dryrun
+```
 
 ## Acknowledgement 
  * @Aruba  

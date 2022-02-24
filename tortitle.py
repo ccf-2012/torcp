@@ -9,8 +9,10 @@ def isFullAscii(str):
 def containsCJK(str):
     return re.search(r'[\u4e00-\u9fa5\u3041-\u30fc]', str)
 
+
 def containdCJKKeyword(str):
     return re.search(r'^(.迪士尼\b)', str)
+
 
 def notTitle(str):
     return re.search(r'^(BDMV|1080[pi]|MOVIE|DISC|Vol)', str, re.A | re.I)
@@ -201,7 +203,7 @@ def parseYear(sstr):
         yearspan = m2.span(1)
         if re.search(r'[\(\[\{]' + yearstr+r'\b', sstr):
             # sstr = sstr[:yearspan[0] - 1]
-            yearspan = [yearspan[0]-1, yearspan[1]+1 ]
+            yearspan = [yearspan[0]-1, yearspan[1]+1]
         # elif re.search(r'\w.*' + yearstr+r'\b', sstr):
         #     sstr = sstr[:yearspan[0]]
 
