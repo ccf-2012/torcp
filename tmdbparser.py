@@ -130,27 +130,30 @@ class TMDbNameParser():
     def searchTMDb(self, title, cat=None, year=None, cntitle=None):
         # querystr = urllib.parse.quote(title)
         if cat == 'tv':
-            tv = TV()
-            print('Search TV: ' + title)
-            results = tv.search(title)
-            if len(results) > 0:
-                return self.saveTmdbTVResult(results[0])
-            print('Search TV: ' + cntitle)
-            results = tv.search(cntitle)
-            if len(results) > 0:
-                return self.saveTmdbTVResult(results[0])
+            if title:
+                tv = TV()
+                print('Search TV: ' + title)
+                results = tv.search(title)
+                if len(results) > 0:
+                    return self.saveTmdbTVResult(results[0])
+            if cntitle:
+                print('Search TV: ' + cntitle)
+                results = tv.search(cntitle)
+                if len(results) > 0:
+                    return self.saveTmdbTVResult(results[0])
 
         elif cat == 'movie':
-            print('Search Movie: ' + title)
-            search = Search()
-            results = search.movies({"query": title, "year": year, "page": 1})
-            if len(results) > 0:
-                return self.saveTmdbMovieResult(results[0])
-
-            print('Search Movie: ' + cntitle)
-            results = search.movies({"query": cntitle, "year": year, "page": 1})
-            if len(results) > 0:
-                return self.saveTmdbMovieResult(results[0])
+            if title:
+                print('Search Movie: ' + title)
+                search = Search()
+                results = search.movies({"query": title, "year": year, "page": 1})
+                if len(results) > 0:
+                    return self.saveTmdbMovieResult(results[0])
+            if cntitle:
+                print('Search Movie: ' + cntitle)
+                results = search.movies({"query": cntitle, "year": year, "page": 1})
+                if len(results) > 0:
+                    return self.saveTmdbMovieResult(results[0])
 
             # maxhit = 0.0
             # for result in results:
@@ -162,17 +165,18 @@ class TMDbNameParser():
             #     if ht > maxhit:
             #         maxhit = ht
 
-        print('Search multi: ' + title)
-        results = self.imdbMultiQuery(title, year)
-        # if not year:
-        #     results.sort(key=lambda x: x.popularity, reverse=True)
-        if len(results) > 0:
-            if results[0].media_type == 'tv':
-                return self.saveTmdbTVResult(results[0])
-            else:
-                return self.saveTmdbMovieResult(results[0])
+        if title:
+            print('Search multi: ' + title)
+            results = self.imdbMultiQuery(title, year)
+            # if not year:
+            #     results.sort(key=lambda x: x.popularity, reverse=True)
+            if len(results) > 0:
+                if results[0].media_type == 'tv':
+                    return self.saveTmdbTVResult(results[0])
+                else:
+                    return self.saveTmdbMovieResult(results[0])
 
-        if (cntitle != title):
+        if cntitle and (cntitle != title):
             print('Search multi: ' + cntitle)
             results = self.imdbMultiQuery(cntitle, year)
             if len(results) > 0:
