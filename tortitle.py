@@ -269,6 +269,8 @@ def parse0DayMovieName(torName):
     if not skipcut:
         sstr = cutspan(sstr, seasonspan[0], seasonspan[1])
         sstr = cutspan(sstr, yearspan[0], yearspan[1])
+    if sstr:
+        failsafeTitle = sstr
 
     sstr = re.sub(r'\b(剧集|全\d集|\d集全|国语|BD\d*)$', '', sstr, flags=re.I)
 
@@ -277,23 +279,24 @@ def parse0DayMovieName(torName):
 
     # if titlestr.endswith(')'):
     #     titlestr = re.sub(r'\(.*$', '', sstr).strip()
-
-    cntitle = sstr
-    # m = re.search(r'^.*[^\x00-\x7F](S\d+|\s|\.|\d|-|\))*\b(?=[a-zA-Z])', sstr, flags=re.A)
-    # m = re.search( r'^.*[^a-zA-Z_\- &0-9](S\d+|\s|\.|\d|-)*\b(?=[A-Z])', titlestr, flags=re.A)
-    m = re.search(r'^.*[\u4e00-\u9fa5\u3041-\u30fc](S\d+|\s|\.|\d|-|\))*\b(?=[a-zA-Z])',
-                  sstr, flags=re.A)
-    if m:
-        # ['(', ')', '-', '–', '_', '+']
-        cntitle = m.group(0)
-        if not re.search(r'\s[\-\+]\s', cntitle):
-            # if len(sstr)-len(cntitle) > 4:
-            sstr = sstr.replace(cntitle, '')
+    cntitle = ''
+    if containsCJK(sstr):
+        cntitle = sstr
+        # m = re.search(r'^.*[^\x00-\x7F](S\d+|\s|\.|\d|-|\))*\b(?=[a-zA-Z])', sstr, flags=re.A)
+        # m = re.search( r'^.*[^a-zA-Z_\- &0-9](S\d+|\s|\.|\d|-)*\b(?=[A-Z])', titlestr, flags=re.A)
+        m = re.search(r'^.*[\u4e00-\u9fa5\u3041-\u30fc](S\d+|\s|\.|\d|-|\))*\b(?=[a-zA-Z])',
+                    sstr, flags=re.A)
+        if m:
+            # ['(', ')', '-', '–', '_', '+']
+            cntitle = m.group(0)
+            if not re.search(r'\s[\-\+]\s', cntitle):
+                # if len(sstr)-len(cntitle) > 4:
+                sstr = sstr.replace(cntitle, '')
+        cntitle = cntitle.strip()
 
     titlestr = bracketToBlank(sstr)
     titlestr = cutAKA(titlestr)
-    if len(titlestr) == 0:
+    if not containsCJK(titlestr) and len(titlestr) < 3:
         titlestr = bracketToBlank(failsafeTitle)
-    cntitle = cntitle.strip()
 
     return titlestr, yearstr, seasonstr, episodestr, cntitle

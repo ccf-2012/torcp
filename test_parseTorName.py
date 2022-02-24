@@ -160,10 +160,11 @@ from torcategory import GuessCategoryUtils
     ('[Jose与虎与鱼们].josee.the.tiger.and.the.fish.2003.KOR.BluRay.1080p.x264.FLAC-CMCT.mkv', 'josee the tiger and the fish', '2003', '', ''),
     ('No.33_指环王3.魔戒三部曲：国王归来.TLOTR.The.Return.of.the.King.EE.2003.加长版.x265.BD1080P.国英双语.特效中英字幕.mp4', 'TLOTR The Return of the King EE', '2003', '', ''),
     ('No.238_千钧一发(变种异煞) Gattaca (1997).BD720P.国英双语.中英双 字.mp4', 'Gattaca', '1997', '', ''),
+    ('胜者即是正义SP.2013.720p.日语.简体中字￡WiKi(feat.CMCT)', '胜者即是正义SP', '2013', '', ''),
     # ('Grateful Dead - Listen to the River：St. Louis \'71 \'72 \'73 (Live) (2021) (24-192)', 'Grateful Dead - Listen to the River：St. Louis', '2021', '', ''),
     # ('32.迪卡唱片.-.《极致：勃拉姆斯选集》.(5CDs.Box-set)', '32 迪卡唱片 《极致：勃拉姆斯选集》', '', '', ''),
 ])
-def test_parseTVName(test_input, e1, e2, e3, e4):
+def test_parseTorName(test_input, e1, e2, e3, e4):
     a1, a2, a3, a4, a5 = tortitle.parseMovieName(test_input)
     assert a1 == e1 and a2 == e2 and a3 == e3 and a4 == e4
 
@@ -234,7 +235,7 @@ def test_parseTVName(test_input, e1, e2, e3, e4):
     # ('Sonata Arctica - Acoustic Adventures  - Volume One (2022)', 'Music', None),
     # ('Sara K.-No Cover-Chesky-0196', 'Music', None),
 ])
-def test_guessByName(test_input, e1, e2):
+def test_categoryByName(test_input, e1, e2):
     catutil = GuessCategoryUtils()
     a1, a2 = catutil.guessByName(test_input)
     assert a1 == e1 and a2 == e2

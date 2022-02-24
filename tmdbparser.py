@@ -57,7 +57,8 @@ class TMDbNameParser():
             self.season = self.fixSeasonName(self.season)
 
         if TMDb:
-            self.searchTMDb(self.title, transFromCCFCat(self.ccfcat), self.year, self.cntitle)
+            self.searchTMDb(self.title, transFromCCFCat(self.ccfcat),
+                            self.year, self.cntitle)
 
     def fixSeasonName(self, seasonStr):
         if re.match(r'^Ep?\d+(-Ep?\d+)?$', seasonStr,
@@ -66,66 +67,57 @@ class TMDbNameParser():
         else:
             return seasonStr.upper()
 
-    def saveTmdbTVResult(self, result):
-        if hasattr(result, 'name'):
-            self.title = result.name
-            # print('name: ' + result.name)
-        elif hasattr(result, 'original_name'):
-            self.title = result.original_name
-            # print('original_name: ' + result.original_name)
-        if hasattr(result, 'first_air_date'):
-            m = re.match('^(\d+)', result.first_air_date)
-            if m:
-                resyear = m.group(0)
-                if self.year and self.season == 'S01' and self.year != resyear:
-                    result.id = 0
-                    print('\033[33mNot match in tmdb: [%s]\033[0m ' % (self.title))
-                else:
-                    self.year = resyear
-        elif hasattr(result, 'release_date'):
-            m = re.match('^(\d+)', result.release_date)
-            if m:
-                self.year = m.group(0)
-                if self.year and self.season == 'S01' and self.year != resyear:
-                    result.id = 0
-                    print('\033[33mNot match in tmdb: [%s]\033[0m ' % (self.title))
-                else:
-                    self.year = resyear
+    def verifyYear(self, resultDate):
+        match = False
+        m = re.match('^(\d+)', resultDate)
+        if m:
+            resyear = m.group(0)
+            if self.year and self.year != resyear:
+                print('\033[33mNot match in tmdb: [%s]\033[0m ' % (self.title))
+            else:
+                match = True
+                self.year = resyear
+        return match
 
-        if hasattr(result, 'media_type'):
-            self.ccfcat = transToCCFCat(result.media_type, self.ccfcat)
-        self.tmdbid = result.id
+    def saveTmdbTVResult(self, result):
+        match = False
+        if hasattr(result, 'first_air_date'):
+            match = self.verifyYear(result.first_air_date)
+        elif hasattr(result, 'release_date'):
+            match = self.verifyYear(result.release_date)
+
+        if match:
+            if hasattr(result, 'name'):
+                self.title = result.name
+                # print('name: ' + result.name)
+            elif hasattr(result, 'original_name'):
+                self.title = result.original_name
+                # print('original_name: ' + result.original_name)
+            if hasattr(result, 'media_type'):
+                self.ccfcat = transToCCFCat(result.media_type, self.ccfcat)
+            self.tmdbid = result.id
+            print('Found [%d]: %s' % (self.tmdbid, self.title))
 
         return result.id, self.title, self.year
 
     def saveTmdbMovieResult(self, result):
-        if hasattr(result, 'title'):
-            self.title = result.title
-            # print('title: ' + result.title)
-        elif hasattr(result, 'original_title'):
-            self.title = result.original_title
-            # print('original_title: ' + result.original_title)
+        match = False
         if hasattr(result, 'release_date'):
-            m = re.match('^(\d+)', result.release_date)
-            if m:
-                resyear = m.group(0)
-                if self.year and self.year != resyear:
-                    result.id = 0
-                    print('\033[33mNot match in tmdb: [%s]\033[0m ' % (self.title))
-                else:
-                    self.year = resyear
+            match = self.verifyYear(result.release_date)
         elif hasattr(result, 'first_air_date'):
-            m = re.match('^(\d+)', result.first_air_date)
-            if m:
-                self.year = m.group(0)
-                if self.year and self.year != resyear:
-                    print('\033[33mNot match in tmdb: [%s]\033[0m ' % (self.title))
-                    result.id = 0
-                else:
-                    self.year = resyear
-        if hasattr(result, 'media_type'):
-            self.ccfcat = transToCCFCat(result.media_type, self.ccfcat)
-        self.tmdbid = result.id
+            match = self.verifyYear(result.first_air_date)
+
+        if match:
+            if hasattr(result, 'title'):
+                self.title = result.title
+                # print('title: ' + result.title)
+            elif hasattr(result, 'original_title'):
+                self.title = result.original_title
+                # print('original_title: ' + result.original_title)
+            if hasattr(result, 'media_type'):
+                self.ccfcat = transToCCFCat(result.media_type, self.ccfcat)
+            self.tmdbid = result.id
+            print('Found [%d]: %s' % (self.tmdbid, self.title))
         return result.id, self.title, self.year
 
     def imdbMultiQuery(self, title, year=None):
@@ -147,7 +139,6 @@ class TMDbNameParser():
             results = tv.search(cntitle)
             if len(results) > 0:
                 return self.saveTmdbTVResult(results[0])
-
 
         elif cat == 'movie':
             print('Search Movie: ' + title)
@@ -196,7 +187,8 @@ class TMDbNameParser():
 
 
 if __name__ == '__main__':
-    itemName = '彩虹宝宝第三季.Rainbow.Ruby.S02.2020.WEB-DL.4k.H265.AAC-HDSWEB'
+    # itemName = '[我要打篮球].Game.On.2019.Complete.WEB-DL.1080p.H264.AAC-CMCTV'
+    itemName = '胜者即是正义SP.2013.720p.日语.简体中字￡WiKi(feat.CMCT)'
     print(itemName)
     # export TMDB_API_KEY='YOUR_API_KEY'
     p = TMDbNameParser('', 'zh-CN')
