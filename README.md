@@ -45,8 +45,8 @@ optional arguments:
   --origin-name         keep origin file name.
   --sleep SLEEP         sleep x seconds after operation.
   --move-run            WARN: REAL MOVE...with NO REGRET.
-  --emby-bracket        Ex: Alone (2020) [tmdbid=509635]
-  --plex-bracket        Ex: Alone (2020) {tmdbid=509635}
+  --emby-bracket        ex: Alone (2020) [tmdbid=509635]
+  --plex-bracket        ex: Alone (2020) {tmdb-509635}
 ```
 
 ## 例子

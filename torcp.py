@@ -123,21 +123,21 @@ def genMediaFolderName(cat, title, year, season, tmdbid):
         if ARGS.emby_bracket:
             tmdbTail = ' [tmdbid='+str(tmdbid)+']'
         if ARGS.plex_bracket:
-            tmdbTail = ' {tmdbid='+str(tmdbid)+'}'
-         
-    if cat == 'TV':
-        if not season:
-            season = 'S01'
-        if len(year) == 4 and season == 'S01':
-            mediaFolderName = title + ' (' + year + ')'
+            tmdbTail = ' {tmdb-'+str(tmdbid)+'}'
+        mediaFolderName = title + ' (' + year + ')' + tmdbTail 
+    else:        
+        if cat == 'TV':
+            if not season:
+                season = 'S01'
+            if len(year) == 4 and season == 'S01':
+                mediaFolderName = title + ' (' + year + ')'
+            else:
+                mediaFolderName = title
         else:
-            mediaFolderName = title
-    else:
-        if len(year) == 4:
-            mediaFolderName = title + ' (' + year + ')'
-        else:
-            mediaFolderName = title
-    mediaFolderName = mediaFolderName + tmdbTail 
+            if len(year) == 4:
+                mediaFolderName = title + ' (' + year + ')'
+            else:
+                mediaFolderName = title
     return mediaFolderName
 
 
@@ -177,7 +177,7 @@ def uselessFile(entryName):
 
 def selfGenCategoryDir(dirName):
     return dirName in [
-        'MovieEncode', 'MovieRemux', 'MovieWebdl', 'MovieBDMV', 'BDMVISO', 'TV'
+        'MovieEncode', 'MovieRemux', 'MovieWebdl', 'MovieBDMV', 'BDMVISO', 'Movie', 'TV'
     ]
 
 
@@ -470,7 +470,7 @@ def processOneDirItem(cpLocation, itemName):
     else:
         if p.ccfcat == 'TV':
             copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group)
-        elif p.ccfcat in ['MovieEncode', 'MovieWebdl']:
+        elif p.ccfcat in ['Movie', 'MovieEncode', 'MovieWebdl']:
             processMovieDir(mediaSrc, p.ccfcat, destFolderName)
         # TODO: merge
         elif p.ccfcat in ['MovieBDMV', 'MovieRemux']:
@@ -555,10 +555,10 @@ def loadArgs():
                         help='WARN: REAL MOVE...with NO REGRET.')
     parser.add_argument('--emby-bracket',
                         action='store_true',
-                        help='Ex: Alone (2020) [tmdbid=509635]')
+                        help='ex: Alone (2020) [tmdbid=509635]')
     parser.add_argument('--plex-bracket',
                         action='store_true',
-                        help='Ex: Alone (2020) {tmdbid=509635}')
+                        help='ex: Alone (2020) {tmdb-509635}')
 
     global ARGS
     ARGS = parser.parse_args()
