@@ -69,18 +69,19 @@ class TMDbNameParser():
 
     def verifyYear(self, resultDate, cat):
         match = False
+        resyear = self.year
         m = re.match('^(\d+)', resultDate)
         if m:
             resyear = m.group(0)
+            intyear = int(resyear)
             if cat == 'tv':
-                match = not (self.season == 'S01' and self.year and self.year != resyear)
+                match = not (self.season == 'S01' and self.year and self.year not in [str(intyear-1), str(intyear), str(intyear+1)])
             else:
-                intyear = int(resyear)
                 match = not self.year or (self.year in [str(intyear-1), str(intyear), str(intyear+1)])
-            if not match:
-                print('\033[33mNot match in tmdb: [%s]\033[0m ' % (self.title))
-            else:
-                self.year = resyear
+        if not match:
+            print('\033[33mNot match in tmdb: [%s]\033[0m ' % (self.title))
+        else:
+            self.year = resyear
         return match
 
     def saveTmdbTVResult(self, result):
@@ -102,7 +103,7 @@ class TMDbNameParser():
             self.tmdbid = result.id
             print('Found [%d]: %s' % (self.tmdbid, self.title))
 
-        return result.id, self.title, self.year
+        return match
 
     def saveTmdbMovieResult(self, result):
         match = False
@@ -122,7 +123,7 @@ class TMDbNameParser():
                 self.ccfcat = transToCCFCat(result.media_type, self.ccfcat)
             self.tmdbid = result.id
             print('Found [%d]: %s' % (self.tmdbid, self.title))
-        return result.id, self.title, self.year
+        return match
 
     def imdbMultiQuery(self, title, year=None):
         search = Search()
@@ -139,12 +140,17 @@ class TMDbNameParser():
                 print('Search TV: ' + title)
                 results = tv.search(title)
                 if len(results) > 0:
-                    return self.saveTmdbTVResult(results[0])
+                    match = self.saveTmdbTVResult(results[0])
+                    if match:
+                        return self.tmdbid, self.title, self.year
+
             if cntitle:
                 print('Search TV: ' + cntitle)
                 results = tv.search(cntitle)
                 if len(results) > 0:
-                    return self.saveTmdbTVResult(results[0])
+                    match = self.saveTmdbTVResult(results[0])
+                    if match:
+                        return self.tmdbid, self.title, self.year
 
         elif cat == 'movie':
             if title:
@@ -152,12 +158,16 @@ class TMDbNameParser():
                 search = Search()
                 results = search.movies({"query": title, "year": year, "page": 1})
                 if len(results) > 0:
-                    return self.saveTmdbMovieResult(results[0])
+                    match = self.saveTmdbMovieResult(results[0])
+                    if match:
+                        return self.tmdbid, self.title, self.year
             if cntitle:
                 print('Search Movie: ' + cntitle)
                 results = search.movies({"query": cntitle, "year": year, "page": 1})
                 if len(results) > 0:
-                    return self.saveTmdbMovieResult(results[0])
+                    match = self.saveTmdbMovieResult(results[0])
+                    if match:
+                        return self.tmdbid, self.title, self.year
 
             # maxhit = 0.0
             # for result in results:
@@ -176,9 +186,23 @@ class TMDbNameParser():
             #     results.sort(key=lambda x: x.popularity, reverse=True)
             if len(results) > 0:
                 if results[0].media_type == 'tv':
-                    return self.saveTmdbTVResult(results[0])
+                    match = self.saveTmdbTVResult(results[0])
                 else:
-                    return self.saveTmdbMovieResult(results[0])
+                    match = self.saveTmdbMovieResult(results[0])
+                if match:
+                    return self.tmdbid, self.title, self.year
+
+            print('Search multi withou year: ' + title)
+            results = self.imdbMultiQuery(title)
+            # if not year:
+            #     results.sort(key=lambda x: x.popularity, reverse=True)
+            if len(results) > 0:
+                if results[0].media_type == 'tv':
+                    match = self.saveTmdbTVResult(results[0])
+                else:
+                    match = self.saveTmdbMovieResult(results[0])
+                if match:
+                    return self.tmdbid, self.title, self.year
 
         if cntitle and (cntitle != title):
             print('Search multi: ' + cntitle)
@@ -186,9 +210,11 @@ class TMDbNameParser():
             if len(results) > 0:
                 self.ccfcat = transToCCFCat(results[0].media_type, self.ccfcat)
                 if results[0].media_type == 'tv':
-                    return self.saveTmdbTVResult(results[0])
+                    match = self.saveTmdbTVResult(results[0])
                 else:
-                    return self.saveTmdbMovieResult(results[0])
+                    match = self.saveTmdbMovieResult(results[0])
+                if match:
+                    return self.tmdbid, self.title, self.year
 
         print('\033[31mTMDb Not found: [%s] [%s]\033[0m ' % (title, cntitle))
         return 0, title, year
@@ -196,7 +222,8 @@ class TMDbNameParser():
 
 if __name__ == '__main__':
     # itemName = '[我要打篮球].Game.On.2019.Complete.WEB-DL.1080p.H264.AAC-CMCTV'
-    itemName = 'Say.No.For.Youth.2015.Complete.WEB-DL.4K.HEVC.AAC-CMCTV'
+    # itemName = 'Journey to the West (2011)'
+    itemName = '[咱家].Our.Home.2017.Complete.WEB-DL.4K.HEVC.AAC-CMCTV'
     print(itemName)
     # export TMDB_API_KEY='YOUR_API_KEY'
     p = TMDbNameParser('', 'zh-CN')
