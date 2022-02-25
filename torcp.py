@@ -323,7 +323,7 @@ def setArgsCategory(parser):
         #     print('\033[34mWarn: I don\'t think it is Movie  %s \033[0m' % parser.title)
         parser.ccfcat = 'Movie'
     else:
-        if  parser.tmdb_api_key and parser.tmdbid == 0:
+        if  ARGS.tmdb_api_key and parser.tmdbid == 0:
             parser.ccfcat = 'TMDbNotFound'
 
 
