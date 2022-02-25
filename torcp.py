@@ -124,8 +124,8 @@ def genMediaFolderName(cat, title, year, season, tmdbid):
             tmdbTail = ' [tmdbid='+str(tmdbid)+']'
         if ARGS.plex_bracket:
             tmdbTail = ' {tmdb-'+str(tmdbid)+'}'
-        mediaFolderName = title + ' (' + year + ')' + tmdbTail 
-    else:        
+        mediaFolderName = title + ' (' + year + ')' + tmdbTail
+    else:
         if cat == 'TV':
             if not season:
                 season = 'S01'
@@ -145,7 +145,7 @@ def isMediaFileType(file_ext):
     return file_ext.lower() in KEEPEXTS
 
 
-def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName):
+def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName, resolution):
     if os.path.isdir(os.path.join(tvSourceFullPath, 'BDMV')):
         # break, process BDMV dir for this dir
         bdmvTVFolder = os.path.join(tvFolder, seasonFolder)
@@ -163,7 +163,7 @@ def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName):
                 if ARGS.origin_name:
                     newTVFileName = os.path.basename(tv2item)
                 else:
-                    newTVFileName = genTVSeasonEpisonGroup(tv2item, groupName)
+                    newTVFileName = genTVSeasonEpisonGroup(tv2item, groupName, resolution)
                 targetCopy(tv2itemPath, seasonFolderFullPath, newTVFileName)
             elif file_ext.lower() in ['.iso']:
                 # TODO: aruba need iso when extract_bdmv
@@ -181,15 +181,18 @@ def selfGenCategoryDir(dirName):
     ]
 
 
-def genTVSeasonEpisonGroup(mediaFilename, groupName):
+def genTVSeasonEpisonGroup(mediaFilename, groupName, resolution):
     tvTitle, tvYear, tvSeason, tvEpisode, cntitle = parseMovieName(
         mediaFilename)
 
     filename, file_ext = os.path.splitext(mediaFilename)
+    ch1 = ' - ' if (resolution or groupName) else ''
+    ch2 = '_' if (resolution and groupName) else ''
     return tvTitle + ' ' + (tvYear if tvYear else '') + (
-        ' ' + tvSeason.upper()
-        if tvSeason else '') + (tvEpisode.upper() if tvEpisode else '') + (
-            (' - ' + groupName) if groupName else '') + file_ext
+        ' ' + tvSeason.upper() if tvSeason else
+        '') + (tvEpisode.upper() if tvEpisode else '') + ch1 + (
+            resolution if resolution else '') + ch2 + (groupName if groupName
+                                                       else '') + file_ext
 
 
 def getMediaFile(filePath):
@@ -230,7 +233,7 @@ def fixSeasonGroupWithFilename(folderPath, folderSeason, folderGroup):
     return season, group
 
 
-def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName):
+def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName, resolution):
     if os.path.islink(tvSourceFolder):
         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % tvSourceFolder)
         return
@@ -253,14 +256,14 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName):
         tvitemPath = os.path.join(tvSourceFolder, tvitem)
         if os.path.isdir(tvitemPath):
             seasonFolder = getSeasonFromFolderName(tvitem, failDir=parseSeason)
-            copyTVSeasonItems(tvitemPath, genFolder, seasonFolder, parseGroup)
+            copyTVSeasonItems(tvitemPath, genFolder, seasonFolder, parseGroup, resolution)
         else:
             filename, file_ext = os.path.splitext(tvitemPath)
             if isMediaFileType(file_ext):
                 if ARGS.origin_name:
                     newTVFileName = os.path.basename(tvitemPath)
                 else:
-                    newTVFileName = genTVSeasonEpisonGroup(tvitem, parseGroup)
+                    newTVFileName = genTVSeasonEpisonGroup(tvitem, parseGroup, resolution)
                 seasonFolderFullPath = os.path.join('TV', genFolder,
                                                     parseSeason)
                 targetCopy(tvitemPath, seasonFolderFullPath, newTVFileName)
@@ -414,9 +417,9 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
             print('\033[31mMiss Categoried TV: [%s]\033[0m ' % mediaSrc)
             # parseSeason = fixSeasonName(parseSeason)
             if p.ccfcat != folderCat:
-                copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group)
+                copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group, p.resolution)
             else:
-                copyTVFolderItems(mediaSrc, folderGenName, p.season, p.group)
+                copyTVFolderItems(mediaSrc, folderGenName, p.season, p.group, p.resolution)
             return
 
         if ARGS.origin_name:
@@ -452,7 +455,7 @@ def processOneDirItem(cpLocation, itemName):
                 if ARGS.origin_name:
                     newTVFileName = itemName
                 else:
-                    newTVFileName = genTVSeasonEpisonGroup(itemName, p.group)
+                    newTVFileName = genTVSeasonEpisonGroup(itemName, p.group, p.resolution)
                 seasonFolderFullPath = os.path.join('TV', destFolderName,
                                                     p.season)
                 targetCopy(mediaSrc, seasonFolderFullPath, newTVFileName)
@@ -485,8 +488,8 @@ def processOneDirItem(cpLocation, itemName):
             print('\033[34mSkip file:  %s \033[0m' % mediaSrc)
     else:
         if p.ccfcat == 'TV':
-            copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group)
-        elif p.ccfcat in ['Movie', 'MovieEncode', 'MovieWebdl','MovieBDMV', 'MovieRemux']:
+            copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group, p.resolution)
+        elif p.ccfcat in ['Movie', 'MovieEncode', 'MovieWebdl', 'MovieBDMV', 'MovieRemux']:
             processMovieDir(mediaSrc, p.ccfcat, destFolderName)
         elif p.ccfcat in ['MV']:
             targetCopy(mediaSrc, p.ccfcat)
