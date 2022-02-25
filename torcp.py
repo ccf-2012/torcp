@@ -315,9 +315,16 @@ def getLargestFiles(dirName):
 
 def setArgsCategory(parser):
     if ARGS.tv:
+        # if parser.ccfcat != 'TV':
+        #     print('\033[34mWarn: I don\'t think it is TV  %s \033[0m' % parser.title)
         parser.ccfcat = 'TV'
     elif ARGS.movie:
+        # if parser.ccfcat not in ['MovieEncode', 'MovieWebdl', 'MovieRemux', 'MovieBDMV', 'MV']:
+        #     print('\033[34mWarn: I don\'t think it is Movie  %s \033[0m' % parser.title)
         parser.ccfcat = 'Movie'
+    else:
+        if  parser.tmdb_api_key and parser.tmdbid == 0:
+            parser.ccfcat = 'TMDbNotFound'
 
 
 def isCollections(folderName):
@@ -461,6 +468,8 @@ def processOneDirItem(cpLocation, itemName):
                 print('\033[33mMaybe remux? : %s \033[0m' % itemName)
                 targetCopy(mediaSrc, os.path.join('MovieRemux',
                                                   destFolderName))
+            elif p.ccfcat in ['TMDbNotFound']:
+                targetCopy(mediaSrc, p.ccfcat)
             else:
                 print('\033[33mSingle media file : [ %s ] %s \033[0m' %
                       (p.ccfcat, mediaSrc))
@@ -477,12 +486,11 @@ def processOneDirItem(cpLocation, itemName):
     else:
         if p.ccfcat == 'TV':
             copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group)
-        elif p.ccfcat in ['Movie', 'MovieEncode', 'MovieWebdl']:
-            processMovieDir(mediaSrc, p.ccfcat, destFolderName)
-        # TODO: merge
-        elif p.ccfcat in ['MovieBDMV', 'MovieRemux']:
+        elif p.ccfcat in ['Movie', 'MovieEncode', 'MovieWebdl','MovieBDMV', 'MovieRemux']:
             processMovieDir(mediaSrc, p.ccfcat, destFolderName)
         elif p.ccfcat in ['MV']:
+            targetCopy(mediaSrc, p.ccfcat)
+        elif p.ccfcat in ['TMDbNotFound']:
             targetCopy(mediaSrc, p.ccfcat)
         elif p.ccfcat in ['eBook', 'Music', 'Audio', 'HDTV']:
             print('\033[33mSkip eBoook, Music, Audio, HDTV: [%s], %s\033[0m ' %

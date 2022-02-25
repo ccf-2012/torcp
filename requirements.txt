@@ -1,2 +1,1 @@
-tmdbsimple
 tmdbv3api
