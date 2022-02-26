@@ -47,6 +47,9 @@ def hdlinkCopy(fromLoc, toLocPath, toLocFile=''):
             else:
                 print('ln ', fromLoc, destFile)
                 os.link(fromLoc, destFile)
+        else:
+            print('\033[32mTarget Exists: [%s]\033[0m ' % destFile)
+
     else:
         destDir = os.path.join(destDir, os.path.basename(fromLoc))
         if not os.path.exists(destDir):
@@ -55,6 +58,8 @@ def hdlinkCopy(fromLoc, toLocPath, toLocFile=''):
             else:
                 print('copytree ', fromLoc, destDir)
                 shutil.copytree(fromLoc, destDir, copy_function=os.link)
+        else:
+            print('\033[32mTarget Exists: [%s]\033[0m ' % destDir)
 
 
 def pathMove(fromLoc, toLocFolder, toLocFile=''):
@@ -77,6 +82,8 @@ def pathMove(fromLoc, toLocFolder, toLocFile=''):
             else:
                 print('mv ', fromLoc, destFile)
                 os.rename(fromLoc, destFile)
+        else:
+            print('\033[32mTarget Exists: [%s]\033[0m ' % destFile)
     else:
         destDir = os.path.join(destDir, os.path.basename(fromLoc))
         if not os.path.exists(destDir):
@@ -85,6 +92,8 @@ def pathMove(fromLoc, toLocFolder, toLocFile=''):
             else:
                 print('mvdir ', fromLoc, destDir)
                 shutil.move(fromLoc, destDir)
+        else:
+            print('\033[32mTarget Exists: [%s]\033[0m ' % destDir)
 
 
 def hdlinkLs(loc):
