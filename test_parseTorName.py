@@ -163,6 +163,7 @@ from torcategory import GuessCategoryUtils
     ('胜者即是正义SP.2013.720p.日语.简体中字￡WiKi(feat.CMCT)', '胜者即是正义SP', '2013', '', ''),
     ('七个世界，一个星球.全7集.2019.1080p.国英双语.双国配.中英字幕￡CMCT小鱼', '七个世界，一个星球', '2019', '', ''),
     ('音乐之声.五十周年纪念版.1965.1080p.国英双语.中英字幕￡CMCT风潇潇', '音乐之声', '1965', '', ''),
+    ('The Borgias Disc2', 'The Borgias', '', '', ''),
     # ('Grateful Dead - Listen to the River：St. Louis \'71 \'72 \'73 (Live) (2021) (24-192)', 'Grateful Dead - Listen to the River：St. Louis', '2021', '', ''),
     # ('32.迪卡唱片.-.《极致：勃拉姆斯选集》.(5CDs.Box-set)', '32 迪卡唱片 《极致：勃拉姆斯选集》', '', '', ''),
 ])
