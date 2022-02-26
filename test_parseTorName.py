@@ -165,7 +165,7 @@ from torcategory import GuessCategoryUtils
     ('音乐之声.五十周年纪念版.1965.1080p.国英双语.中英字幕￡CMCT风潇潇', '音乐之声', '1965', '', ''),
     ('The Borgias Disc2', 'The Borgias', '', '', ''),
     ('[故宫].全12集.简繁特效.2005.AVC.1080p.HDTV.H264.AC-3.DD2.0-@szdqwx', '故宫', '2005', '', ''),
-    ('花仙子全50集+剧场版.1080p.国日双语.中文字幕', '花仙子', '', '', ''),
+    ('花仙子 全50集+剧场版.1080p.国日双语.中文字幕', '花仙子', '', '', ''),
     ('[劫与罪].Heist.2021.S01.S01E03.NF.WEB-DL.1080p.H264.DDP.5.1-CMCTV.mp4', 'Heist', '2021', 'S01', 'E03'),
     # ('Grateful Dead - Listen to the River：St. Louis \'71 \'72 \'73 (Live) (2021) (24-192)', 'Grateful Dead - Listen to the River：St. Louis', '2021', '', ''),
     # ('32.迪卡唱片.-.《极致：勃拉姆斯选集》.(5CDs.Box-set)', '32 迪卡唱片 《极致：勃拉姆斯选集》', '', '', ''),
