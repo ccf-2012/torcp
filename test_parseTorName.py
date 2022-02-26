@@ -161,6 +161,8 @@ from torcategory import GuessCategoryUtils
     ('No.33_指环王3.魔戒三部曲：国王归来.TLOTR.The.Return.of.the.King.EE.2003.加长版.x265.BD1080P.国英双语.特效中英字幕.mp4', 'TLOTR The Return of the King EE', '2003', '', ''),
     ('No.238_千钧一发(变种异煞) Gattaca (1997).BD720P.国英双语.中英双 字.mp4', 'Gattaca', '1997', '', ''),
     ('胜者即是正义SP.2013.720p.日语.简体中字￡WiKi(feat.CMCT)', '胜者即是正义SP', '2013', '', ''),
+    ('七个世界，一个星球.全7集.2019.1080p.国英双语.双国配.中英字幕￡CMCT小鱼', '七个世界，一个星球', '2019', '', ''),
+    ('音乐之声.五十周年纪念版.1965.1080p.国英双语.中英字幕￡CMCT风潇潇', '音乐之声', '1965', '', ''),
     # ('Grateful Dead - Listen to the River：St. Louis \'71 \'72 \'73 (Live) (2021) (24-192)', 'Grateful Dead - Listen to the River：St. Louis', '2021', '', ''),
     # ('32.迪卡唱片.-.《极致：勃拉姆斯选集》.(5CDs.Box-set)', '32 迪卡唱片 《极致：勃拉姆斯选集》', '', '', ''),
 ])
