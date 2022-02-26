@@ -4,7 +4,7 @@
 2. 解析影视文件夹中的 `影视名称`，`年份`，`季`，`集`，以及 `制作组`
 3. 依照 [Emby-happy](https://support.emby.media/support/solutions/articles/44001159102-movie-naming) 的风格进行重组目录与改名，在目标目录中生成硬链.
 > 所谓硬链，就是不占磁盘空间对同一文件的引用，而在使用时就像两个分别的文件一样，可以改名和移动
-4. Since 2022.2.26: 支持搜索TMDb，以获得准确的、设定语言的影视名字，然而以此名字进行更名和组织目录
+4. Since 2022.2.26: 支持搜索TMDb，以获得准确的、选定语言的影视名字，然后以此名字进行更名和组织目录
 
 ## 准备
 > 本程序需要在 `python3` 运行环境，以命令行方式运行
@@ -79,7 +79,7 @@ python3 torcp.py /home/ccf2012/Downloads/RSSMovie/ -d /home/ccf2012/emby/ --movi
 python3 torcp.py /home/ccf2012/Downloads/权力的游戏.第1-8季.Game.Of.Thrones.S01-S08.1080p.Blu-Ray.AC3.x265.10bit-Yumi -d /home/ccf2012/emby/ -s --tv
 ```
 
-### BDMV的处理
+## `--extract-bdmv` 和 `--full-bdmv`，BDMV的处理
 * 特别说一下对BDMV的处理：
 1. 如果什么参数都不加，在碰到含有 `BDMV` 目录和 `.iso` 文件时，将会跳过。
 ```sh
@@ -95,7 +95,7 @@ python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir --extra
 python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir --full-bdmv
 ```
 
-#### --extract-bdmv 的例子
+#### `--extract-bdmv` 的例子
 * 命令:
 ```sh
 python torcp.py  /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Video/emby/  --extract-bdmv 
@@ -185,8 +185,8 @@ python torcp.py  /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Vid
 
 ```
 
-## move-run 直接改名和移动 
-* 不作硬链，直接进行move和改名操作的版本，用于对已经放在gd中的文件进行整理
+## `--move-run` 直接改名和移动 
+* 不作硬链，直接进行move和改名操作，用于对已经放在gd中的文件进行整理
 * `-d` 指定要搬移的目标位置，请自己把握不跨区 
 * 加了一个`--sleep`参数，可以每次操作搬移一个文件后暂停 `SLEEP` 秒，此参数仅在 `--move-run` 时有效
 * 由于这样的操作不可逆，请一定先作 `--dry-run` 确认后才执行
@@ -196,7 +196,7 @@ python torcp.py  /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Vid
 python3 torcp.py /home/test/ -d /home/test/result5/ --move-run --dryrun
 ```
 
-## TMDb 查询
+## `--tmdb-api-key` TMDb 查询
 * 通过The Movie Database (TMDb) API 查询，得到确切的tmdbid, 确保生成的文件夹可被刮削
 * 可选 `--tmdb-lang` 参数，默认是 `zh-CN`
 * 查询不到的文件，将会被 `链` 或 `移` 到目标目录下 `TMDbNotFound` 目录中
