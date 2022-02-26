@@ -151,7 +151,7 @@ from torcategory import GuessCategoryUtils
     ('Twice - #TWICE (CD-FLAC)', 'Twice #TWICE', '', '', ''),
     ('风潮唱片-《马修.连恩系列-驯鹿宣言》(Caribou Commons)专辑[APE整轨]', '风潮唱片 《马修 连恩系列 驯鹿宣言》 Caribou Commons 专辑', '', '', ''),
     ('Bach - Vionlin Concertos - Isabelle Faust {HMM 902335.36} (2019) [FLAC]', 'Bach Vionlin Concertos Isabelle Faust', '2019', '', ''),
-    ('[迪士尼]2015.恐龙当家.恐龙大时代.美好的恐龙世界.善良的恐龙.恐龙管家.3D港版.国语简繁中字.BD.ISO', '恐龙当家 恐龙大时代 美好的恐龙世界 善良的恐龙 恐龙管家 3D港版 国语简繁中字', '2015', '', ''),
+    ('[迪士尼]2015.恐龙当家.恐龙大时代.美好的恐龙世界.善良的恐龙.恐龙管家.3D港版.国语简繁中字.BD.ISO', '恐龙当家 恐龙大时代 美好的恐龙世界 善良的恐龙 恐龙管家', '2015', '', ''),
     ('E3.2018.Press.Conference.WEB-DL.1080p.H264.AAC-CMCTV', 'E3 2018 Press Conference', '2018', 'S01', 'E3'),
     ('踢馆秘笈（第六季）—测试样片', '踢馆秘笈', '', 'S06', ''),
     ('海绵宝宝 国语 12季', '海绵宝宝', '', 'S12', ''),
@@ -164,6 +164,9 @@ from torcategory import GuessCategoryUtils
     ('七个世界，一个星球.全7集.2019.1080p.国英双语.双国配.中英字幕￡CMCT小鱼', '七个世界，一个星球', '2019', '', ''),
     ('音乐之声.五十周年纪念版.1965.1080p.国英双语.中英字幕￡CMCT风潇潇', '音乐之声', '1965', '', ''),
     ('The Borgias Disc2', 'The Borgias', '', '', ''),
+    ('[故宫].全12集.简繁特效.2005.AVC.1080p.HDTV.H264.AC-3.DD2.0-@szdqwx', '故宫', '2005', '', ''),
+    ('花仙子全50集+剧场版.1080p.国日双语.中文字幕', '花仙子', '', '', ''),
+    ('[劫与罪].Heist.2021.S01.S01E03.NF.WEB-DL.1080p.H264.DDP.5.1-CMCTV.mp4', 'Heist', '2021', 'S01', 'E03'),
     # ('Grateful Dead - Listen to the River：St. Louis \'71 \'72 \'73 (Live) (2021) (24-192)', 'Grateful Dead - Listen to the River：St. Louis', '2021', '', ''),
     # ('32.迪卡唱片.-.《极致：勃拉姆斯选集》.(5CDs.Box-set)', '32 迪卡唱片 《极致：勃拉姆斯选集》', '', '', ''),
 ])

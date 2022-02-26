@@ -417,6 +417,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
         #     cat = 'TV'
         p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang)
         p.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
+        setArgsCategory(p)
 
         destFolderName = genMediaFolderName(p.ccfcat, p.title, p.year,
                                             p.season, p.tmdbid)

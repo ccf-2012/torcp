@@ -165,8 +165,8 @@ class TMDbNameParser():
 
 if __name__ == '__main__':
     # itemName = '[我要打篮球].Game.On.2019.Complete.WEB-DL.1080p.H264.AAC-CMCTV'
-    # itemName = 'Journey to the West (2011)'
-    itemName = '人妖阿发 痴人三部曲⅓ Night of a Shemale A Mad Man Trilogy (2020)'
+    itemName = '[劫与罪].Heist.2021.S01.Complete.NF.WEB-DL.1080p.H264.DDP.5.1-CMCTV'
+    # itemName = '人妖阿发 痴人三部曲⅓ Night of a Shemale A Mad Man Trilogy (2020)'
     print(itemName)
     # export TMDB_API_KEY='YOUR_API_KEY'
     p = TMDbNameParser('', 'zh-CN')
