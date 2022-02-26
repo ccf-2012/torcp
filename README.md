@@ -6,8 +6,20 @@
 > 所谓硬链，就是不占磁盘空间对同一文件的引用，而在使用时就像两个分别的文件一样，可以改名和移动
 4. Since 2022.2.26: 支持搜索TMDb，以获得准确的、设定语言的影视名字，然而以此名字进行更名和组织目录
 
-##  使用方法:
-* 本程序需要在 `python3` 运行环境，以命令行方式运行
+## 准备
+> 本程序需要在 `python3` 运行环境，以命令行方式运行
+
+* 下载源码
+```sh
+git clone https://github.com/ccf-2012/torcp.git
+```
+
+* 安装依赖（终于）
+```sh
+pip3 install -r requirements.txt
+```
+
+#  使用方法:
 * 完整的命令参数，可以通过这样查看：
 ```sh 
 python3 torcp.py -h
@@ -181,19 +193,31 @@ python torcp.py  /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Vid
 
 ### 例子
 ```sh
-python3 torcp.py ../test/ -d ../test/result5/ --move-run --dryrun
+python3 torcp.py /home/test/ -d /home/test/result5/ --move-run --dryrun
 ```
 
 ## TMDb 查询
 * 通过The Movie Database (TMDb) API 查询，得到确切的tmdbid, 确保生成的文件夹可被刮削
 * 可选 `--tmdb-lang` 参数，默认是 `zh-CN`
+* 查询不到的文件，将会被 `链` 或 `移` 到目标目录下 `TMDbNotFound` 目录中
+
 ```sh
-python3 torcp.py ../test/ -d ../test/result3/ --tmdb-api-key='your TMDb api key'
+python3 torcp.py /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb api key'
 ```
 
 * 组合 `--move-run` 的例子
 ```sh
-python3 torcp.py ../test/ -d ../test/result2/ --tmdb-api-key='your TMDb api key' --plex-bracket --move-run  --dryrun
+python3 torcp.py /home/test/ -d /home/test/result2/ --tmdb-api-key='your TMDb api key' --plex-bracket --move-run  --dryrun
+```
+
+## DeleteEmptyFolders.py 清除空目录
+* 在作了上面 `--move-run` 操作后，原目录将会剩留大量 空的，或仅包含 `.jpg`, `.nfo` 这类小文件的目录
+* 除了默认的 `.mkv`, `.mp4`, `.ts`, `.iso` 之外，使用与 `torcp.py` 相同的 `--keep-ext` 来表示那些已经 **不再包含这些扩展名文件** 的目录，将被删除
+* 使用 `--dryrun` 先看下将会发生什么
+
+### 例子
+```sh
+python3 DeleteEmptyFolders.py /home/test/  -e srt,ass --dryrun
 ```
 
 ## Acknowledgement 
