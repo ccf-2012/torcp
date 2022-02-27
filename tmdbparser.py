@@ -135,7 +135,7 @@ class TMDbNameParser():
         newlist = sorted(resultList, key=lambda x: x.popularity, reverse=True)
 
     def searchTMDb(self, title, cat=None, year=None, cntitle=None):
-        if cat == 'tv':
+        if cat.lower() == 'tv':
             searchList = [('tv',cntitle), ('tv', title), ('movie', cntitle), ('movie', title)]
         else:
             searchList = [('movie', cntitle), ('movie', title), ('tv',cntitle), ('tv', title)]
@@ -162,13 +162,3 @@ class TMDbNameParser():
         print('\033[31mTMDb Not found: [%s] [%s]\033[0m ' % (title, cntitle))
         return 0, title, year
 
-
-if __name__ == '__main__':
-    # itemName = '[我要打篮球].Game.On.2019.Complete.WEB-DL.1080p.H264.AAC-CMCTV'
-    itemName = '[劫与罪].Heist.2021.S01.Complete.NF.WEB-DL.1080p.H264.DDP.5.1-CMCTV'
-    # itemName = '人妖阿发 痴人三部曲⅓ Night of a Shemale A Mad Man Trilogy (2020)'
-    print(itemName)
-    # export TMDB_API_KEY='YOUR_API_KEY'
-    p = TMDbNameParser('', 'zh-CN')
-    p.parse(itemName, TMDb=True)
-    print(p.title, p.year, p.ccfcat, p.tmdbid)
