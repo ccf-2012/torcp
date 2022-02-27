@@ -417,7 +417,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
         # if parseSeason and (cat != 'TV'):
         #     print('Category fixed: ' + movieItem)
         #     cat = 'TV'
-        cat = setArgsCategory(p)
+        cat = setArgsCategory()
         p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=cat)
         p.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
         checkTMDbNotFound(p)
@@ -453,7 +453,7 @@ def processOneDirItem(cpLocation, itemName):
     # cat, group, resolution = getCategory(itemName)
     # parseTitle, parseYear, parseSeason, parseEpisode, cntitle = parseMovieName(
     #     itemName)
-    cat = setArgsCategory(p)
+    cat = setArgsCategory()
     p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=cat)
     p.parse(itemName, TMDb=(ARGS.tmdb_api_key is not None))
     checkTMDbNotFound(p)   
