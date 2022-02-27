@@ -325,19 +325,21 @@ def getLargestFiles(dirName):
 #             cat = 'MovieBDMV'
 #     return cat, group, catutil.resolution
 
-def setArgsCategory(parser):
+def setArgsCategory():
+    cat = ''
     if ARGS.tv:
         # if parser.ccfcat != 'TV':
         #     print('\033[34mWarn: I don\'t think it is TV  %s \033[0m' % parser.title)
-        parser.ccfcat = 'TV'
+        cat = 'TV'
     elif ARGS.movie:
         # if parser.ccfcat not in ['MovieEncode', 'MovieWebdl', 'MovieRemux', 'MovieBDMV', 'MV']:
         #     print('\033[34mWarn: I don\'t think it is Movie  %s \033[0m' % parser.title)
-        parser.ccfcat = 'Movie'
-    else:
-        if  ARGS.tmdb_api_key and parser.tmdbid == 0:
-            parser.ccfcat = 'TMDbNotFound'
+        cat = 'Movie'
+    return cat
 
+def checkTMDbNotFound(parser):
+    if  ARGS.tmdb_api_key and parser.tmdbid == 0:
+        parser.ccfcat = 'TMDbNotFound'
 
 def isCollections(folderName):
     return re.search(r'\b(Pack$|合集|Collections?|国语配音4K动画电影$)',
@@ -415,9 +417,10 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
         # if parseSeason and (cat != 'TV'):
         #     print('Category fixed: ' + movieItem)
         #     cat = 'TV'
-        p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang)
+        cat = setArgsCategory(p)
+        p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=cat)
         p.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
-        setArgsCategory(p)
+        checkTMDbNotFound(p)
 
         destFolderName = genMediaFolderName(p.ccfcat, p.title, p.year,
                                             p.season, p.tmdbid)
@@ -450,9 +453,10 @@ def processOneDirItem(cpLocation, itemName):
     # cat, group, resolution = getCategory(itemName)
     # parseTitle, parseYear, parseSeason, parseEpisode, cntitle = parseMovieName(
     #     itemName)
-    p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang)
+    cat = setArgsCategory(p)
+    p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=cat)
     p.parse(itemName, TMDb=(ARGS.tmdb_api_key is not None))
-    setArgsCategory(p)
+    checkTMDbNotFound(p)   
 
     destFolderName = genMediaFolderName(p.ccfcat, p.title, p.year, p.season, p.tmdbid)
     destCatFolderName = os.path.join(p.ccfcat, destFolderName)

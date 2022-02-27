@@ -28,7 +28,8 @@ def similar(a, b):
 
 
 class TMDbNameParser():
-    def __init__(self, tmdb_api_key, tmdb_lang):
+    def __init__(self, tmdb_api_key, tmdb_lang, ccfcat_hard=None):
+        self.ccfcatHard = ccfcat_hard
         self.ccfcat = ''
         self.title = ''
         self.year = ''
@@ -55,6 +56,9 @@ class TMDbNameParser():
             self.ccfcat = 'TV'
         if self.ccfcat == 'TV':
             self.season = self.fixSeasonName(self.season)
+
+        if self.ccfcatHard:
+            self.ccfcat = self.ccfcatHard
 
         if TMDb:
             self.searchTMDb(self.title, transFromCCFCat(self.ccfcat),
@@ -135,10 +139,16 @@ class TMDbNameParser():
         newlist = sorted(resultList, key=lambda x: x.popularity, reverse=True)
 
     def searchTMDb(self, title, cat=None, year=None, cntitle=None):
-        if cat.lower() == 'tv':
-            searchList = [('tv',cntitle), ('tv', title), ('movie', cntitle), ('movie', title)]
+        if self.ccfcatHard:
+            if cat.lower() == 'tv':
+                searchList = [('tv',cntitle), ('tv', title)]
+            else:
+                searchList = [('movie', cntitle), ('movie', title)]
         else:
-            searchList = [('movie', cntitle), ('movie', title), ('tv',cntitle), ('tv', title)]
+            if cat.lower() == 'tv':
+                searchList = [('tv',cntitle), ('tv', title), ('movie', cntitle), ('movie', title)]
+            else:
+                searchList = [('movie', cntitle), ('movie', title), ('tv',cntitle), ('tv', title)]
 
         for s in searchList:
             if s[0] == 'tv' and s[1]:
