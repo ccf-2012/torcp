@@ -9,14 +9,22 @@ def dropEmptyFolders(directory):
         isEmpty = True
         dirpath = os.path.join(directory, diritem)
         for dir, dirs, files in os.walk(dirpath):
-            # if not dirs and not files:
-            #     os.rmdir(dir)
+            if not dirs and not files:
+                print('\033[33mDelete empty folder: %s\033[0m ' % dir)
+                if not ARGS.dryrun:
+                    os.rmdir(dir)
             for fn in files:
+                fullfilepath = os.path.join(dir, fn)
                 filename, fileext = os.path.splitext(fn)
                 if fileext.lower() in KEEPEXTS:
-                    print('\033[32mNot Empty: %s\033[0m ' % os.path.join(dir, fn))
+                    print('\033[32mNot Empty: %s\033[0m ' % fullfilepath)
                     isEmpty = False
-        if isEmpty:
+                else:
+                    if os.path.isfile(fullfilepath):
+                        print('\033[33mDelete file: %s\033[0m ' % fullfilepath)
+                        if not ARGS.dryrun:
+                            os.remove(fullfilepath)
+        if isEmpty and os.path.isdir(dirpath):
             print('\033[31mrmtree: %s\033[0m ' % dirpath)
             if not ARGS.dryrun:
                 shutil.rmtree(dirpath)
