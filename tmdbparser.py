@@ -74,7 +74,7 @@ class TMDbNameParser():
     def verifyYear(self, resultDate, cat):
         match = False
         resyear = self.year
-        m = re.match('^(\d+)', resultDate)
+        m = re.match(r'^(\d+)\b', resultDate)
         if m:
             resyear = m.group(0)
             intyear = int(resyear)
@@ -86,14 +86,14 @@ class TMDbNameParser():
             self.year = resyear
         return match
 
-    def saveTmdbTVResult(self, result):
-        match = False
-        if hasattr(result, 'first_air_date'):
-            match = self.verifyYear(result.first_air_date, 'tv')
-        elif hasattr(result, 'release_date'):
-            match = self.verifyYear(result.release_date, 'tv')
+    def saveTmdbTVResultMatch(self, result):
+        # match = False
+        # if hasattr(result, 'first_air_date'):
+        #     match = self.verifyYear(result.first_air_date, 'tv')
+        # elif hasattr(result, 'release_date'):
+        #     match = self.verifyYear(result.release_date, 'tv')
 
-        if match:
+        if result:
             if hasattr(result, 'name'):
                 self.title = result.name
                 # print('name: ' + result.name)
@@ -107,7 +107,7 @@ class TMDbNameParser():
         else:
             print('\033[33mNot match in tmdb: [%s]\033[0m ' % (self.title))
 
-        return match
+        return result is not None
 
     def saveTmdbMovieResult(self, result):
         match = False
@@ -138,6 +138,32 @@ class TMDbNameParser():
     def sortByPopularity(resultList):
         newlist = sorted(resultList, key=lambda x: x.popularity, reverse=True)
 
+    def getYear(self, datestr):
+        intyear = 0
+        m = re.match(r'^(\d+)\b', datestr)
+        if m:
+            yearstr = m.group(0)
+            intyear = int(yearstr)
+        return intyear
+
+    def findYearMatch(self, results, year, strict=True):
+        for result in results:
+            datestr = ''
+            if hasattr(result, 'first_air_date'):
+                datestr = result.first_air_date
+            elif hasattr(result, 'release_date'):
+                datestr = result.release_date
+
+            resyear = self.getYear(datestr)
+            if strict:
+                if resyear == year:
+                    return result
+            else:
+                if resyear in [year-1, year, year+1]:
+                    return result
+        return None
+
+
     def searchTMDb(self, title, cat=None, year=None, cntitle=None):
         if self.ccfcatHard:
             if cat.lower() == 'tv':
@@ -152,16 +178,23 @@ class TMDbNameParser():
 
         for s in searchList:
             if s[0] == 'tv' and s[1]:
-                tv = TV()
                 print('Search TV: ' + s[1])
-                results = tv.search(s[1])
+                # tv = TV()
+                # results = tv.search(s[1])
+                search = Search()
+                results = search.tv_shows({"query": s[1], "year": year, "page": 1})
                 if len(results) > 0:
-                    match = self.saveTmdbTVResult(results[0])
+                    intyear = int(year) if year.isdigit() else 0
+                    result = self.findYearMatch(results, intyear, strict=True)
+                    if not result:
+                        result = self.findYearMatch(results, intyear, strict=False)
+
+                    match = self.saveTmdbTVResultMatch(result)
                     if match:
                         return self.tmdbid, self.title, self.year
 
             elif s[0] == 'movie' and s[1]:
-                print('Search Movie: ' + s[1])
+                print('Search Movie:  %s (%s)' % (s[1], year))
                 search = Search()
                 results = search.movies({"query": s[1], "year": year, "page": 1})
                 if len(results) > 0:
