@@ -12,7 +12,7 @@ import re
 import os
 import argparse
 import shutil
-# from torcategory import GuessCategoryUtils
+from torcategory import GuessCategoryUtils
 from tortitle import parseMovieName
 import logging
 import glob
@@ -161,6 +161,7 @@ def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName, resol
         processBDMV(tvSourceFullPath, bdmvTVFolder, 'TV')
         return
 
+    catutil = GuessCategoryUtils()
     for tv2item in os.listdir(tvSourceFullPath):
         tv2itemPath = os.path.join(tvSourceFullPath, tv2item)
         if os.path.isdir(tv2itemPath):
@@ -172,6 +173,10 @@ def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName, resol
                 if ARGS.origin_name:
                     newTVFileName = os.path.basename(tv2item)
                 else:
+                    if not groupName:
+                        cat, groupName = catutil.guessByName(tv2item)
+                        if not resolution:
+                            resolution = catutil.resolution
                     newTVFileName = genTVSeasonEpisonGroup(tv2item, groupName, resolution)
                 targetCopy(tv2itemPath, seasonFolderFullPath, newTVFileName)
             elif file_ext.lower() in ['.iso']:

@@ -69,7 +69,7 @@ python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir --full-
 
 
 ## Acknowledgement 
-Special thank to Aruba@hutongyouwu
+Special thank to Aruba@hutongyouwu & @ozz
 @NishinoKana @Esc @Hangsijing 
 
 

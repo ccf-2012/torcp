@@ -221,5 +221,5 @@ python3 DeleteEmptyFolders.py /home/test/  -e srt,ass --dryrun
 ```
 
 ## Acknowledgement 
- * @Aruba  
- * @NishinoKana @Esc @Hangsijing @Inu @ozz
+ * @Aruba  @ozz
+ * @NishinoKana @Esc @Hangsijing @Inu 
