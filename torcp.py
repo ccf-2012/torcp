@@ -197,7 +197,7 @@ def genTVSeasonEpisonGroup(mediaFilename, groupName, resolution):
     filename, file_ext = os.path.splitext(mediaFilename)
     ch1 = ' - ' if (resolution or groupName) else ''
     ch2 = '_' if (resolution and groupName) else ''
-    return tvTitle + ' ' + (tvYear if tvYear else '') + (
+    return tvTitle + ' ' +  ((' (' + tvYear + ')') if tvYear else '') + (
         ' ' + tvSeason.upper() if tvSeason else
         '') + (tvEpisode.upper() if tvEpisode else '') + ch1 + (
             resolution if resolution else '') + ch2 + (groupName if groupName
