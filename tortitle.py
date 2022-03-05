@@ -152,6 +152,7 @@ def parseSeason(sstr):
         sstr = sstr.replace(seasonstr, '')
         return seasonstr, seasonspan, episodestr
 
+    # m2 = re.search(r'(\b(S\d+)([\. ]?(\d{4}[\s\.])?Ep?\d+)?)\b(?!.*S\d+)', sstr, flags=re.A | re.I)
     m2 = re.search(r'(\b(S\d+)([\. ]?(\d{4}[\s\.])?Ep?\d+)?)\b', sstr, flags=re.A | re.I)
     if m2:
         seasonstr = m2.group(1)
@@ -292,6 +293,12 @@ def parse0DayMovieName(torName):
             if not re.search(r'\s[\-\+]\s', cntitle):
                 # if len(sstr)-len(cntitle) > 4:
                 sstr = sstr.replace(cntitle, '')
+        else:
+            m = re.search(r'^([\w\s]+)\s([\u4e00-\u9fa5\u3041-\u30fc]+)\s*$',sstr, flags=re.A)
+            if m:
+                cntitle = m.group(1)
+                if not re.search(r'\s[\-\+]\s', cntitle):
+                    sstr = sstr.replace(cntitle, '')
         cntitle = cntitle.strip()
 
     titlestr = bracketToBlank(sstr)

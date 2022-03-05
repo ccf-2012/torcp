@@ -166,7 +166,7 @@ from torcategory import GuessCategoryUtils
     ('The Borgias Disc2', 'The Borgias', '', '', ''),
     ('[故宫].全12集.简繁特效.2005.AVC.1080p.HDTV.H264.AC-3.DD2.0-@szdqwx', '故宫', '2005', '', ''),
     ('花仙子 全50集+剧场版.1080p.国日双语.中文字幕', '花仙子', '', '', ''),
-    ('[劫与罪].Heist.2021.S01.S01E03.NF.WEB-DL.1080p.H264.DDP.5.1-CMCTV.mp4', 'Heist', '2021', 'S01', 'E03'),
+    # ('[劫与罪].Heist.2021.S01.S01E03.NF.WEB-DL.1080p.H264.DDP.5.1-CMCTV.mp4', 'Heist', '2021', 'S01', 'E03'),
     # ('Grateful Dead - Listen to the River：St. Louis \'71 \'72 \'73 (Live) (2021) (24-192)', 'Grateful Dead - Listen to the River：St. Louis', '2021', '', ''),
     # ('32.迪卡唱片.-.《极致：勃拉姆斯选集》.(5CDs.Box-set)', '32 迪卡唱片 《极致：勃拉姆斯选集》', '', '', ''),
 ])
@@ -236,6 +236,9 @@ def test_parseTorName(test_input, e1, e2, e3, e4):
     ('Shooting Party, The (1984) (PAL DVDR)', 'MovieDVD', None),
     ('The Hillside Strangler.2004.Dvd9-CG', 'MovieDVD', 'CG'),
     ('2002 - In Violet Light - \'15 Hi-Res @ 24~96 (flac)', 'Music', None),
+    ('谭咏麟94纯金曲演唱会.Alan.Tan.live.in.HongKong.1994.D9&LD.HEVC.10bit.2Audio.MiniSD-XPcl@PTer', 'MV', 'PTer'),
+    ('人类星球 Human Planet(1080P)', 'Movie', None),
+    ('BoA.-.Camo.1080p.Bugs.AVC.AAC-HDHome.mp4', 'Movie', 'HDHome'),
     ('米老鼠2013.Mickey.Mouse.2013.S02E17.HR-HDTV.x264.AAC.Chs.Eng-Deefun迪幻字幕组.mkv', 'TV', 'Deefun迪幻字幕组'),
     # ('[AI-Raws] HELLO WORLD (BD HEVC 3840x2160 yuv444p10le Atmos／FLAC／FLAC[バリアフリー] 日本語字幕)[52F61BDB].mkv', 'MovieBDMV', None),
     # ('Sonata Arctica - Acoustic Adventures  - Volume One (2022)', 'Music', None),
