@@ -6,9 +6,9 @@ from difflib import SequenceMatcher
 
 
 def transFromCCFCat(cat):
-    if re.match('(movie|MV)', cat, re.I):
+    if re.match('(Movie|BDMV)', cat, re.I):
         return 'movie'
-    elif re.match('TV', cat, re.I):
+    elif re.match('(TV|HDTV)', cat, re.I):
         return 'tv'
     else:
         return cat
@@ -18,7 +18,7 @@ def transToCCFCat(mediatype, originCat):
     if mediatype == 'tv':
         return 'TV'
     elif mediatype == 'movie':
-        if not re.match('(movie|BDMVISO|MV)', originCat, re.I):
+        if not re.match('(movie|BDMV|MV)', originCat, re.I):
             return 'Movie'
     return originCat
 
@@ -49,7 +49,20 @@ class TMDbNameParser():
             self.tmdb = None
             # self.tmdb.api_key = None
 
+    def clearData(self):
+        self.ccfcat = ''
+        self.title = ''
+        self.year = ''
+        self.tmdbid = 0
+        self.season = ''
+        self.episode = ''
+        self.cntitle = ''
+        self.resolution = ''
+        self.group = ''
+        self.tmdbcat = ''
+
     def parse(self, torname, TMDb=False):
+        self.clearData()
         catutil = GuessCategoryUtils()
         self.ccfcat, self.group = catutil.guessByName(torname)
         self.resolution = catutil.resolution
@@ -69,6 +82,7 @@ class TMDbNameParser():
             if self.tmdbcat in ['tv', 'movie']:
                 self.searchTMDb(self.title, self.tmdbcat,
                                 self.year, self.cntitle)
+            self.ccfcat = transToCCFCat(self.tmdbcat, self.ccfcat)
 
     def fixSeasonName(self, seasonStr):
         if re.match(r'^Ep?\d+(-Ep?\d+)?$', seasonStr,
@@ -106,9 +120,10 @@ class TMDbNameParser():
             elif hasattr(result, 'original_name'):
                 self.title = result.original_name
                 # print('original_name: ' + result.original_name)
-            if hasattr(result, 'media_type'):
-                self.ccfcat = transToCCFCat(result.media_type, self.ccfcat)
+            # if hasattr(result, 'media_type'):
+            #     self.ccfcat = transToCCFCat(result.media_type, self.ccfcat)
             self.tmdbid = result.id
+            self.tmdbcat = 'tv'
             print('Found [%d]: %s' % (self.tmdbid, self.title))
         else:
             print('\033[33mNot match in tmdb: [%s]\033[0m ' % (self.title))
@@ -129,20 +144,21 @@ class TMDbNameParser():
             elif hasattr(result, 'original_title'):
                 self.title = result.original_title
                 # print('original_title: ' + result.original_title)
-            if hasattr(result, 'media_type'):
-                self.ccfcat = transToCCFCat(result.media_type, self.ccfcat)
+            # if hasattr(result, 'media_type'):
+            #     self.ccfcat = transToCCFCat(result.media_type, self.ccfcat)
             self.tmdbid = result.id
+            self.tmdbcat = 'movie'
             print('Found [%d]: %s' % (self.tmdbid, self.title))
         else:
             print('\033[33mNot match in tmdb: [%s]\033[0m ' % (self.title))
         return match
 
-    def imdbMultiQuery(self, title, year=None):
-        search = Search()
-        return search.multi({"query": title, "year": year, "page": 1})
+    # def imdbMultiQuery(self, title, year=None):
+    #     search = Search()
+    #     return search.multi({"query": title, "year": year, "page": 1})
 
-    def sortByPopularity(resultList):
-        newlist = sorted(resultList, key=lambda x: x.popularity, reverse=True)
+    # def sortByPopularity(resultList):
+    #     newlist = sorted(resultList, key=lambda x: x.popularity, reverse=True)
 
     def getYear(self, datestr):
         intyear = 0
@@ -174,17 +190,25 @@ class TMDbNameParser():
 
     def searchTMDb(self, title, cat=None, year=None, cntitle=None):
         searchList = []
+        if title == cntitle:
+            cntitle = ''
+        cuttitle = re.sub(r'\b(Extended|HD|Anthology|Trilogy|Quadrilogy|原盘)\s*$', '', title, flags=re.I)
+        cuttitle = re.sub(r'^\s*(剧集|BBC|【.*】)', '', cuttitle, flags=re.I)
+        if cuttitle == title:
+            cuttitle = ''
+
         if self.ccfcatHard:
             if cat.lower() == 'tv':
-                searchList = [('tv',cntitle), ('tv', title)]
+                searchList = [('tv',cntitle), ('tv', title),  ('tv', cuttitle)]
             elif cat.lower() == 'movie':
-                searchList = [('movie', cntitle), ('movie', title)]
+                searchList = [('movie', cntitle), ('movie', title), ('movie', cuttitle)]
         else:
             if cat.lower() == 'tv':
-                searchList = [('tv',cntitle), ('tv', title), ('movie', cntitle), ('movie', title)]
+                searchList = [('tv',cntitle), ('tv', title), ('tv', cuttitle), ('movie', cntitle), ('movie', title)]
             elif cat.lower() == 'movie':
-                searchList = [('movie', cntitle), ('movie', title), ('tv',cntitle), ('tv', title)]
+                searchList = [('movie', cntitle), ('movie', title), ('movie', cuttitle), ('tv', cntitle), ('tv', title)]
 
+        intyear = int(year) if year.isdigit() else 0
         for s in searchList:
             if s[0] == 'tv' and s[1]:
                 print('Search TV: ' + s[1])
@@ -193,7 +217,6 @@ class TMDbNameParser():
                 search = Search()
                 results = search.tv_shows({"query": s[1], "year": year, "page": 1})
                 if len(results) > 0:
-                    intyear = int(year) if year.isdigit() else 0
                     if intyear > 0 and self.season != 'S01':
                         intyear = 0
                     result = self.findYearMatch(results, intyear, strict=True)
@@ -212,6 +235,12 @@ class TMDbNameParser():
                     match = self.saveTmdbMovieResult(results[0])
                     if match:
                         return self.tmdbid, self.title, self.year
+                else:
+                    results = search.movies({"query": s[1], "year": str(intyear+1), "page": 1})
+                    if len(results) > 0:
+                        match = self.saveTmdbMovieResult(results[0])
+                        if match:
+                            return self.tmdbid, self.title, self.year
 
         print('\033[31mTMDb Not found: [%s] [%s]\033[0m ' % (title, cntitle))
         return 0, title, year
