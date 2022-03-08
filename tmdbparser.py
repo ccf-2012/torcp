@@ -11,7 +11,7 @@ def transFromCCFCat(cat):
     elif re.match('TV', cat, re.I):
         return 'tv'
     else:
-        return ''
+        return cat
 
 
 def transToCCFCat(mediatype, originCat):
@@ -39,11 +39,15 @@ class TMDbNameParser():
         self.cntitle = ''
         self.resolution = ''
         self.group = ''
+        self.tmdbcat = ''
 
         if tmdb_api_key:
             self.tmdb = TMDb()
             self.tmdb.api_key = tmdb_api_key
             self.tmdb.language = tmdb_lang
+        else:
+            self.tmdb = None
+            # self.tmdb.api_key = None
 
     def parse(self, torname, TMDb=False):
         catutil = GuessCategoryUtils()
@@ -61,8 +65,10 @@ class TMDbNameParser():
             self.ccfcat = self.ccfcatHard
 
         if TMDb:
-            self.searchTMDb(self.title, transFromCCFCat(self.ccfcat),
-                            self.year, self.cntitle)
+            cat = transFromCCFCat(self.ccfcat)
+            if cat in ['tv', 'movie']:
+                self.searchTMDb(self.title, cat,
+                                self.year, self.cntitle)
 
     def fixSeasonName(self, seasonStr):
         if re.match(r'^Ep?\d+(-Ep?\d+)?$', seasonStr,
@@ -155,6 +161,8 @@ class TMDbNameParser():
                 datestr = result.release_date
 
             resyear = self.getYear(datestr)
+            if year == 0:
+                return result
             if strict:
                 if resyear == year:
                     return result
@@ -165,15 +173,16 @@ class TMDbNameParser():
 
 
     def searchTMDb(self, title, cat=None, year=None, cntitle=None):
+        searchList = []
         if self.ccfcatHard:
             if cat.lower() == 'tv':
                 searchList = [('tv',cntitle), ('tv', title)]
-            else:
+            elif cat.lower() == 'movie':
                 searchList = [('movie', cntitle), ('movie', title)]
         else:
             if cat.lower() == 'tv':
                 searchList = [('tv',cntitle), ('tv', title), ('movie', cntitle), ('movie', title)]
-            else:
+            elif cat.lower() == 'movie':
                 searchList = [('movie', cntitle), ('movie', title), ('tv',cntitle), ('tv', title)]
 
         for s in searchList:

@@ -50,7 +50,7 @@ def hdlinkCopy(fromLoc, toLocPath, toLocFile=''):
         else:
             print('\033[32mTarget Exists: [%s]\033[0m ' % destFile)
 
-    else:
+    elif os.path.isdir(fromLoc):
         destDir = os.path.join(destDir, os.path.basename(fromLoc))
         if not os.path.exists(destDir):
             if ARGS.dryrun:
@@ -60,6 +60,8 @@ def hdlinkCopy(fromLoc, toLocPath, toLocFile=''):
                 shutil.copytree(fromLoc, destDir, copy_function=os.link)
         else:
             print('\033[32mTarget Exists: [%s]\033[0m ' % destDir)
+    else:
+        print('File/Dir %s not found' % (fromLoc))
 
 
 def pathMove(fromLoc, toLocFolder, toLocFile=''):
@@ -259,6 +261,9 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName, resolu
     parseSeason, parseGroup = fixSeasonGroupWithFilename(
         tvSourceFolder, folderSeason, groupName)
 
+    if not os.path.isdir(tvSourceFolder):
+        return 
+
     for tvitem in os.listdir(tvSourceFolder):
         if uselessFile(tvitem):
             print('\033[34mSKIP useless file: [%s]\033[0m ' % tvitem)
@@ -381,6 +386,9 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
     if os.path.isdir(os.path.join(mediaSrc, 'BDMV')):
         # break, process BDMV dir for this dir
         processBDMV(mediaSrc, folderGenName, 'MovieM2TS')
+        return
+
+    if not os.path.isdir(mediaSrc):
         return
 
     for movieItem in os.listdir(mediaSrc):
