@@ -65,9 +65,9 @@ class TMDbNameParser():
             self.ccfcat = self.ccfcatHard
 
         if TMDb:
-            cat = transFromCCFCat(self.ccfcat)
-            if cat in ['tv', 'movie']:
-                self.searchTMDb(self.title, cat,
+            self.tmdbcat = transFromCCFCat(self.ccfcat)
+            if self.tmdbcat in ['tv', 'movie']:
+                self.searchTMDb(self.title, self.tmdbcat,
                                 self.year, self.cntitle)
 
     def fixSeasonName(self, seasonStr):
