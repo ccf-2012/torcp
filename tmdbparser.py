@@ -194,6 +194,8 @@ class TMDbNameParser():
                 results = search.tv_shows({"query": s[1], "year": year, "page": 1})
                 if len(results) > 0:
                     intyear = int(year) if year.isdigit() else 0
+                    if intyear > 0 and self.season != 'S01':
+                        intyear = 0
                     result = self.findYearMatch(results, intyear, strict=True)
                     if not result:
                         result = self.findYearMatch(results, intyear, strict=False)
