@@ -274,7 +274,7 @@ def parse0DayMovieName(torName):
         failsafeTitle = sstr
 
     sstr = re.sub(r'(\b剧集|\b全\d+集|\b\d+集全|\b\w+(影|场|念|港)版|\b国语|\bDis[kc]\s*\d*|\bBD\d*).*$', '', sstr, flags=re.I)
-
+    sstr = re.sub(r'(粤语|DIY|中字)[\u4e00-\u9fa5\u3041-\u30fc ]*$', '', sstr, flags=re.I)
     if sstr and sstr[-1] in ['(', '[', '{', '（', '【']:
         sstr = sstr[:-1]
 
