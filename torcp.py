@@ -451,7 +451,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
         if ARGS.origin_name:
             newMovieName = os.path.basename(movieItem)
         else:
-            newMovieName = genMovieResGroup(movieItem, p.title, p.year,
+            newMovieName = genMovieResGroup(movieItem, p.title, str(p.year),
                                             p.resolution, p.group)
         mediaSrcItem = os.path.join(mediaSrc, movieItem)
         targetCopy(mediaSrcItem, destCatFolderName, newMovieName)
