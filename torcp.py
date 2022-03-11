@@ -435,7 +435,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
         p.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
         checkTMDbNotFound(p)
 
-        destFolderName = genMediaFolderName(p.ccfcat, p.title, p.year,
+        destFolderName = genMediaFolderName(p.ccfcat, p.title, str(p.year),
                                             p.season, p.tmdbid)
         destCatFolderName = os.path.join(p.ccfcat, destFolderName)
 
@@ -471,7 +471,7 @@ def processOneDirItem(cpLocation, itemName):
     p.parse(itemName, TMDb=(ARGS.tmdb_api_key is not None))
     checkTMDbNotFound(p)   
 
-    destFolderName = genMediaFolderName(p.ccfcat, p.title, p.year, p.season, p.tmdbid)
+    destFolderName = genMediaFolderName(p.ccfcat, p.title, str(p.year), p.season, p.tmdbid)
     destCatFolderName = os.path.join(p.ccfcat, destFolderName)
 
     if os.path.isfile(mediaSrc):
