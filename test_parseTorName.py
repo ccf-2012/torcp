@@ -14,6 +14,7 @@ from torcategory import GuessCategoryUtils
      '2021', 'S01', ''),
     ('不惑之旅.To.the.Oak.S01.2021.V2.2160p.WEB-DL.AAC.H265-HDSWEB', 'To the Oak',
      '2021', 'S01', ''),
+    ('六十一号的恐怖 ：The.Scary.of.Sixty-First.2021.1080p.Blu-ray.AVC.DTS-HD.MA.5.1-GeekArt@CHDBits', 'The Scary of Sixty First', '2021', '', ''),
     ('当家主母.Marvelous.Women.S01.2021.V3.2160p.WEB-DL.AAC.H265-HDSWEB',
      'Marvelous Women', '2021', 'S01', ''),
     ('彩虹宝宝第三季.Rainbow.Ruby.S03.2020.WEB-DL.4k.H265.AAC-HDSWEB', 'Rainbow Ruby', '2020', 'S03', ''),

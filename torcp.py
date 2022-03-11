@@ -490,7 +490,7 @@ def processOneDirItem(cpLocation, itemName):
                 if ARGS.origin_name:
                     newMovieName = itemName
                 else:
-                    newMovieName = genMovieResGroup(mediaSrc, p.title, p.year,
+                    newMovieName = genMovieResGroup(mediaSrc, p.title, str(p.year),
                                                     p.resolution, p.group)
                 targetCopy(mediaSrc, destCatFolderName, newMovieName)
             elif p.ccfcat in ['MovieBDMV']:
