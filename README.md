@@ -5,6 +5,7 @@
 3. 依照 [Emby-happy](https://support.emby.media/support/solutions/articles/44001159102-movie-naming) 的风格进行重组目录与改名，在目标目录中生成硬链.
 > 所谓硬链，就是不占磁盘空间对同一文件的引用，而在使用时就像两个分别的文件一样，可以改名和移动
 4. Since 2022.2.26: 支持搜索TMDb，以获得准确的、选定语言的影视名字，然后以此名字进行更名和组织目录
+5. Since 2022.3.13: 对于查出了TMDb id的媒体，支持按语言分类
 
 ## 准备
 > 本程序需要在 `python3` 运行环境，以命令行方式运行
@@ -26,14 +27,11 @@ python3 torcp.py -h
 ```
 
 ```
-usage: torcp.py [-h] -d HD_PATH [-e KEEP_EXT] [--tmdb-api-key TMDB_API_KEY]
-                [--tmdb-lang TMDB_LANG] [--tv] [--movie] [--dryrun] [--single]
-                [--extract-bdmv] [--full-bdmv] [--origin-name] [--sleep SLEEP]
-                [--move-run] [--emby-bracket] [--plex-bracket]
+usage: torcp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv]
+                [--full-bdmv] [--origin-name] [--sleep SLEEP] [--move-run] [--emby-bracket] [--plex-bracket]
                 MEDIA_DIR
 
-torcp: a script hardlink media files and directories in Emby-happy naming and
-structs.
+torcp: a script hardlink media files and directories in Emby-happy naming and structs.
 
 positional arguments:
   MEDIA_DIR             The directory contains TVs and Movies to be copied.
@@ -44,9 +42,9 @@ optional arguments:
                         the dest path to create Hard Link.
   -e KEEP_EXT, --keep-ext KEEP_EXT
                         keep files with these extention('srt,ass').
+  -l LANG, --lang LANG  seperate move by language('cn,en').
   --tmdb-api-key TMDB_API_KEY
-                        Search API for the tmdb id, and gen dirname as Name
-                        (year)\{tmdbid=xxx\}
+                        Search API for the tmdb id, and gen dirname as Name (year)\{tmdbid=xxx\}
   --tmdb-lang TMDB_LANG
                         specify the TMDb language
   --tv                  specify the src directory is TV.
@@ -185,17 +183,6 @@ python torcp.py  /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Vid
 
 ```
 
-## `--move-run` 直接改名和移动 
-* 不作硬链，直接进行move和改名操作，用于对已经放在gd中的文件进行整理
-* `-d` 指定要搬移的目标位置，请自己把握不跨区 
-* 加了一个`--sleep`参数，可以每次操作搬移一个文件后暂停 `SLEEP` 秒，此参数仅在 `--move-run` 时有效
-* 由于这样的操作不可逆，请一定先作 `--dry-run` 确认后才执行
-
-### 例子
-```sh
-python3 torcp.py /home/test/ -d /home/test/result5/ --move-run --dryrun
-```
-
 ## `--tmdb-api-key` TMDb 查询
 * 通过The Movie Database (TMDb) API 查询，得到确切的tmdbid, 确保生成的文件夹可被刮削
 * 可选 `--tmdb-lang` 参数，默认是 `zh-CN`
@@ -209,6 +196,31 @@ python3 torcp.py /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb ap
 ```sh
 python3 torcp.py /home/test/ -d /home/test/result2/ --tmdb-api-key='your TMDb api key' --plex-bracket --move-run  --dryrun
 ```
+
+### `--lang` 按语言分类
+* 如果查出了TMDb id，那么可以将媒体按语言分类
+* `--lang` 后面以逗号分隔写所需要分出来的语言，其它的归到 `others` 
+* 如果写 `--lang all` 则所有语言都被分类
+* 在TMDb 中，中文语言会是 `zh` 和 `cn`
+  
+```sh
+python3 torcp.py /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb api key' --lang zh,cn,en
+```
+
+
+----
+
+## `--move-run` 直接改名和移动 
+* 不作硬链，直接进行move和改名操作，用于对已经放在gd中的文件进行整理
+* `-d` 指定要搬移的目标位置，请自己把握不跨区 
+* 加了一个`--sleep`参数，可以每次操作搬移一个文件后暂停 `SLEEP` 秒，此参数仅在 `--move-run` 时有效
+* 由于这样的操作不可逆，请一定先作 `--dry-run` 确认后才执行
+
+### 例子
+```sh
+python3 torcp.py /home/test/ -d /home/test/result5/ --move-run --dryrun
+```
+
 
 ## DeleteEmptyFolders.py 清除空目录
 * 在作了上面 `--move-run` 操作后，原目录将会剩留大量 空的，或仅包含 `.jpg`, `.nfo` 这类小文件的目录

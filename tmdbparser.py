@@ -86,8 +86,9 @@ class TMDbNameParser():
         if self.ccfcatHard:
             self.ccfcat = self.ccfcatHard
 
+        self.tmdbcat = transFromCCFCat(self.ccfcat)
+
         if TMDb:
-            self.tmdbcat = transFromCCFCat(self.ccfcat)
             if self.tmdbcat in ['tv', 'movie', 'Other', 'HDTV']:
                 self.searchTMDb(self.title, self.tmdbcat,
                                 parseYear, self.cntitle)
