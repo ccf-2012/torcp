@@ -54,7 +54,8 @@ class GuessCategoryUtils:
         'MovieDVD': ['MovieDVD', '35', 0, 'MovieDVD'],
         'Movie': ['Movie', '35', 0, 'Movie'],
         'HDTV': ['HDTV', '33', 0, 'HDTV'],
-        'Other': ['Other', '33', 0, 'Others']
+        'Other': ['Other', '33', 0, 'Others'],
+        'Archive': ['Archive', '33', 0, 'Archive']
     }
 
     category = ''
@@ -75,7 +76,7 @@ class GuessCategoryUtils:
         elif re.search(
                 r'(zip|7z|rar).?$',
                 torName, re.I):
-            self.setCategory('Other')
+            self.setCategory('Archive')
         elif re.search(r'\.(mpg)\b', torName, re.I):
             self.setCategory('MV')
         elif re.search(r'(\b|_)(FLAC.{0,3}|DSF.{0,3}|DSD(\d{1,3})?)$', torName, re.I):
