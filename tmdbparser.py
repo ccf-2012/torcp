@@ -127,7 +127,10 @@ class TMDbNameParser():
             self.tmdbid = result.id
             self.tmdbcat = 'tv'
             if hasattr(result, 'original_language'):
-                self.original_language = result.original_language
+                if result.original_language == 'zh':
+                    self.original_language = 'cn'
+                else:
+                    self.original_language = result.original_language
             if hasattr(result, 'popularity'):
                 self.popularity = result.popularity
             if hasattr(result, 'poster_path'):
@@ -156,7 +159,10 @@ class TMDbNameParser():
         self.tmdbid = result.id
         self.tmdbcat = 'movie'
         if hasattr(result, 'original_language'):
-            self.original_language = result.original_language
+            if result.original_language == 'zh':
+                self.original_language = 'cn'
+            else:
+                self.original_language = result.original_language
         if hasattr(result, 'popularity'):
             self.popularity = result.popularity
         if hasattr(result, 'poster_path'):
