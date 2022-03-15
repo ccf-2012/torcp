@@ -1,6 +1,7 @@
 import os
 import shutil
 import argparse
+import time
 
 
 def dropEmptyFolders(directory):
@@ -12,6 +13,8 @@ def dropEmptyFolders(directory):
             if not dirs and not files:
                 print('\033[33mDelete empty folder: %s\033[0m ' % dir)
                 if not ARGS.dryrun:
+                    if ARGS.sleep:
+                        time.sleep(ARGS.sleep)
                     os.rmdir(dir)
             for fn in files:
                 fullfilepath = os.path.join(dir, fn)
@@ -23,10 +26,14 @@ def dropEmptyFolders(directory):
                     if os.path.isfile(fullfilepath):
                         print('\033[33mDelete file: %s\033[0m ' % fullfilepath)
                         if not ARGS.dryrun:
+                            if ARGS.sleep:
+                                time.sleep(ARGS.sleep)
                             os.remove(fullfilepath)
         if isEmpty and os.path.isdir(dirpath):
             print('\033[31mrmtree: %s\033[0m ' % dirpath)
             if not ARGS.dryrun:
+                if ARGS.sleep:
+                    time.sleep(ARGS.sleep)
                 shutil.rmtree(dirpath)
                 # passs
 
@@ -61,6 +68,9 @@ def loadArgs():
     parser.add_argument('-e',
                         '--keep-ext',
                         help='folders will be delete if files lefted with extention not in (\'srt,ass\').')
+    parser.add_argument('--sleep',
+                        type=int,
+                        help='sleep x seconds after operation.')
     parser.add_argument('--dryrun',
                         action='store_true',
                         help='print message instead of real delete.')
