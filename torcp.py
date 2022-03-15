@@ -574,7 +574,7 @@ def processOneDirItem(cpLocation, itemName):
 
 def makeKeepExts():
     global KEEPEXTS
-    KEEPEXTS = ['.mkv', '.mp4', '.ts']
+    KEEPEXTS = ['.mkv', '.mp4', '.ts', '.m2ts']
     if ARGS.keep_ext:
         argExts = ARGS.keep_ext.split(',')
         for ext in argExts:
