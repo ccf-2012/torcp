@@ -208,6 +208,25 @@ python3 torcp.py /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb ap
 ```
 
 
+### 利用 qBittorrent 的完成后自动执行脚本功能实现入库
+* 假设 torcp 在 `/home/ccf2012/torcp` 位置
+* qBittorrent的 'Torrent完成时运行外部程序' / 'Run after completion' 中填写命令：
+```sh
+/home/ccf2012/torcp/rcp.sh  "%F" "%N"
+```
+
+`rcp.sh` 内容如下，注意修改其中的:
+1. torcp位置 `/home/ccf2012/torcp/`
+2. 暂存路径 `/home/ccf2012/emby` (3处) 
+3. `tmdb-api-key`
+```sh 
+#!/bin/bash
+python3 /home/ccf2012/torcp/torcp.py "$1" -d "/home/ccf2012/emby/$2/" -s --tmdb-api-key <tmdb api key> --lang cn,jp
+rclone copy "/home/ccf2012/emby/$2/"  gd:/media/148/emby/
+rm -rf "/home/ccf2012/emby/$2/"
+```
+
+
 ----
 
 ## `--move-run` 直接改名和移动 
