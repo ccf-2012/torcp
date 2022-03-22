@@ -83,7 +83,7 @@ docker exec -it linuxserver-qbittorrent1 /bin/bash
 
 QB的docker，一般是Alphine Linux，已经安装有 python3, 这样可以在docker shell内作以下：
 1. `apk add py3-pip`  安装 `pip3`
-2. `cd /downloads/torcp/` 转到torcp目录下，`pip3 install -m requirements.txt` 安装依赖
+2. `cd /downloads/torcp/` 转到torcp目录下，`pip3 install -r requirements.txt` 安装依赖
 
 ![apk_add_pip](screenshots/exec_it.png)
 
