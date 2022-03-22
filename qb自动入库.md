@@ -36,11 +36,12 @@ python3 /home/ccf2012/torcp/torcp.py "$1" -d "/home/ccf2012/emby/" -s --tmdb-api
 
 
 ### 拷到 rclone 目标(如gd, od)
-如果想将下载的种子，拷到gd drive上，可这样写 `rcp.sh` ，注意修改其中的:
+如果想将下载的种子，拷到google drive上，可这样写 `rcp.sh` ，注意修改其中的:
 1. torcp位置 `/home/ccf2012/torcp/`
-2. 暂存路径 `/home/ccf2012/emby$2/` 共（3处)
+2. 暂存路径 `/home/ccf2012/emby/` 共（3处), 不要改到 `/$2/` 部分
 3. rclone 目标 `gd:/media/emby/`
 4. `your_tmdb_api_key`
+5. log输出的位置： `/home/ccf2012/rcp.log` 和 `/home/ccf2012/rcp_error.log`
 
 ```sh 
 #!/bin/bash
@@ -53,7 +54,8 @@ rm -rf "/home/ccf2012/emby/$2/"
 解说一下：
 * 这里用到了QB传来的第2个参数 `%N` 种子名，用来作唯一性的暂存位置（假设没有手工特意组织多级目录下放同名的种子)
 * 新下载的种子，将在 `/home/ccf2012/emby/种子名/` 这里构建多层的硬链目录，比如 `TV\纸房子 (2017)\S01\...`，作为暂存
-* 调用rclone copy 将暂存的文件夹，往 gd 拷贝
+* 调用rclone copy 将暂存的文件夹，其完整路径为 `/home/ccf2012/emby/种子名/TV\纸房子 (2017)\S01\...` ，往 gd 拷贝
+> 由于上述所说的唯一性（虽然极脆弱），多个种子下完后，分别调用rclone copy时，不会互相干扰。
 * 拷贝完成后删除暂存
 
 

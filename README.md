@@ -20,6 +20,22 @@ git clone https://github.com/ccf-2012/torcp.git
 pip3 install -r requirements.txt
 ```
 
+### 群晖中使用 git
+* 群晖中在套件中心，搜索git server，安装
+* github 连接默认会有困难，请设法解决
+
+### 群晖中使用python3 和 pip3
+* DSM 6.x 默认没有安装Python 3，需要要在套件中心中搜索安装 `Python 3` 
+* 群晖安装pip
+```sh
+python3 -m ensurepip
+```
+
+* 群晖中安装依赖库，命令这样打：
+```sh
+python3 -m pip install -r requirements.txt
+```
+
 #  使用方法:
 * 完整的命令参数，可以通过这样查看：
 ```sh 
@@ -209,22 +225,8 @@ python3 torcp.py /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb ap
 
 
 ### 利用 qBittorrent 的完成后自动执行脚本功能实现入库
-* 假设 torcp 在 `/home/ccf2012/torcp` 位置
-* qBittorrent的 'Torrent完成时运行外部程序' / 'Run after completion' 中填写命令：
-```sh
-/home/ccf2012/torcp/rcp.sh  "%F" "%N"
-```
 
-`rcp.sh` 内容如下，注意修改其中的:
-1. torcp位置 `/home/ccf2012/torcp/`
-2. 暂存路径 `/home/ccf2012/emby` (3处) 
-3. `tmdb-api-key`
-```sh 
-#!/bin/bash
-python3 /home/ccf2012/torcp/torcp.py "$1" -d "/home/ccf2012/emby/$2/" -s --tmdb-api-key <tmdb api key> --lang cn,jp
-rclone copy "/home/ccf2012/emby/$2/"  gd:/media/148/emby/
-rm -rf "/home/ccf2012/emby/$2/"
-```
+[另开文解说](qb自动入库.md)
 
 
 ----
