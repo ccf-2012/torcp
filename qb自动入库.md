@@ -82,13 +82,17 @@ docker exec -it linuxserver-qbittorrent1 /bin/bash
 QB的docker，一般是Alphine Linux，已经安装有 python3, 这样可以在docker shell内作以下：
 1. `apk add py3-pip`  安装 `pip3`
 2. `cd /downloads/torcp/` 转到torcp目录下，`pip3 install -m requirements.txt` 安装依赖
+
 ![apk_add_pip](screenshots/exec_it.png)
+
 ![pip_install](screenshots/pip_install.png)
 
-3. 确定QB的读写权限，保证QB可以读写 `/downloads/emby/` 目录。如QB在Docker中的用户名是`abc`，则：
+1. 确定QB的读写权限，保证QB可以读写 `/downloads/emby/` 目录。如QB在Docker中的用户名是`abc`，则：
 ```sh
 chown -R abc /downloads/emby/
 ```
+
+
 ![ps_aux](screenshots/ps_aux.png)
 
 4. 修改 `rcp.sh` 内容如下：
@@ -96,8 +100,14 @@ chown -R abc /downloads/emby/
 #!/bin/bashs
 python3 /downloads/torcp/torcp.py "$1" -d "/downloads/emby/" -s --tmdb-api-key your_tmdb_api_key --lang cn,jp  >>/downloads/torcp/rcp.log 2>>/downloads/torcp/rcp_error.log
 ```
+
+
 ![rcp_sh2](screenshots/rcp_sh2.png)
 > 此示例中未使用tmdb查询
 
 5. 下载一个种子，完成后，查看 `rcp_error.log` 和 `rcp.log`
 
+在上述配置的位置中，`ls -ltr` 查看最新的文件情况, 当任务完成后，可以看到文件所被作的处理
+
+
+![log](screenshots/log.png)
