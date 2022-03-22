@@ -38,13 +38,15 @@ python3 /home/ccf2012/torcp/torcp.py "$1" -d "/home/ccf2012/emby/" -s --tmdb-api
 ### 拷到 rclone 目标(如gd, od)
 如果想将下载的种子，拷到gd drive上，可这样写 `rcp.sh` ，注意修改其中的:
 1. torcp位置 `/home/ccf2012/torcp/`
-2. 暂存路径 `/home/ccf2012/emby` (3处) 
-3. `tmdb-api-key`
+2. 暂存路径 `/home/ccf2012/emby$2/` 共（3处)
+3. rclone 目标 `gd:/media/emby/`
+4. `your_tmdb_api_key`
+
 ```sh 
 #!/bin/bash
 python3 /home/ccf2012/torcp/torcp.py "$1" -d "/home/ccf2012/emby/$2/" -s --tmdb-api-key your_tmdb_api_key --lang cn,jp  >>/home/ccf2012/rcp.log 2>>/home/ccf2012/rcp_error.log
 
-rclone copy "/home/ccf2012/emby/$2/"  gd:/media/148/emby/
+rclone copy "/home/ccf2012/emby/$2/"  gd:/media/emby/
 rm -rf "/home/ccf2012/emby/$2/"
 ```
 
@@ -56,18 +58,20 @@ rm -rf "/home/ccf2012/emby/$2/"
 
 
 ## QB以docker安装
-* 如果QB以docker方式安装，则需要在docker中运行torcp，且所指向的存储位置，都应当是docker所理解的位置。 (此处致谢  @Ozz)
+* 如果QB以docker方式安装，则需要在docker中运行torcp，且所指向的存储位置，都应当是docker所理解的映射位置。 (致谢  @Ozz)
 
-* 要硬链的目录文件夹，应当放在docker所mount的存储位置(volume)内，torcp也可以在此，比如 `/downloads` 所对应的目录下内容类似如下：
+* 要硬链的目录文件夹，应当放在docker所映射的存储位置(volume)内，torcp也可以在此，比如 `/downloads` 所对应的目录下内容类似如下：
 ```
 /
 ├── downloads/
 │   ├── emby/
 │   ├── torcp/
 │   └── ....
+....
 ```
 
 * `docker ps` 查看机器上qb docker的名字
+
 ![docker-ps](screenshots/dock_ps.png)
 
 * 假设安装的docker名为 `linuxserver-qbittorrent1` , 需要进入docker shell中进行操作:
