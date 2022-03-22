@@ -1,9 +1,7 @@
 # 利用 qBittorrent 的完成后自动执行脚本功能实现入库
-* qBittorrent提供一种下载完成自动运行脚本的功能，可以利用这个功能运行torcp 自动入库
-
-简要的流程：
+qBittorrent提供一种下载完成自动运行脚本的功能，可以利用这个功能运行torcp 自动入库。整体的流程为：
 * QB中作简单的设置，使一个种子下载完成后，QB将种子下载的完整路径传递给脚本`rcp.sh`，并调用脚本执行
-* `rcp.sh` 中可以按自己想要的路径和方式调用 `torcp` 硬链到媒体库的存储位置
+* `rcp.sh` 中可以按自己想要的路径和方式调用 `torcp` 改名硬链该种子内容到媒体库的存储位置
 
 ## QB非docker安装
 * 假设 torcp 在 `/home/ccf2012/torcp` 位置
@@ -17,8 +15,8 @@
 
 
 ### 硬链到同分区目录入媒体库
-假设 torcp 已经安装好依赖，可以独立运行，可以试试 `python3 torcp.py -h` 看有没有出错。
-对应于上面QB中所设置的脚本位置 `/home/ccf2012/torcp/rcp.sh` ，修改其内容，注意修改其中的:
+* 假设 torcp 已经安装好依赖，可以独立运行，可以试试 `python3 torcp.py -h` 看有没有出错。
+* 对应于上面QB中所设置的脚本位置 `/home/ccf2012/torcp/rcp.sh` ，修改其内容，注意修改其中的:
 1. 确认torcp.py 的位置，即下面示例中的： `/home/ccf2012/torcp/torcp.py` 
 2. 媒体库目录，下面示例中的： `/home/ccf2012/emby/`
 3. TMDb的api key： `your_tmdb_api_key`
@@ -72,16 +70,22 @@ rm -rf "/home/ccf2012/emby/$2/"
 ....
 ```
 
+* QB中设置的脚本路径位置，应当为docker中看过来的位置，上述例子中，qBittorrent的 'Torrent完成时运行外部程序' / 'Run after completion' 中填写的命令应为：
+```sh
+/downloads/torcp/rcp.sh "%F" "%N"
+```
+
 * `docker ps` 查看机器上qb docker的名字
 
 ![docker-ps](screenshots/dock_ps.png)
 
-* 假设安装的docker名为 `linuxserver-qbittorrent1` , 需要进入docker shell中进行操作:
+
+* 假设安装的docker名为 `linuxserver-qbittorrent1` , 后面的操作需要进入docker shell中进行:
 ```sh
 docker exec -it linuxserver-qbittorrent1 /bin/bash
 ```
 
-QB的docker，一般是Alphine Linux，已经安装有 python3, 这样可以在docker shell内作以下：
+QB的docker，一般是Alpine Linux，通常安装有python3但是没有pip, 这样可以在docker shell内打以下命令安装依赖：
 1. `apk add py3-pip`  安装 `pip3`
 2. `cd /downloads/torcp/` 转到torcp目录下，`pip3 install -r requirements.txt` 安装依赖
 
@@ -89,7 +93,7 @@ QB的docker，一般是Alphine Linux，已经安装有 python3, 这样可以在d
 
 ![pip_install](screenshots/pip_install.png)
 
-1. 确定QB的读写权限，保证QB可以读写 `/downloads/emby/` 目录。如QB在Docker中的用户名是`abc`，则：
+3. 确定QB的读写权限，保证QB可以读写 `/downloads/emby/` 目录。如QB在Docker中的用户名是`abc`，则：
 ```sh
 chown -R abc /downloads/emby/
 ```
