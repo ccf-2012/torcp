@@ -612,7 +612,7 @@ def processOneDirItem(cpLocation, itemName):
         else:
             print('\033[33mDir treat as movie folder: [ %s ], %s\033[0m ' %
                   (cat, mediaSrc))
-            processMovieDir(mediaSrc, cat, destFolderName)
+            processMovieDir(mediaSrc, cat, destFolderName, folderTmdbParser=p)
 
 
 def makeKeepExts():
