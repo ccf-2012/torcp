@@ -427,7 +427,7 @@ def genCatFolderName(parser):
 
 
 def isCollections(folderName):
-    return re.search(r'\b(Pack$|合集|Collections?|国语配音4K动画电影$)',
+    return re.search(r'(\bPack$|合集|Marvel Cinematic Universe|\bCollections?|国语配音4K动画电影$)',
                      folderName,
                      flags=re.I)
 
@@ -457,7 +457,7 @@ def processBDMV(mediaSrc, folderGenName, catFolder):
         print('\033[31mSkip BDMV/ISO  %s \033[0m' % mediaSrc)
 
 
-def processMovieDir(mediaSrc, folderCat, folderGenName):
+def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
     if os.path.isdir(os.path.join(mediaSrc, 'BDMV')):
         # break, process BDMV dir for this dir
         processBDMV(mediaSrc, folderGenName, 'MovieM2TS')
@@ -500,28 +500,32 @@ def processMovieDir(mediaSrc, folderCat, folderGenName):
             print('\033[34mSkip : %s \033[0m' % movieItem)
             continue
 
-        # cat, group, resolution = getCategory(movieItem)
-        # parseTitle, parseYear, parseSeason, parseEpisode, cntitle = parseMovieName( movieItem)
-        # if parseSeason and (cat != 'TV'):
-        #     print('Category fixed: ' + movieItem)
-        #     cat = 'TV'
-        cat = setArgsCategory()
-        p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=cat)
-        p.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
-        cat = genCatFolderName(p)
+        p = folderTmdbParser
+        if folderTmdbParser.tmdbid <= 0:
+            p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
+            p.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
 
+        #TODO: Search the movies in a pack folder? 
+        # pf = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
+        # pf.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
+
+        # if pf.tmdbid > 0 and (folderTmdbParser.tmdbid <= 0 or folderTmdbParser.tmdbid != pf.tmdbid):
+        #     p = pf
+        # else:
+        #     p = folderTmdbParser
+
+        cat = genCatFolderName(p)
         destFolderName = genMediaFolderName(p)
         destCatFolderName = os.path.join(cat, destFolderName)
-
         if cat == 'TV':
             print('\033[31mMiss Categoried TV: [%s]\033[0m ' % mediaSrc)
             # parseSeason = fixSeasonName(parseSeason)
             if cat != folderCat:
                 copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group,
-                                  p.resolution)
+                                p.resolution)
             else:
                 copyTVFolderItems(mediaSrc, folderGenName, p.season, p.group,
-                                  p.resolution)
+                                p.resolution)
             return
 
         if ARGS.origin_name:
@@ -595,7 +599,7 @@ def processOneDirItem(cpLocation, itemName):
             copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group,
                               p.resolution)
         elif cat == 'Movie':
-            processMovieDir(mediaSrc, p.ccfcat, destFolderName)
+            processMovieDir(mediaSrc, p.ccfcat, destFolderName, folderTmdbParser=p)
         elif cat in ['MV']:
             targetCopy(mediaSrc, cat)
         elif cat in ['TMDbNotFound', 'HDTV']:
