@@ -98,6 +98,42 @@ def pathMove(fromLoc, toLocFolder, toLocFile=''):
             print('\033[32mTarget Exists: [%s]\033[0m ' % destDir)
 
 
+def symbolLink(fromLoc, toLocPath, toLocFile=''):
+    if os.path.islink(fromLoc):
+        print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromLoc)
+        return
+    destDir = os.path.join(ARGS.hd_path, toLocPath)
+    if not ARGS.dryrun:
+        ensureDir(destDir)
+    if os.path.isfile(fromLoc):
+        if toLocFile:
+            destFile = os.path.join(destDir, toLocFile)
+        else:
+            destFile = os.path.join(destDir, os.path.basename(fromLoc))
+        if not os.path.exists(destFile):
+            if ARGS.dryrun:
+                print(fromLoc, ' ==> ', destFile)
+            else:
+                print('ln -s', fromLoc, destFile)
+                os.symlink(fromLoc, destFile)
+        else:
+            print('\033[32mTarget Exists: [%s]\033[0m ' % destFile)
+
+    elif os.path.isdir(fromLoc):
+        destDir = os.path.join(destDir, os.path.basename(fromLoc))
+        if not os.path.exists(destDir):
+            if ARGS.dryrun:
+                print('(DIR) ln -s ' + fromLoc + ' ==> ' + destDir)
+            else:
+                print('(DIR) ln -s ', fromLoc, destDir)
+                os.symlink(fromLoc, destDir)
+                # shutil.copytree(fromLoc, destDir, copy_function=os.link)
+        else:
+            print('\033[32mTarget Exists: [%s]\033[0m ' % destDir)
+    else:
+        print('File/Dir %s not found' % (fromLoc))
+
+
 def hdlinkLs(loc):
     destDir = os.path.join(ARGS.hd_path, loc)
     ensureDir(destDir)
@@ -112,7 +148,10 @@ def targetCopy(fromLoc, toLocPath, toLocFile=''):
     if ARGS.move_run:
         pathMove(fromLoc, toLocPath, toLocFile)
     else:
-        hdlinkCopy(fromLoc, toLocPath, toLocFile)
+        if ARGS.symbolink:
+            symbolLink(fromLoc, toLocPath, toLocFile)
+        else:
+            hdlinkCopy(fromLoc, toLocPath, toLocFile)
 
 
 def getSeasonFromFolderName(folderName, failDir=''):
@@ -640,6 +679,9 @@ def loadArgs():
     parser.add_argument('--move-run',
                         action='store_true',
                         help='WARN: REAL MOVE...with NO REGRET.')
+    parser.add_argument('--symbolink',
+                        action='store_true',
+                        help='symbolink instead of hard link')
     parser.add_argument('--emby-bracket',
                         action='store_true',
                         help='ex: Alone (2020) [tmdbid=509635]')
@@ -658,7 +700,7 @@ def main():
     cpLocation = ARGS.MEDIA_DIR
     cpLocation = os.path.abspath(cpLocation)
 
-    if ARGS.single:
+    if ARGS.single and not isCollections(cpLocation):
         processOneDirItem(os.path.dirname(cpLocation),
                           os.path.basename(os.path.normpath(cpLocation)))
     else:
