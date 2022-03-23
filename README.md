@@ -6,6 +6,7 @@
 > 所谓硬链，就是不占磁盘空间对同一文件的引用，而在使用时就像两个分别的文件一样，可以改名和移动
 4. Since 2022.2.26: 支持搜索TMDb，以获得准确的、选定语言的影视名字，然后以此名字进行更名和组织目录
 5. Since 2022.3.13: 对于查出了TMDb id的媒体，支持按语言分类
+6. Last updated 2022.3.23: 支持软链 `--symbolink`
 
 ## 准备
 > 本程序需要在 `python3` 运行环境，以命令行方式运行
@@ -43,16 +44,20 @@ python3 torcp.py -h
 ```
 
 ```
-usage: torcp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv]
-                [--full-bdmv] [--origin-name] [--sleep SLEEP] [--move-run] [--emby-bracket] [--plex-bracket]
+usage: torcp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG]
+                [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG] [--tv]
+                [--movie] [--dryrun] [--single] [--extract-bdmv] [--full-bdmv]
+                [--origin-name] [--sleep SLEEP] [--move-run] [--symbolink]
+                [--emby-bracket] [--plex-bracket]
                 MEDIA_DIR
 
-torcp: a script hardlink media files and directories in Emby-happy naming and structs.
+torcp: a script hardlink media files and directories in Emby-happy naming and
+structs.
 
 positional arguments:
   MEDIA_DIR             The directory contains TVs and Movies to be copied.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -d HD_PATH, --hd_path HD_PATH
                         the dest path to create Hard Link.
@@ -60,7 +65,8 @@ optional arguments:
                         keep files with these extention('srt,ass').
   -l LANG, --lang LANG  seperate move by language('cn,en').
   --tmdb-api-key TMDB_API_KEY
-                        Search API for the tmdb id, and gen dirname as Name (year)\{tmdbid=xxx\}
+                        Search API for the tmdb id, and gen dirname as Name
+                        (year)\{tmdbid=xxx\}
   --tmdb-lang TMDB_LANG
                         specify the TMDb language
   --tv                  specify the src directory is TV.
@@ -72,6 +78,7 @@ optional arguments:
   --origin-name         keep origin file name.
   --sleep SLEEP         sleep x seconds after operation.
   --move-run            WARN: REAL MOVE...with NO REGRET.
+  --symbolink           symbolink instead of hard link
   --emby-bracket        ex: Alone (2020) [tmdbid=509635]
   --plex-bracket        ex: Alone (2020) {tmdb-509635}
 ```
