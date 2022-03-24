@@ -233,6 +233,13 @@ class TMDbNameParser():
                     return result
         return None
 
+    def selectOrder(self, cntitle, cuttitle, list):
+        if len(cntitle) < 3 and len(cuttitle)> 5:
+            list[1], list[2] = list[2], list[1]
+            return list
+        else:
+            return list
+
     def searchTMDb(self, title, cat=None, parseYearStr=None, cntitle=None):
         searchList = []
         if title == cntitle:
@@ -263,13 +270,13 @@ class TMDbNameParser():
                 searchList = [('movie', cntitle), ('movie', cuttitle)]
         else:
             if self.season:
-                searchList = [('tv', cntitle), ('tv', cuttitle), ('multi', cuttitle)]
+                searchList = self.selectOrder(cntitle, cuttitle, [('tv', cntitle), ('tv', cuttitle), ('multi', cuttitle)])
             elif cat.lower() == 'tv':
-                searchList = [('multi', cntitle), ('tv', cuttitle), ('multi', cuttitle)]
+                searchList = self.selectOrder(cntitle, cuttitle, [('multi', cntitle), ('tv', cuttitle), ('multi', cuttitle)])
             elif cat.lower() == 'hdtv':
                 searchList = [('multi', cntitle), ('multi', cuttitle)]
             elif cat.lower() == 'movie':
-                searchList = [('movie', cntitle), ('movie', cuttitle), ('multi', cntitle), ('multi', cuttitle)]
+                searchList = self.selectOrder(cntitle, cuttitle, [('movie', cntitle), ('movie', cuttitle), ('multi', cntitle), ('multi', cuttitle)])
             else:
                 searchList = [('multi', cntitle), ('multi', cuttitle)]
 
