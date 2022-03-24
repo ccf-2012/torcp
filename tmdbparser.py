@@ -235,7 +235,7 @@ class TMDbNameParser():
 
     def selectOrder(self, cntitle, cuttitle, list):
         if len(cntitle) < 3 and len(cuttitle)> 5:
-            list[1], list[2] = list[2], list[1]
+            list[0], list[1] = list[1], list[0]
             return list
         else:
             return list
