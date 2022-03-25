@@ -240,15 +240,28 @@ class TMDbNameParser():
         else:
             return list
 
+    def replaceRomanNum(self, titlestr):
+        romanNum = [(r'\bI\b', '1'),  (r'\bII\b', '2'), (r'\bIII\b', '3'), (r'\bIV\b', '4'), (r'\bV\b', '5'), (r'\bVI\b', '6'), (r'\bVII\b', '7'), (r'\bVIII\b', '8'),
+                    (r'\bIX\b', '9'), (r'\bX\b', '10'), (r'\bXI\b', '11'), (r'\bXII\b', '12'), (r'\bXIII\b', '13'), (r'\bXIV\b', '14'), (r'\bXV\b', '15'), (r'\bXVI\b', '16')]
+        for s in romanNum:
+            titlestr = re.sub(s[0], s[1], titlestr, flags=re.A)
+        return titlestr
+
     def searchTMDb(self, title, cat=None, parseYearStr=None, cntitle=None):
         searchList = []
         if title == cntitle:
             cntitle = ''
         cuttitle = re.sub(r'\b(Extended|Anthology|Trilogy|Quadrilogy|Tetralogy|Collections?)\s*$', '', title, flags=re.I)
         cuttitle = re.sub(r'\b(Extended|HD|S\d+|V\d+|4K|CORRECTED)\s*$', '', cuttitle, flags=re.I)
-        cuttitle = re.sub(r'(\d+部曲|全\d+集.*|原盘|系列|\s[^\s]*压制.*)\s*$', '', cuttitle, flags=re.I)
         cuttitle = re.sub(r'^\s*(剧集|BBC：?|TLOTR|Jade|Documentary|【[^】]*】)', '', cuttitle, flags=re.I)
-        m1 = re.search(r'the movie\s*$', cuttitle, flags=re.A | re.I)
+        cuttitle = re.sub(r'(\d+部曲|全\d+集.*|原盘|系列|\s[^\s]*压制.*)\s*$', '', cuttitle, flags=re.I)
+        if cntitle:
+            cntitle = re.sub(r'(\d+部曲|全\d+集.*|原盘|系列|\s[^\s]*压制.*)\s*$', '', cntitle, flags=re.I)
+            cntitle = re.sub(r'(\b国粤双语|[\b\(]?\w+版|\b\d+集全).*$', '', cntitle, flags=re.I)
+
+        cuttitle = self.replaceRomanNum(cuttitle)
+
+        m1 = re.search(r'the movie\s*$', cuttitle, flags=re.A | re.I)        
         if m1 and m1.span(0)[0] > 0:
             cuttitle = cuttitle[:m1.span(0)[0]].strip()
             cat = 'movie'
