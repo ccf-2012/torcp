@@ -186,7 +186,7 @@ def genMediaFolderName(nameParser):
                     subdir_title = os.path.join(nameParser.original_language,
                                                 nameParser.title)
                 else:
-                    subdir_title = os.path.join('others', nameParser.title)
+                    subdir_title = os.path.join('other', nameParser.title)
 
         if nameParser.year > 0:
             mediaFolderName = '%s (%d) %s' % (subdir_title, nameParser.year, tmdbTail)
