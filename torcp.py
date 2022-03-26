@@ -205,11 +205,13 @@ def genMediaFolderName(nameParser):
                 mediaFolderName = nameParser.title
         else:
             if nameParser.year > 0:
-                mediaFolderName = nameParser.title + ' (' + str(
-                    nameParser.year) + ')'
+                mediaFolderName = '%s (%d)' % (nameParser.title,
+                                               nameParser.year)
+                # mediaFolderName = nameParser.title + ' (' + str(
+                #     nameParser.year) + ')'
             else:
                 mediaFolderName = nameParser.title
-    return mediaFolderName
+    return mediaFolderName.strip()
 
 
 def isMediaFileType(file_ext):
@@ -267,11 +269,12 @@ def genTVSeasonEpisonGroup(mediaFilename, groupName, resolution):
     filename, file_ext = os.path.splitext(mediaFilename)
     ch1 = ' - ' if (resolution or groupName) else ''
     ch2 = '_' if (resolution and groupName) else ''
-    return tvTitle + ((' (' + tvYear + ')') if tvYear else '') + (
+    tvname = tvTitle + ((' (' + tvYear + ')') if tvYear else '') + (
         ' ' + tvSeason.upper() if tvSeason else
         '') + (tvEpisode.upper() if tvEpisode else '') + ch1 + (
             resolution if resolution else '') + ch2 + (groupName if groupName
                                                        else '') + file_ext
+    return tvname.strip()
 
 
 def getMediaFile(filePath):
@@ -372,9 +375,10 @@ def genMovieResGroup(mediaSrc, movieName, year, resolution, group):
     filename, file_ext = os.path.splitext(mediaSrc)
     ch1 = ' - ' if (resolution or group) else ''
     ch2 = '_' if (resolution and group) else ''
-    return movieName + ((' (' + year + ')') if year else '') + ch1 + (
+    medianame =  movieName + ((' (' + year + ')') if year else '') + ch1 + (
         resolution if resolution else '') + ch2 + (group
                                                    if group else '') + file_ext
+    return medianame.strip() 
 
 
 def getLargestFiles(dirName):
