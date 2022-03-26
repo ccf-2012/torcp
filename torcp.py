@@ -487,7 +487,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
 
     testFile = getMusicFile(mediaSrc)
     if testFile:
-        processMusic(mediaSrc, folderCat, folderGenName)
+        processMusic(mediaSrc, 'Music', folderGenName)
 
     for movieItem in os.listdir(mediaSrc):
         if uselessFile(movieItem):
