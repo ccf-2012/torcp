@@ -287,6 +287,20 @@ def getMediaFile(filePath):
         return None
 
 
+def getMusicFile(filePath):
+    types = ('*.flac', '*.ape')
+    files_grabbed = []
+    curdir = os.getcwd()
+    os.chdir(filePath)
+    for files in types:
+        files_grabbed.extend(glob.glob(files))
+    os.chdir(curdir)
+    if files_grabbed:
+        return os.path.basename(files_grabbed[0])
+    else:
+        return None
+
+
 def fixSeasonGroupWithFilename(folderPath, folderSeason, folderGroup):
     season = folderSeason
     group = folderGroup
@@ -415,7 +429,7 @@ def setArgsCategory():
 
 
 def genCatFolderName(parser):
-    if ARGS.tmdb_api_key and parser.tmdbid <= 0:
+    if ARGS.tmdb_api_key and parser.tmdbid <= 0 and parser.tmdbcat in ['tv', 'movie']:
         return 'TMDbNotFound'
     else:
         if parser.tmdbcat == 'movie':
@@ -457,6 +471,11 @@ def processBDMV(mediaSrc, folderGenName, catFolder):
         print('\033[31mSkip BDMV/ISO  %s \033[0m' % mediaSrc)
 
 
+def processMusic(mediaSrc, folderCat, folderGenName):
+    # destCatFolderName = os.path.join(folderCat, folderGenName)
+    targetCopy(mediaSrc, folderCat)
+
+
 def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
     if os.path.isdir(os.path.join(mediaSrc, 'BDMV')):
         # break, process BDMV dir for this dir
@@ -465,6 +484,10 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
 
     if not os.path.isdir(mediaSrc):
         return
+
+    testFile = getMusicFile(mediaSrc)
+    if testFile:
+        processMusic(mediaSrc, folderCat, folderGenName)
 
     for movieItem in os.listdir(mediaSrc):
         if uselessFile(movieItem):
@@ -602,10 +625,12 @@ def processOneDirItem(cpLocation, itemName):
             processMovieDir(mediaSrc, p.ccfcat, destFolderName, folderTmdbParser=p)
         elif cat in ['MV']:
             targetCopy(mediaSrc, cat)
-        elif cat in ['TMDbNotFound', 'HDTV']:
+        elif cat in ['Music']:
+            processMusic(mediaSrc, cat, destFolderName)
+        elif cat in ['TMDbNotFound', 'HDTV', 'Audio']:
             targetCopy(mediaSrc, cat)
-        elif cat in ['eBook', 'Music', 'Audio']:
-            print('\033[33mSkip eBoook, Music, Audio, HDTV: [%s], %s\033[0m ' %
+        elif cat in ['eBook']:
+            print('\033[33mSkip eBoook: [%s], %s\033[0m ' %
                   (cat, mediaSrc))
             # if you don't want to skip these, comment up and uncomment below
             # targetCopy(mediaSrc, p.cat)

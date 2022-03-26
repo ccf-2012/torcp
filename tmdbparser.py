@@ -252,7 +252,7 @@ class TMDbNameParser():
         if title == cntitle:
             cntitle = ''
         cuttitle = re.sub(r'\b(Extended|Anthology|Trilogy|Quadrilogy|Tetralogy|Collections?)\s*$', '', title, flags=re.I)
-        cuttitle = re.sub(r'\b(Extended|HD|S\d+|V\d+|4K|CORRECTED)\s*$', '', cuttitle, flags=re.I)
+        cuttitle = re.sub(r'\b(Extended|HD|S\d+|E\d+|V\d+|4K|CORRECTED)\s*$', '', cuttitle, flags=re.I)
         cuttitle = re.sub(r'^\s*(剧集|BBC：?|TLOTR|Jade|Documentary|【[^】]*】)', '', cuttitle, flags=re.I)
         cuttitle = re.sub(r'(\d+部曲|全\d+集.*|原盘|系列|\s[^\s]*压制.*)\s*$', '', cuttitle, flags=re.I)
         cuttitle = re.sub(r'(\b国粤双语|[\b\(]?\w+版|\b\d+集全).*$', '', cuttitle, flags=re.I)
