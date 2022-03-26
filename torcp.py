@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 A script hardlink media files and directories in Emby-happy naming and structs.
 """
@@ -555,7 +556,8 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
         if ARGS.origin_name:
             newMovieName = os.path.basename(movieItem)
         else:
-            newMovieName = genMovieResGroup(movieItem, p.title, str(p.year),
+            yearstr = str(p.year) if p.year > 0 else ''
+            newMovieName = genMovieResGroup(movieItem, p.title, yearstr,
                                             p.resolution, p.group)
         mediaSrcItem = os.path.join(mediaSrc, movieItem)
         targetCopy(mediaSrcItem, destCatFolderName, newMovieName)

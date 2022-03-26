@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tmdbv3api import TMDb, TV, Search
 import re
 from torcategory import GuessCategoryUtils
