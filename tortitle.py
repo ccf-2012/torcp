@@ -108,7 +108,7 @@ class TorTitle:
         #     pass
         m1 = re.search(r'(\bS\d+(-S?\d+))\s(?!.*\bS\d+)', sstr, flags=re.A | re.I)
         if m1:
-            seasonstr = m1.group(1)
+            seasonstr = m1.group(1).strip()
             seasonspan = m1.span(1)
             sstr = sstr.replace(seasonstr, '')
             return seasonstr, seasonspan, episodestr
@@ -119,10 +119,10 @@ class TorTitle:
             seasonstr = m2.group(1)
             seasonspan = m2.span(1)
             if m2.group(3):
-                seasonstr = m2.group(2)
-                episodestr = m2.group(3)
+                seasonstr = m2.group(2).strip()
+                episodestr = m2.group(3).strip()
             if m2.group(5):
-                self.subEpisode  = subEpisodeChar(m2.group(5))
+                self.subEpisode  = subEpisodeChar(m2.group(5).strip())
             return seasonstr, seasonspan, episodestr
 
             # seasonsapn = mcns.span(1)
@@ -130,7 +130,7 @@ class TorTitle:
         mep = re.search(r'(Ep?\d+(-Ep?\d+)?)\b', sstr, flags=re.A | re.I)
         if mep:
             seasonstr = 'S01'
-            episodestr = mep.group(1)
+            episodestr = mep.group(1).strip()
             seasonspan = mep.span(1)
             # if mep.group(2):
             #     seasonstr = mep.group(2)
@@ -147,7 +147,7 @@ class TorTitle:
                 ssi = str(iss+1).zfill(2)
             seasonstr = 'S' + ssi
             if mcns.group(6):
-                episodestr = 'E' + mcns.group(7)
+                episodestr = 'E' + mcns.group(7).strip()
             return seasonstr, seasonspan, episodestr
         return seasonstr, seasonspan, episodestr
 
@@ -160,7 +160,7 @@ class TorTitle:
             sstr,
             flags=re.A | re.I)
         if m2:
-            yearstr = m2.group(1)
+            yearstr = m2.group(1).strip()
             yearspan = m2.span(1)
             if re.search(r'[\(\[\{]' + yearstr+r'\b', sstr):
                 # sstr = sstr[:yearspan[0] - 1]
