@@ -1,6 +1,6 @@
 import pytest
 import tortitle
-from torcategory import GuessCategoryUtils
+from torcategory import TorCategory
 
 
 @pytest.mark.parametrize("test_input, e1, e2, e3, e4", [
@@ -169,13 +169,14 @@ from torcategory import GuessCategoryUtils
     ('花仙子 全50集+剧场版.1080p.国日双语.中文字幕', '花仙子', '', '', ''),
     ('守夜号S01.Vigil.E01-E06.2021.1080p.Blu-ray.x265.AC3￡cXcY@FRDS', 'Vigil', '2021', 'S01', ''),
     ('黄石前传S01.1883.2021.1080p.WEB-DL.x265.AC3￡cXcY@FRDS', '1883', '2021', 'S01', ''),
+    ('Who\'s.the.Murderer.2022.S07E05A.PartA.1080p.WEB-DL.H264.AAC-TJUPT', 'Who\'s the Murderer', '2022', 'S07', 'E05'), 
     # ('[劫与罪].Heist.2021.S01.S01E03.NF.WEB-DL.1080p.H264.DDP.5.1-CMCTV.mp4', 'Heist', '2021', 'S01', 'E03'),
     # ('Grateful Dead - Listen to the River：St. Louis \'71 \'72 \'73 (Live) (2021) (24-192)', 'Grateful Dead - Listen to the River：St. Louis', '2021', '', ''),
     # ('32.迪卡唱片.-.《极致：勃拉姆斯选集》.(5CDs.Box-set)', '32 迪卡唱片 《极致：勃拉姆斯选集》', '', '', ''),
 ])
 def test_parseTorName(test_input, e1, e2, e3, e4):
-    a1, a2, a3, a4, a5 = tortitle.parseMovieName(test_input)
-    assert a1 == e1 and a2 == e2 and a3 == e3 and a4 == e4
+    tt = tortitle.TorTitle(test_input)
+    assert e1 == tt.title and e2 == tt.yearstr and e3 == tt.season and e4 == tt.episode
 
 
 @pytest.mark.parametrize("test_input, e1, e2", [
@@ -248,6 +249,5 @@ def test_parseTorName(test_input, e1, e2, e3, e4):
     # ('Sara K.-No Cover-Chesky-0196', 'Music', None),
 ])
 def test_categoryByName(test_input, e1, e2):
-    catutil = GuessCategoryUtils()
-    a1, a2 = catutil.guessByName(test_input)
-    assert a1 == e1 and a2 == e2
+    tc = TorCategory(test_input)
+    assert tc.ccfcat == e1 and tc.group == e2

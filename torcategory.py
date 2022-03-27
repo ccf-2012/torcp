@@ -15,6 +15,7 @@ def cutExt(torName):
     else:
         return torName
 
+
 class CategoryItem:
     def __init__(label, number):
         label = label
@@ -22,7 +23,7 @@ class CategoryItem:
         # size = 0
 
 
-class GuessCategoryUtils:
+class TorCategory:
     # def __init__(self):
     # 有些组生产 TV Series，但是在种子名上不显示 S01 这些
     TV_GROUPS = ['CMCTV', 'FLTTH']
@@ -64,6 +65,10 @@ class GuessCategoryUtils:
     resolution = ''
     quality = ''
     CategorySummary = []
+
+    def __init__(self, torName):
+        self.ccfcat, self.group = self.guessByName(torName)
+
 
     def setCategory(self, category):
         self.category = category
@@ -148,7 +153,6 @@ class GuessCategoryUtils:
             return False
         return True
 
-
     def categoryByGuessGroup(self, torName, group):
         filename, file_ext = os.path.splitext(torName)
         isMediaFile = file_ext.lower() in ['.mkv', '.mp4', '.iso']
@@ -162,7 +166,6 @@ class GuessCategoryUtils:
         else:
             return False
         return True
-
 
     def parseGroup(self, torName):
         sstr = cutExt(torName)
@@ -179,7 +182,7 @@ class GuessCategoryUtils:
         return None
 
     def getResolution(self, torName):
-        match = re.search(r'\b(2160p|1080[pi]|720p|576p|480p)\b', torName, re.A | re.I)
+        match = re.search(r'\b(4K|2160p|1080[pi]|720p|576p|480p)\b', torName, re.A | re.I)
         if match:
             return match.group(0).strip().lower()
         else:

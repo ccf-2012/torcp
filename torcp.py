@@ -13,8 +13,8 @@ import re
 import os
 import argparse
 import shutil
-from torcategory import GuessCategoryUtils
-from tortitle import parseMovieName
+from torcategory import TorCategory
+from tortitle import TorTitle
 import logging
 import glob
 from tmdbparser import TMDbNameParser
@@ -226,7 +226,7 @@ def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName,
         processBDMV(tvSourceFullPath, bdmvTVFolder, 'TV')
         return
 
-    catutil = GuessCategoryUtils()
+    # catutil = TorCategory()
     for tv2item in os.listdir(tvSourceFullPath):
         tv2itemPath = os.path.join(tvSourceFullPath, tv2item)
         if os.path.isdir(tv2itemPath):
@@ -239,9 +239,10 @@ def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName,
                     newTVFileName = os.path.basename(tv2item)
                 else:
                     if not groupName:
-                        cat, groupName = catutil.guessByName(tv2item)
+                        tc = TorCategory(tv2item)
+                        cat, groupName = tc.ccfcat, tc.group
                         if not resolution:
-                            resolution = catutil.resolution
+                            resolution = tc.resolution
                     newTVFileName = genTVSeasonEpisonGroup(
                         tv2item, groupName, resolution)
                 targetCopy(tv2itemPath, seasonFolderFullPath, newTVFileName)
@@ -263,17 +264,30 @@ def selfGenCategoryDir(dirName):
 
 
 def genTVSeasonEpisonGroup(mediaFilename, groupName, resolution):
-    tvTitle, tvYear, tvSeason, tvEpisode, cntitle = parseMovieName(
-        mediaFilename)
-
+    tt = TorTitle(mediaFilename)
+    tvTitle, tvYear, tvSeason, tvEpisode, cntitle = tt.title, tt.yearstr, tt.season, tt.episode, tt.cntitle 
     filename, file_ext = os.path.splitext(mediaFilename)
-    ch1 = ' - ' if (resolution or groupName) else ''
+    ch1 = '- ' if (resolution or groupName) else ''
     ch2 = '_' if (resolution and groupName) else ''
-    tvname = tvTitle + ((' (' + tvYear + ')') if tvYear else '') + (
-        ' ' + tvSeason.upper() if tvSeason else
-        '') + (tvEpisode.upper() if tvEpisode else '') + ch1 + (
-            resolution if resolution else '') + ch2 + (groupName if groupName
-                                                       else '') + file_ext
+
+    tvname = '%s %s %s%s %s%s%s' % (tvTitle, 
+                                ('(' + tvYear + ')') if tvYear else '', 
+                                tvSeason.upper() if tvSeason else '', 
+                                tvEpisode.upper() if tvEpisode else '', 
+                                (tt.subEpisode+' ') if tt.subEpisode else '', 
+                                ch1+resolution if resolution else '', 
+                                ch2+groupName if groupName else '')
+
+    tvname = tvname.strip() + file_ext
+
+    # filename, file_ext = os.path.splitext(mediaFilename)
+    # ch1 = ' - ' if (resolution or groupName) else ''
+    # ch2 = '_' if (resolution and groupName) else ''
+    # tvname = tvTitle + ((' (' + tvYear + ')') if tvYear else '') + (
+    #     ' ' + tvSeason.upper() if tvSeason else
+    #     '') + (tvEpisode.upper() if tvEpisode else '') + ch1 + (
+    #         resolution if resolution else '') + ch2 + (groupName if groupName
+    #                                                    else '') + file_ext
     return tvname.strip()
 
 
@@ -310,10 +324,6 @@ def fixSeasonGroupWithFilename(folderPath, folderSeason, folderGroup):
     group = folderGroup
     testFile = getMediaFile(folderPath)
     if testFile:
-        # cat, fileGroup, resolution = getCategory(testFile)
-        # parseTitle, parseYear, parseSeason, parseEpisode, cntitle = parseMovieName(
-        #     testFile)
-
         p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang)
         p.parse(testFile, TMDb=False)
         # if p.ccfcat != 'TV':
@@ -573,9 +583,6 @@ def processOneDirItem(cpLocation, itemName):
         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % mediaSrc)
         return
 
-    # cat, group, resolution = getCategory(itemName)
-    # parseTitle, parseYear, parseSeason, parseEpisode, cntitle = parseMovieName(
-    #     itemName)
     cat = setArgsCategory()
     p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=cat)
     p.parse(itemName, TMDb=(ARGS.tmdb_api_key is not None))
@@ -601,8 +608,9 @@ def processOneDirItem(cpLocation, itemName):
                 if ARGS.origin_name:
                     newMovieName = itemName
                 else:
+                    yearstr = str(p.year) if p.year > 0 else ''
                     newMovieName = genMovieResGroup(mediaSrc, p.title,
-                                                    str(p.year), p.resolution,
+                                                    yearstr, p.resolution,
                                                     p.group)
                 targetCopy(mediaSrc, destCatFolderName, newMovieName)
             # elif p.ccfcat in ['MovieBDMV']:

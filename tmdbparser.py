@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from tmdbv3api import TMDb, TV, Search
 import re
-from torcategory import GuessCategoryUtils
-from tortitle import parseMovieName
+from torcategory import TorCategory
+from tortitle import TorTitle
 from difflib import SequenceMatcher
 
 
@@ -72,11 +72,11 @@ class TMDbNameParser():
 
     def parse(self, torname, TMDb=False):
         self.clearData()
-        catutil = GuessCategoryUtils()
-        self.ccfcat, self.group = catutil.guessByName(torname)
-        self.resolution = catutil.resolution
-        self.title, parseYear, self.season, self.episode, self.cntitle = parseMovieName(
-            torname)
+        tc = TorCategory(torname)
+        self.ccfcat, self.group = tc.ccfcat, tc.group
+        self.resolution = tc.resolution
+        tt = TorTitle(torname)
+        self.title, parseYear, self.season, self.episode, self.cntitle = tt.title, tt.yearstr, tt.season, tt.episode, tt.cntitle 
 
         if self.season and (self.ccfcat != 'TV'):
             # print('Category fixed: ' + movieItem)
