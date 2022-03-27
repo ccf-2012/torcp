@@ -1,4 +1,5 @@
 import re
+import string
 from torcategory import cutExt
 
 
@@ -82,6 +83,19 @@ def cutspan(sstr, ifrom, ito):
         sstr = sstr[0:ifrom:] + sstr[ito::]
     return sstr
 
+
+def subEpisodeChar(partStr):
+    partOrder = string.ascii_uppercase.find(partStr[0].upper()) + 1
+    return ('Part %d' % partOrder) if partOrder > 0 else ''
+
+
+def subEpisodePart(partStr):
+    partOrder = string.digits.find(partStr[0])
+    if partOrder < 0:
+        partOrder = string.ascii_uppercase.find(partStr[0].upper()) + 1
+    return ('Part %d' % partOrder) if partOrder > 0 else ''
+
+
 class TorTitle:
 
     def parseSeason(self, sstr):
@@ -108,7 +122,7 @@ class TorTitle:
                 seasonstr = m2.group(2)
                 episodestr = m2.group(3)
             if m2.group(5):
-                self.subEpisode = m2.group(5)
+                self.subEpisode  = subEpisodeChar(m2.group(5))
             return seasonstr, seasonspan, episodestr
 
             # seasonsapn = mcns.span(1)
@@ -214,7 +228,7 @@ class TorTitle:
         afterStr = sstr[seasonspan[1]:]
         m = re.search(r'part\s*(\d+|[A-Z])', afterStr, flags=re.I)
         if m:
-            self.subEpisode = m.group(0)
+            self.subEpisode = subEpisodePart(m.group(1))
             return cutspan(sstr, seasonspan[0], seasonspan[1]+m.span(0)[1])
         else:
             return sstr
