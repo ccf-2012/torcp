@@ -2,7 +2,7 @@
 from tmdbv3api import TMDb, TV, Search
 import re
 from torcategory import TorCategory
-from tortitle import TorTitle
+import tortitle
 from difflib import SequenceMatcher
 
 
@@ -75,7 +75,7 @@ class TMDbNameParser():
         tc = TorCategory(torname)
         self.ccfcat, self.group = tc.ccfcat, tc.group
         self.resolution = tc.resolution
-        tt = TorTitle(torname)
+        tt = tortitle.TorTitle(torname)
         self.title, parseYear, self.season, self.episode, self.cntitle = tt.title, tt.yearstr, tt.season, tt.episode, tt.cntitle 
 
         if self.season and (self.ccfcat != 'TV'):
@@ -213,8 +213,26 @@ class TMDbNameParser():
         #     intyear = int(yearstr)
         return intyear
 
+    def getTitle(self, result):
+        tt = ''
+        if hasattr(result, 'name'):
+            tt = result.name
+        elif hasattr(result, 'title'):
+            tt = result.title
+        elif hasattr(result, 'original_name'):
+            tt = result.original_name
+        elif hasattr(result, 'original_title'):
+            tt = result.original_title
+        return tt
+
+
     def findYearMatch(self, results, year, strict=True):
+        matchList = []
         for result in results:
+            if year == 0:
+                matchList.append(result)
+                continue
+
             datestr = ''
             if hasattr(result, 'first_air_date'):
                 datestr = result.first_air_date
@@ -222,16 +240,27 @@ class TMDbNameParser():
                 datestr = result.release_date
 
             resyear = self.getYear(datestr)
-            if year == 0:
-                return result
+                # return result
 
             if strict:
                 if resyear == year:
-                    return result
+                    matchList.append(result)
+                    continue
             else:
                 if resyear in [year-3, year-2, year-1, year, year+1]:
                     self.year = resyear
-                    return result
+                    matchList.append(result)
+                    continue
+
+        if len(matchList) > 0:
+            # prefer item with CJK
+            for item in matchList:
+                tt = self.getTitle(item)
+                if not tt:
+                    continue
+                if tortitle.containsCJK(tt):
+                    return item
+            return matchList[0]
         return None
 
     def selectOrder(self, cntitle, cuttitle, list):
