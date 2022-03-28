@@ -19,6 +19,8 @@ import logging
 import glob
 from tmdbparser import TMDbNameParser
 import time
+import datetime
+
 
 ARGS = None
 
@@ -743,6 +745,8 @@ def main():
     loadArgs()
     cpLocation = ARGS.MEDIA_DIR
     cpLocation = os.path.abspath(cpLocation)
+
+    print("=========>>> " + datetime.datetime.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S %z") )
 
     if ARGS.single and not isCollections(cpLocation):
         processOneDirItem(os.path.dirname(cpLocation),

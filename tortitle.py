@@ -262,6 +262,8 @@ class TorTitle:
             failsafeTitle = sstr
 
         seasonstr, seasonspan, episodestr = self.parseSeason(sstr)
+        if not seasonstr:
+            seasonstr, seasonspan2, episodestr = self.parseSeason(torName)
         self.seasonstr = seasonstr
         sstr = self.checkAfterSeason(sstr, seasonspan)
         
