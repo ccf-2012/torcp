@@ -226,6 +226,9 @@ class TMDbNameParser():
         return tt
 
 
+    def containsCJK(self, str):
+        return re.search(r'[\u4e00-\u9fa5]', str)
+
     def findYearMatch(self, results, year, strict=True):
         matchList = []
         for result in results:
@@ -254,11 +257,11 @@ class TMDbNameParser():
 
         if len(matchList) > 0:
             # prefer item with CJK
-            for item in matchList:
+            for item in matchList[:3]:
                 tt = self.getTitle(item)
                 if not tt:
                     continue
-                if tortitle.containsCJK(tt):
+                if self.containsCJK(tt):
                     return item
             return matchList[0]
         return None
