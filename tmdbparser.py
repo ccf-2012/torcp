@@ -254,7 +254,7 @@ class TMDbNameParser():
 
         if len(matchList) > 0:
             # prefer item with CJK
-            for item in matchList:
+            for item in matchList[:3]:
                 tt = self.getTitle(item)
                 if not tt:
                     continue

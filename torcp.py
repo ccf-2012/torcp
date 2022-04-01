@@ -267,17 +267,17 @@ def selfGenCategoryDir(dirName):
 
 def genTVSeasonEpisonGroup(mediaFilename, groupName, resolution):
     tt = TorTitle(mediaFilename)
-    tvTitle, tvYear, tvSeason, tvEpisode, cntitle = tt.title, tt.yearstr, tt.season, tt.episode, tt.cntitle 
+    tvTitle, tvYear, tvSeason, tvEpisode, cntitle = tt.title, tt.yearstr, tt.season, tt.episode, tt.cntitle
     filename, file_ext = os.path.splitext(mediaFilename)
     ch1 = '- ' if (resolution or groupName) else ''
     ch2 = '_' if (resolution and groupName) else ''
 
-    tvname = '%s %s %s%s %s%s%s' % (tvTitle, 
-                                ('(' + tvYear + ')') if tvYear else '', 
-                                tvSeason.upper() if tvSeason else '', 
-                                tvEpisode.upper() if tvEpisode else '', 
-                                (tt.subEpisode+' ') if tt.subEpisode else '', 
-                                ch1+resolution if resolution else '', 
+    tvname = '%s %s %s%s %s%s%s' % (tvTitle,
+                                ('(' + tvYear + ')') if tvYear else '',
+                                tvSeason.upper() if tvSeason else '',
+                                tvEpisode.upper() if tvEpisode else '',
+                                (tt.subEpisode+' ') if tt.subEpisode else '',
+                                ch1+resolution if resolution else '',
                                 ch2+groupName if groupName else '')
 
     tvname = tvname.strip() + file_ext
@@ -390,7 +390,7 @@ def genMovieResGroup(mediaSrc, movieName, year, resolution, group):
     medianame =  movieName + ((' (' + year + ')') if year else '') + ch1 + (
         resolution if resolution else '') + ch2 + (group
                                                    if group else '') + file_ext
-    return medianame.strip() 
+    return medianame.strip()
 
 
 def getLargestFiles(dirName):
@@ -507,6 +507,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
         processMusic(mediaSrc, 'Music', folderGenName)
         return
 
+    countPackMedia = 0
     for movieItem in os.listdir(mediaSrc):
         if uselessFile(movieItem):
             print('\033[34mSKIP useless file: [%s]\033[0m ' % movieItem)
@@ -542,18 +543,18 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             continue
 
         p = folderTmdbParser
-        if folderTmdbParser.tmdbid <= 0:
-            p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
-            p.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
+        # if folderTmdbParser.tmdbid <= 0:
+        #     p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
+        #     p.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
+        #
+        # TODO: Search the movies in a pack folder?
+        pf = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
+        pf.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
 
-        #TODO: Search the movies in a pack folder? 
-        # pf = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
-        # pf.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
-
-        # if pf.tmdbid > 0 and (folderTmdbParser.tmdbid <= 0 or folderTmdbParser.tmdbid != pf.tmdbid):
-        #     p = pf
-        # else:
-        #     p = folderTmdbParser
+        if pf.tmdbid > 0 and (folderTmdbParser.tmdbid <= 0 or folderTmdbParser.tmdbid != pf.tmdbid):
+            p = pf
+        else:
+            p = folderTmdbParser
 
         cat = genCatFolderName(p)
         destFolderName = genMediaFolderName(p)
@@ -563,10 +564,10 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             # parseSeason = fixSeasonName(parseSeason)
             if cat != folderCat:
                 copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group,
-                                p.resolution)
+                                  p.resolution)
             else:
                 copyTVFolderItems(mediaSrc, folderGenName, p.season, p.group,
-                                p.resolution)
+                                  p.resolution)
             return
 
         if ARGS.origin_name:
@@ -575,6 +576,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             yearstr = str(p.year) if p.year > 0 else ''
             newMovieName = genMovieResGroup(movieItem, p.title, yearstr,
                                             p.resolution, p.group)
+        countPackMedia += 1
         mediaSrcItem = os.path.join(mediaSrc, movieItem)
         targetCopy(mediaSrcItem, destCatFolderName, newMovieName)
 
