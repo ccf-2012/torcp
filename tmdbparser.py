@@ -274,8 +274,9 @@ class TMDbNameParser():
             return list
 
     def replaceRomanNum(self, titlestr):
+        # no I and X
         romanNum = [ (r'\bII\b', '2'), (r'\bIII\b', '3'), (r'\bIV\b', '4'), (r'\bV\b', '5'), (r'\bVI\b', '6'), (r'\bVII\b', '7'), (r'\bVIII\b', '8'),
-                    (r'\bIX\b', '9'), (r'\bX\b', '10'), (r'\bXI\b', '11'), (r'\bXII\b', '12'), (r'\bXIII\b', '13'), (r'\bXIV\b', '14'), (r'\bXV\b', '15'), (r'\bXVI\b', '16')]
+                    (r'\bIX\b', '9'), (r'\bXI\b', '11'), (r'\bXII\b', '12'), (r'\bXIII\b', '13'), (r'\bXIV\b', '14'), (r'\bXV\b', '15'), (r'\bXVI\b', '16')]
         for s in romanNum:
             titlestr = re.sub(s[0], s[1], titlestr, flags=re.A)
         return titlestr

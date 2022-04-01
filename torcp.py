@@ -293,8 +293,19 @@ def genTVSeasonEpisonGroup(mediaFilename, groupName, resolution):
     return tvname.strip()
 
 
+def countMediaFile(filePath):
+    types = ('*.mkv', '*.mp4', '*.ts')
+    curdir = os.getcwd()
+    os.chdir(filePath)
+    mediaCount = 0
+    for files in types:
+        mediaCount += len(glob.glob(files))
+    os.chdir(curdir)
+    return mediaCount
+
+
 def getMediaFile(filePath):
-    types = ('*.mkv', '*.mp4')
+    types = ('*.mkv', '*.mp4', '*.ts')
     files_grabbed = []
     curdir = os.getcwd()
     os.chdir(filePath)
@@ -308,7 +319,7 @@ def getMediaFile(filePath):
 
 
 def getMusicFile(filePath):
-    types = ('*.flac', '*.ape')
+    types = ('*.flac', '*.ape', '*.wav')
     files_grabbed = []
     curdir = os.getcwd()
     os.chdir(filePath)
@@ -507,7 +518,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
         processMusic(mediaSrc, 'Music', folderGenName)
         return
 
-    countPackMedia = 0
+    countMediaFiles = countMediaFile(mediaSrc)
     for movieItem in os.listdir(mediaSrc):
         if uselessFile(movieItem):
             print('\033[34mSKIP useless file: [%s]\033[0m ' % movieItem)
@@ -543,18 +554,25 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             continue
 
         p = folderTmdbParser
-        # if folderTmdbParser.tmdbid <= 0:
-        #     p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
-        #     p.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
+        if (folderTmdbParser.tmdbid <= 0) :
+            p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
+            p.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
+        elif countMediaFiles > 1:
+            pf = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
+            pf.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
+            if pf.tmdbid > 0:
+                p = pf
+            else:
+                p = folderTmdbParser
         #
         # TODO: Search the movies in a pack folder?
-        pf = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
-        pf.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
+        # pf = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
+        # pf.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
 
-        if pf.tmdbid > 0 and (folderTmdbParser.tmdbid <= 0 or folderTmdbParser.tmdbid != pf.tmdbid):
-            p = pf
-        else:
-            p = folderTmdbParser
+        # if pf.tmdbid > 0 and (folderTmdbParser.tmdbid <= 0 or folderTmdbParser.tmdbid != pf.tmdbid):
+        #     p = pf
+        # else:
+        #     p = folderTmdbParser
 
         cat = genCatFolderName(p)
         destFolderName = genMediaFolderName(p)
@@ -576,7 +594,6 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             yearstr = str(p.year) if p.year > 0 else ''
             newMovieName = genMovieResGroup(movieItem, p.title, yearstr,
                                             p.resolution, p.group)
-        countPackMedia += 1
         mediaSrcItem = os.path.join(mediaSrc, movieItem)
         targetCopy(mediaSrcItem, destCatFolderName, newMovieName)
 
