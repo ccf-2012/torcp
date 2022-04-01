@@ -268,6 +268,7 @@ def selfGenCategoryDir(dirName):
 def genTVSeasonEpisonGroup(mediaFilename, groupName, resolution):
     tt = TorTitle(mediaFilename)
     tvTitle, tvYear, tvSeason, tvEpisode, cntitle = tt.title, tt.yearstr, tt.season, tt.episode, tt.cntitle
+    tvEpisode = re.sub(r'^Ep\s*', 'E', tvEpisode, flags=re.I)
     filename, file_ext = os.path.splitext(mediaFilename)
     ch1 = '- ' if (resolution or groupName) else ''
     ch2 = '_' if (resolution and groupName) else ''
