@@ -664,7 +664,11 @@ def processOneDirItem(cpLocation, itemName):
             targetCopy(mediaSrc, cat)
         elif cat in ['Music']:
             processMusic(mediaSrc, cat, destFolderName)
-        elif cat in ['TMDbNotFound', 'HDTV', 'Audio']:
+        elif cat in ['TMDbNotFound']:
+            print('\033[33mSearch media in dir: [ %s ], %s\033[0m ' %
+                  (cat, mediaSrc))
+            processMovieDir(mediaSrc, cat, destFolderName, folderTmdbParser=p)
+        elif cat in ['HDTV', 'Audio']:
             targetCopy(mediaSrc, cat)
         elif cat in ['eBook']:
             print('\033[33mSkip eBoook: [%s], %s\033[0m ' %
