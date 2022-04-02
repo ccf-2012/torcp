@@ -192,7 +192,8 @@ def genMediaFolderName(nameParser):
                     subdir_title = os.path.join('other', nameParser.title)
 
         if nameParser.year > 0:
-            mediaFolderName = '%s (%d) %s' % (subdir_title, nameParser.year, tmdbTail)
+            mediaFolderName = '%s (%d) %s' % (
+                subdir_title, nameParser.year, tmdbTail)
         else:
             mediaFolderName = '%s %s' % (subdir_title, tmdbTail)
 
@@ -274,12 +275,12 @@ def genTVSeasonEpisonGroup(mediaFilename, groupName, resolution):
     ch2 = '_' if (resolution and groupName) else ''
 
     tvname = '%s %s %s%s %s%s%s' % (tvTitle,
-                                ('(' + tvYear + ')') if tvYear else '',
-                                tvSeason.upper() if tvSeason else '',
-                                tvEpisode.upper() if tvEpisode else '',
-                                (tt.subEpisode+' ') if tt.subEpisode else '',
-                                ch1+resolution if resolution else '',
-                                ch2+groupName if groupName else '')
+                                    ('(' + tvYear + ')') if tvYear else '',
+                                    tvSeason.upper() if tvSeason else '',
+                                    tvEpisode.upper() if tvEpisode else '',
+                                    (tt.subEpisode+' ') if tt.subEpisode else '',
+                                    ch1+resolution if resolution else '',
+                                    ch2+groupName if groupName else '')
 
     tvname = tvname.strip() + file_ext
 
@@ -399,7 +400,7 @@ def genMovieResGroup(mediaSrc, movieName, year, resolution, group):
     filename, file_ext = os.path.splitext(mediaSrc)
     ch1 = ' - ' if (resolution or group) else ''
     ch2 = '_' if (resolution and group) else ''
-    medianame =  movieName + ((' (' + year + ')') if year else '') + ch1 + (
+    medianame = movieName + ((' (' + year + ')') if year else '') + ch1 + (
         resolution if resolution else '') + ch2 + (group
                                                    if group else '') + file_ext
     return medianame.strip()
@@ -555,11 +556,13 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             continue
 
         p = folderTmdbParser
-        if (folderTmdbParser.tmdbid <= 0) :
-            p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
+        if (folderTmdbParser.tmdbid <= 0):
+            p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang,
+                               ccfcat_hard=setArgsCategory())
             p.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
         elif countMediaFiles > 1:
-            pf = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
+            pf = TMDbNameParser(ARGS.tmdb_api_key,
+                                ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
             pf.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
             if pf.tmdbid > 0:
                 p = pf
@@ -659,7 +662,8 @@ def processOneDirItem(cpLocation, itemName):
             copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group,
                               p.resolution)
         elif cat == 'Movie':
-            processMovieDir(mediaSrc, p.ccfcat, destFolderName, folderTmdbParser=p)
+            processMovieDir(mediaSrc, p.ccfcat,
+                            destFolderName, folderTmdbParser=p)
         elif cat in ['MV']:
             targetCopy(mediaSrc, cat)
         elif cat in ['Music']:
@@ -697,8 +701,7 @@ def makeKeepExts():
 
 def loadArgs():
     parser = argparse.ArgumentParser(
-        description=
-        'torcp: a script hardlink media files and directories in Emby-happy naming and structs.'
+        description='torcp: a script hardlink media files and directories in Emby-happy naming and structs.'
     )
     parser.add_argument(
         'MEDIA_DIR',
@@ -715,8 +718,7 @@ def loadArgs():
                         help='seperate move by language(\'cn,en\').')
     parser.add_argument(
         '--tmdb-api-key',
-        help=
-        'Search API for the tmdb id, and gen dirname as Name (year)\{tmdbid=xxx\}'
+        help='Search API for the tmdb id, and gen dirname as Name (year)\{tmdbid=xxx\}'
     )
     parser.add_argument('--tmdb-lang',
                         default='zh-CN',
@@ -770,24 +772,29 @@ def main():
     cpLocation = ARGS.MEDIA_DIR
     cpLocation = os.path.abspath(cpLocation)
 
-    print("=========>>> " + datetime.datetime.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S %z") )
+    print("=========>>> " +
+          datetime.datetime.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S %z"))
 
-    if ARGS.single and not isCollections(cpLocation):
+    if os.path.isfile(cpLocation):
         processOneDirItem(os.path.dirname(cpLocation),
                           os.path.basename(os.path.normpath(cpLocation)))
     else:
-        for torFolderItem in os.listdir(cpLocation):
-            if uselessFile(torFolderItem):
-                continue
-            if isCollections(torFolderItem) and os.path.isdir(
-                    os.path.join(cpLocation, torFolderItem)):
-                print('\033[35mProcess collections: %s \033[0m' %
-                      torFolderItem)
-                packDir = os.path.join(cpLocation, torFolderItem)
-                for fn in os.listdir(packDir):
-                    processOneDirItem(packDir, fn)
-            else:
-                processOneDirItem(cpLocation, torFolderItem)
+        if ARGS.single and not isCollections(cpLocation):
+            processOneDirItem(os.path.dirname(cpLocation),
+                              os.path.basename(os.path.normpath(cpLocation)))
+        else:
+            for torFolderItem in os.listdir(cpLocation):
+                if uselessFile(torFolderItem):
+                    continue
+                if isCollections(torFolderItem) and os.path.isdir(
+                        os.path.join(cpLocation, torFolderItem)):
+                    print('\033[35mProcess collections: %s \033[0m' %
+                          torFolderItem)
+                    packDir = os.path.join(cpLocation, torFolderItem)
+                    for fn in os.listdir(packDir):
+                        processOneDirItem(packDir, fn)
+                else:
+                    processOneDirItem(cpLocation, torFolderItem)
 
 
 if __name__ == '__main__':
