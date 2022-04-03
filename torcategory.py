@@ -138,7 +138,7 @@ class TorCategory:
             self.setCategory('TV')
         elif re.search(r'\bHDTV\b', torName):
             self.setCategory('HDTV')
-        elif re.search(r'Complete.+Web-?dl|Full.Season|全\d+集|\d+集全', torName, re.A | re.I):
+        elif re.search(r'(Complete.+Web-?dl|Full.Season|\d+集)', torName, re.A | re.I):
             self.setCategory('TV')
         else:
             return False
