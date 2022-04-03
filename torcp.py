@@ -32,6 +32,28 @@ def ensureDir(file_path):
         os.makedirs(file_path)
 
 
+def makeLogfile(fromLoc, toLocPath, logDir=None):
+    if not ARGS.make_log:
+        return 
+    destDir = os.path.join(ARGS.hd_path, toLocPath)
+    if not logDir:
+        if os.path.isfile(fromLoc):
+            fromLoc = os.path.dirname(fromLoc)
+            if re.search(r'\bS\d+$', fromLoc):
+                fromLoc = os.path.dirname(fromLoc)
+        originName, ext = os.path.splitext(os.path.basename(fromLoc))
+    else:
+        originName = os.path.basename(logDir)
+    if not originName:
+        originName = '_'
+    logFilename = os.path.join(destDir, originName + '.log')
+    
+    if not os.path.exists(destDir):
+        ensureDir(destDir)
+    with open(logFilename, mode='a+') as logfile:
+        logfile.write(fromLoc+'\n')
+
+
 def hdlinkCopy(fromLoc, toLocPath, toLocFile=''):
     if os.path.islink(fromLoc):
         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromLoc)
@@ -39,6 +61,7 @@ def hdlinkCopy(fromLoc, toLocPath, toLocFile=''):
     destDir = os.path.join(ARGS.hd_path, toLocPath)
     if not ARGS.dryrun:
         ensureDir(destDir)
+        makeLogfile(fromLoc, destDir)
     if os.path.isfile(fromLoc):
         if toLocFile:
             destFile = os.path.join(destDir, toLocFile)
@@ -74,6 +97,7 @@ def pathMove(fromLoc, toLocFolder, toLocFile=''):
     destDir = os.path.join(ARGS.hd_path, toLocFolder)
     if not ARGS.dryrun:
         ensureDir(destDir)
+        makeLogfile(fromLoc, destDir)
         if ARGS.sleep:
             time.sleep(ARGS.sleep)
     if os.path.isfile(fromLoc):
@@ -108,6 +132,7 @@ def symbolLink(fromLoc, toLocPath, toLocFile=''):
     destDir = os.path.join(ARGS.hd_path, toLocPath)
     if not ARGS.dryrun:
         ensureDir(destDir)
+        makeLogfile(fromLoc, destDir)
     if os.path.isfile(fromLoc):
         if toLocFile:
             destFile = os.path.join(destDir, toLocFile)
@@ -248,6 +273,7 @@ def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName,
                             resolution = tc.resolution
                     newTVFileName = genTVSeasonEpisonGroup(
                         tv2item, groupName, resolution)
+                # makeLogfile(tv2itemPath, seasonFolderFullPath, tvSourceFullPath)
                 targetCopy(tv2itemPath, seasonFolderFullPath, newTVFileName)
             elif file_ext.lower() in ['.iso']:
                 # TODO: aruba need iso when extract_bdmv
@@ -393,6 +419,7 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName,
                         tvitem, parseGroup, resolution)
                 seasonFolderFullPath = os.path.join('TV', genFolder,
                                                     parseSeason)
+                # makeLogfile(tvitemPath, seasonFolderFullPath, tvSourceFolder)
                 targetCopy(tvitemPath, seasonFolderFullPath, newTVFileName)
 
 
@@ -599,6 +626,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             newMovieName = genMovieResGroup(movieItem, p.title, yearstr,
                                             p.resolution, p.group)
         mediaSrcItem = os.path.join(mediaSrc, movieItem)
+        # makeLogfile(mediaSrcItem, destCatFolderName)
         targetCopy(mediaSrcItem, destCatFolderName, newMovieName)
 
 
@@ -751,6 +779,9 @@ def loadArgs():
     parser.add_argument('--move-run',
                         action='store_true',
                         help='WARN: REAL MOVE...with NO REGRET.')
+    parser.add_argument('--make-log',
+                        action='store_true',
+                        help='Make a log file.')
     parser.add_argument('--symbolink',
                         action='store_true',
                         help='symbolink instead of hard link')

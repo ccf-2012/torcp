@@ -4,7 +4,13 @@ A script to organize media files in Emby-happy way, create hardlink in a seperat
 2. Parse movie name, year, season from filename/dirname.
 3. Rename and organize your media files  in [Emby-happy](https://support.emby.media/support/solutions/articles/44001159102-movie-naming) ways:
 4. create `Hard Link` ( ln ) to a seperate dir
- 
+
+
+## Last update:
+* 2022.4.3: `--make-log` create a log file to trace the origin file location and folder name
+* 2022.3.23: `--symbolink` support symbol link
+* 2022.3.13: `--lang` dispatch to different folders base on TMDb language
+* 2022.2.26: `--tmdb-api-key` Support TMDb search 
 
 ##  Usage:
 ```sh 
@@ -12,8 +18,8 @@ python3 torcp.py -h
 ```
 
 ```
-usage: torcp.py [-h] [-d HD_PATH] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv] [--full-bdmv]
-                [--origin-name]
+usage: torcp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv]
+                [--full-bdmv] [--origin-name] [--sleep SLEEP] [--move-run] [--make-log] [--symbolink] [--emby-bracket] [--plex-bracket]
                 MEDIA_DIR
 
 torcp: a script hardlink media files and directories in Emby-happy naming and structs.
@@ -25,6 +31,13 @@ optional arguments:
   -h, --help            show this help message and exit
   -d HD_PATH, --hd_path HD_PATH
                         the dest path to create Hard Link.
+  -e KEEP_EXT, --keep-ext KEEP_EXT
+                        keep files with these extention('srt,ass').
+  -l LANG, --lang LANG  seperate move by language('cn,en').
+  --tmdb-api-key TMDB_API_KEY
+                        Search API for the tmdb id, and gen dirname as Name (year)\{tmdbid=xxx\}
+  --tmdb-lang TMDB_LANG
+                        specify the TMDb language
   --tv                  specify the src directory is TV.
   --movie               specify the src directory is Movie.
   --dryrun              print message instead of real copy.
@@ -32,6 +45,12 @@ optional arguments:
   --extract-bdmv        extract largest file in BDMV dir.
   --full-bdmv           copy full BDMV dir and iso files.
   --origin-name         keep origin file name.
+  --sleep SLEEP         sleep x seconds after operation.
+  --move-run            WARN: REAL MOVE...with NO REGRET.
+  --make-log            Make a log file.
+  --symbolink           symbolink instead of hard link
+  --emby-bracket        ex: Alone (2020) [tmdbid=509635]
+  --plex-bracket        ex: Alone (2020) {tmdb-509635}
 ```
 ##  Examples:
 
