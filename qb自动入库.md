@@ -1,3 +1,5 @@
+for english version [CLICK ME](Auto%20copy%20with%20QB.md)
+
 # 利用 qBittorrent 的完成后自动执行脚本功能实现入库
 qBittorrent提供一种下载完成自动运行脚本的功能，可以利用这个功能运行torcp 自动入库。整体的流程为：
 * QB中作简单的设置，使一个种子下载完成后，QB将种子下载的完整路径传递给脚本`rcp.sh`，并调用脚本执行
