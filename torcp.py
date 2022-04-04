@@ -608,7 +608,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
         cat = genCatFolderName(p)
         destFolderName = genMediaFolderName(p)
         destCatFolderName = os.path.join(cat, destFolderName)
-        if cat == 'TV':
+        if p.tmdbcat == 'tv':
             print('\033[31mMiss Categoried TV: [%s]\033[0m ' % mediaSrc)
             # parseSeason = fixSeasonName(parseSeason)
             if cat != folderCat:
