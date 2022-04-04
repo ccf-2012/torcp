@@ -608,18 +608,22 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
         cat = genCatFolderName(p)
         destFolderName = genMediaFolderName(p)
         destCatFolderName = os.path.join(cat, destFolderName)
-        if p.tmdbcat == 'tv':
+
+        if cat == 'TV':
             print('\033[31mMiss Categoried TV: [%s]\033[0m ' % mediaSrc)
+            copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group,
+                              p.resolution)
             # parseSeason = fixSeasonName(parseSeason)
-            if cat != folderCat:
-                copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group,
-                                  p.resolution)
-            else:
-                copyTVFolderItems(mediaSrc, folderGenName, p.season, p.group,
-                                  p.resolution)
+            # if cat != folderCat:
+            #     copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group,
+            #                       p.resolution)
+            # else:
+            #     copyTVFolderItems(mediaSrc, folderGenName, p.season, p.group,
+            #                       p.resolution)
             return
         elif cat == 'TMDbNotFound':
-            targetCopy(os.path.join(mediaSrc, movieItem), cat)
+            targetCopy(mediaSrc, cat)
+            return
         else:
             if ARGS.origin_name:
                 newMovieName = os.path.basename(movieItem)
