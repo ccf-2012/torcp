@@ -618,16 +618,18 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
                 copyTVFolderItems(mediaSrc, folderGenName, p.season, p.group,
                                   p.resolution)
             return
-
-        if ARGS.origin_name:
-            newMovieName = os.path.basename(movieItem)
+        elif cat == 'TMDbNotFound':
+            targetCopy(os.path.join(mediaSrc, movieItem), cat)
         else:
-            yearstr = str(p.year) if p.year > 0 else ''
-            newMovieName = genMovieResGroup(movieItem, p.title, yearstr,
-                                            p.resolution, p.group)
-        mediaSrcItem = os.path.join(mediaSrc, movieItem)
-        # makeLogfile(mediaSrcItem, destCatFolderName)
-        targetCopy(mediaSrcItem, destCatFolderName, newMovieName)
+            if ARGS.origin_name:
+                newMovieName = os.path.basename(movieItem)
+            else:
+                yearstr = str(p.year) if p.year > 0 else ''
+                newMovieName = genMovieResGroup(movieItem, p.title, yearstr,
+                                                p.resolution, p.group)
+            mediaSrcItem = os.path.join(mediaSrc, movieItem)
+            # makeLogfile(mediaSrcItem, destCatFolderName)
+            targetCopy(mediaSrcItem, destCatFolderName, newMovieName)
 
 
 def processOneDirItem(cpLocation, itemName):
@@ -697,9 +699,13 @@ def processOneDirItem(cpLocation, itemName):
         elif cat in ['Music']:
             processMusic(mediaSrc, cat, destFolderName)
         elif cat in ['TMDbNotFound']:
-            print('\033[33mSearch media in dir: [ %s ], %s\033[0m ' %
-                  (cat, mediaSrc))
-            processMovieDir(mediaSrc, cat, destFolderName, folderTmdbParser=p)
+            if p.tmdbcat == 'movie':
+                print('\033[33mSearch media in dir: [ %s ], %s\033[0m ' %
+                    (cat, mediaSrc))
+                processMovieDir(mediaSrc, cat, destFolderName, folderTmdbParser=p)
+            else:
+                targetCopy(mediaSrc, cat)
+
         elif cat in ['HDTV', 'Audio']:
             targetCopy(mediaSrc, cat)
         elif cat in ['eBook']:
