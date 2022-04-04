@@ -42,7 +42,7 @@ def getIndexItem(items, index):
 
 def is0DayName(itemstr):
     # CoComelon.S03.1080p.NF.WEB-DL.DDP2.0.H.264-NPMS
-    m = re.match(r'^\w+.*\b(BluRay|Blu-?ray|720p|1080[pi]|2160p|576i|WEB-DL|\.DVD\.|WEBRip|HDTV)\b.*', itemstr, flags=re.A | re.I)
+    m = re.match(r'^\w+.*\b(BluRay|Blu-?ray|720p|1080[pi]|[xh].?26\d|2160p|576i|WEB-DL|DVD|WEBRip|HDTV)\b.*', itemstr, flags=re.A | re.I)
     return m
 
 

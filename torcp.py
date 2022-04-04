@@ -14,7 +14,7 @@ import os
 import argparse
 import shutil
 from torcategory import TorCategory
-from tortitle import TorTitle
+from tortitle import TorTitle, is0DayName
 import logging
 import glob
 from tmdbparser import TMDbNameParser
@@ -332,18 +332,20 @@ def countMediaFile(filePath):
     return mediaCount
 
 
-def getMediaFile(filePath):
+def getFirstMediaFile(filePath):
+    mediaFiles = getMediaFiles(filePath)
+    return os.path.basename(mediaFiles[0]) if mediaFiles else None
+    
+
+def getMediaFiles(filePath):
     types = ('*.mkv', '*.mp4', '*.ts')
-    files_grabbed = []
+    filesFound = []
     curdir = os.getcwd()
     os.chdir(filePath)
     for files in types:
-        files_grabbed.extend(glob.glob(files))
+        filesFound.extend(glob.glob(files))
     os.chdir(curdir)
-    if files_grabbed:
-        return os.path.basename(files_grabbed[0])
-    else:
-        return None
+    return filesFound
 
 
 def getMusicFile(filePath):
@@ -360,24 +362,38 @@ def getMusicFile(filePath):
         return None
 
 
-def fixSeasonGroupWithFilename(folderPath, folderSeason, folderGroup):
+def fixSeasonGroupWithFilename(folderPath, folderSeason, folderGroup, folderResolution, destFolderName):
     season = folderSeason
     group = folderGroup
-    testFile = getMediaFile(folderPath)
+    resolution = folderResolution
+    foldername = destFolderName
+    testFile = getFirstMediaFile(folderPath)
     if testFile:
         p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang)
         p.parse(testFile, TMDb=False)
-        # if p.ccfcat != 'TV':
-        #     print('\033[33mWarn, is this TV? :  %s \033[0m' % testFile)
-        #     print('\033[33mProcess anyway ... \033[0m')
-
         if not folderGroup:
             group = p.group
         if not folderSeason:
             season = p.season
         if not season:
             season = 'S01'
-    return season, group
+    return season, group, foldername, resolution
+
+
+    # if testFile and is0DayName(testFile):
+    #     p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang)
+    #     p.parse(testFile, TMDb=(ARGS.tmdb_api_key is not None))
+    #     foldername = genMediaFolderName(p)
+
+    #     if not folderGroup:
+    #         group = p.group
+    #     if not folderSeason:
+    #         season = p.season
+    #     if not folderResolution:
+    #         resolution = p.resolution
+    #     if not season:
+    #         season = 'S01'
+    # return season, group, foldername, resolution
 
 
 def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName,
@@ -390,8 +406,8 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName,
         processBDMV(tvSourceFolder, genFolder, 'MovieM2TS')
         return
 
-    parseSeason, parseGroup = fixSeasonGroupWithFilename(
-        tvSourceFolder, folderSeason, groupName)
+    parseSeason, parseGroup, genFolder, resolution = fixSeasonGroupWithFilename(
+        tvSourceFolder, folderSeason, groupName, resolution, genFolder)
 
     if not os.path.isdir(tvSourceFolder):
         return
@@ -566,7 +582,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
                 print('\033[34mSKip dir in movie folder: [%s]\033[0m ' %
                       movieItem)
             continue
-
+        
         filename, file_ext = os.path.splitext(movieItem)
         if file_ext.lower() in ['.iso']:
             # TODO: aruba need iso when extract_bdmv
@@ -583,27 +599,12 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             continue
 
         p = folderTmdbParser
-        if (folderTmdbParser.tmdbid <= 0):
-            p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang,
+        if (folderTmdbParser.tmdbid <= 0) or countMediaFiles > 1 or is0DayName(movieItem):
+            pf = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang,
                                ccfcat_hard=setArgsCategory())
-            p.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
-        elif countMediaFiles > 1:
-            pf = TMDbNameParser(ARGS.tmdb_api_key,
-                                ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
             pf.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
             if pf.tmdbid > 0:
                 p = pf
-            else:
-                p = folderTmdbParser
-        #
-        # TODO: Search the movies in a pack folder?
-        # pf = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=setArgsCategory())
-        # pf.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
-
-        # if pf.tmdbid > 0 and (folderTmdbParser.tmdbid <= 0 or folderTmdbParser.tmdbid != pf.tmdbid):
-        #     p = pf
-        # else:
-        #     p = folderTmdbParser
 
         cat = genCatFolderName(p)
         destFolderName = genMediaFolderName(p)
