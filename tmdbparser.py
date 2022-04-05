@@ -257,12 +257,12 @@ class TMDbNameParser():
 
         if len(matchList) > 0:
             # prefer item with CJK
-            for item in matchList[:3]:
-                tt = self.getTitle(item)
-                if not tt:
-                    continue
-                if self.containsCJK(tt):
-                    return item
+            # for item in matchList[:3]:
+            #     tt = self.getTitle(item)
+            #     if not tt:
+            #         continue
+            #     if self.containsCJK(tt):
+            #         return item
             return matchList[0]
         return None
 
