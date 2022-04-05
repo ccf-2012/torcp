@@ -257,12 +257,13 @@ class TMDbNameParser():
 
         if len(matchList) > 0:
             # prefer item with CJK
-            # for item in matchList[:3]:
-            #     tt = self.getTitle(item)
-            #     if not tt:
-            #         continue
-            #     if self.containsCJK(tt):
-            #         return item
+            if self.tmdb.language == 'zh-CN':
+                for item in matchList[:3]:
+                    tt = self.getTitle(item)
+                    if not tt:
+                        continue
+                    if self.containsCJK(tt):
+                        return item
             return matchList[0]
         return None
 
@@ -318,7 +319,7 @@ class TMDbNameParser():
                 searchList = [('movie', cntitle), ('movie', cuttitle)]
         else:
             if self.season:
-                searchList = self.selectOrder(cntitle, cuttitle, [('tv', cntitle), ('tv', cuttitle), ('multi', cuttitle)])
+                searchList = self.selectOrder(cntitle, cuttitle, [('tv', cntitle), ('tv', cuttitle)])
             elif cat.lower() == 'tv':
                 searchList = self.selectOrder(cntitle, cuttitle, [('multi', cntitle), ('tv', cuttitle), ('multi', cuttitle)])
             elif cat.lower() == 'hdtv':
