@@ -599,11 +599,12 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             continue
 
         p = folderTmdbParser
-        if (folderTmdbParser.tmdbid <= 0) or countMediaFiles > 1 or is0DayName(movieItem):
+        fnok = is0DayName(movieItem)
+        if (folderTmdbParser.tmdbid <= 0) or countMediaFiles > 1 or fnok:
             pf = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang,
-                               ccfcat_hard=setArgsCategory())
+                                ccfcat_hard=setArgsCategory())
             pf.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
-            if pf.tmdbid > 0:
+            if pf.tmdbid > 0 or fnok:
                 p = pf
 
         cat = genCatFolderName(p)
