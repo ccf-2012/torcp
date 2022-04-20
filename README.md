@@ -20,19 +20,10 @@ for english version [CLICK ME](README_en.md)
 ## 准备
 > 本程序需要在 `python3` 运行环境，以命令行方式运行
 
-* 下载源码
+* 安装torcp
 ```sh
-git clone https://github.com/ccf-2012/torcp.git
+pip3 install torcp
 ```
-
-* 安装依赖（终于）
-```sh
-pip3 install -r requirements.txt
-```
-
-### 群晖中使用 git
-* 群晖中在套件中心，搜索git server，安装
-* github 连接默认会有困难，请设法解决
 
 ### 群晖中使用python3 和 pip3
 * DSM 6.x 默认没有安装Python 3，需要要在套件中心中搜索安装 `Python 3` 
@@ -41,19 +32,14 @@ pip3 install -r requirements.txt
 python3 -m ensurepip
 ```
 
-* 群晖中安装依赖库，命令这样打：
-```sh
-python3 -m pip install -r requirements.txt
-```
-
 #  使用方法:
 * 完整的命令参数，可以通过这样查看：
 ```sh 
-python3 torcp.py -h
+torcp -h
 ```
 
 ```
-usage: torcp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv]
+usage: torcp [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv]
                 [--full-bdmv] [--origin-name] [--sleep SLEEP] [--move-run] [--make-log] [--symbolink] [--emby-bracket] [--plex-bracket]
                 MEDIA_DIR
 
@@ -92,39 +78,39 @@ optional arguments:
 
 * 将一个目录中所有影视文件和目录，硬链到另一个目录，其间会按目录名/文件名猜测分类，并挑出 `.mkv` 和 `.mp4`:
 ```sh 
-python3 torcp.py /home/ccf2012/Downloads/  -d /home/ccf2012/emby/ 
+torcp /home/ccf2012/Downloads/  -d /home/ccf2012/emby/ 
 ```
 
 * 电影和剧集的处理，是不一样的，如果你确认一个目录是电影或剧集，可以使用`--movie` 和 `--tv` 指定:
 ```sh
-python3 torcp.py /home/ccf2012/Downloads/RSSMovie/ -d /home/ccf2012/emby/ --movie
+torcp /home/ccf2012/Downloads/RSSMovie/ -d /home/ccf2012/emby/ --movie
 ```
 
 * 如果想单独处理单个目录，可使用 `-s` 指定，例如:
 ```sh
-python3 torcp.py /home/ccf2012/Downloads/权力的游戏.第1-8季.Game.Of.Thrones.S01-S08.1080p.Blu-Ray.AC3.x265.10bit-Yumi -d /home/ccf2012/emby/ -s --tv
+torcp /home/ccf2012/Downloads/权力的游戏.第1-8季.Game.Of.Thrones.S01-S08.1080p.Blu-Ray.AC3.x265.10bit-Yumi -d /home/ccf2012/emby/ -s --tv
 ```
 
 ## `--extract-bdmv` 和 `--full-bdmv`，BDMV的处理
 * 特别说一下对BDMV的处理：
 1. 如果什么参数都不加，在碰到含有 `BDMV` 目录和 `.iso` 文件时，将会跳过。
 ```sh
-python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir
+torcp /volume1/video/emby/test -d /volume1/video/emby/testdir
 ```
 2. `--extract-bdmv` 参数，可能最适合 Emby 或 Kodi 的用家，它将会从 `BDMV` 目录中挑出最大的几个 `.m2ts` 文件硬链出来，对于 movie/tv 都行。见[下面的例子](#--extract-bdmv-%E7%9A%84%E4%BE%8B%E5%AD%90)
 > with `iso` files copy to sepereate dir
 ```sh
-python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir --extract-bdmv
+torcp /volume1/video/emby/test -d /volume1/video/emby/testdir --extract-bdmv
 ```
 3. `--full-bdmv` 参数。使用这个参数会将整个 BDMV 文件夹和  `.iso` 文件都硬链出来，对于使用碟机播放的用家，就会有用。
 ```sh
-python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir --full-bdmv
+torcp /volume1/video/emby/test -d /volume1/video/emby/testdir --full-bdmv
 ```
 
 #### `--extract-bdmv` 的例子
 * 命令:
 ```sh
-python torcp.py  /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Video/emby/  --extract-bdmv 
+torcp /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Video/emby/  --extract-bdmv 
 ```
 * 原目录:
 ```
@@ -217,12 +203,12 @@ python torcp.py  /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Vid
 * 查询不到的文件，将会被 `链` 或 `移` 到目标目录下 `TMDbNotFound` 目录中
 
 ```sh
-python3 torcp.py /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb api key'
+torcp /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb api key'
 ```
 
 * 组合 `--move-run` 的例子
 ```sh
-python3 torcp.py /home/test/ -d /home/test/result2/ --tmdb-api-key='your TMDb api key' --plex-bracket --move-run  --dryrun
+torcp /home/test/ -d /home/test/result2/ --tmdb-api-key='your TMDb api key' --plex-bracket --move-run  --dryrun
 ```
 
 ### `--lang` 按语言分类
@@ -232,7 +218,7 @@ python3 torcp.py /home/test/ -d /home/test/result2/ --tmdb-api-key='your TMDb ap
 * 在TMDb 中，中文语言会是 `zh` 和 `cn`
   
 ```sh
-python3 torcp.py /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb api key' --lang zh,cn,en
+torcp /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb api key' --lang zh,cn,en
 ```
 
 
@@ -251,7 +237,7 @@ python3 torcp.py /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb ap
 
 ### 例子
 ```sh
-python3 torcp.py /home/test/ -d /home/test/result5/ --move-run --dryrun
+torcp /home/test/ -d /home/test/result5/ --move-run --dryrun
 ```
 
 
@@ -262,9 +248,10 @@ python3 torcp.py /home/test/ -d /home/test/result5/ --move-run --dryrun
 
 ### 例子
 ```sh
-python3 DeleteEmptyFolders.py /home/test/  -e srt,ass --dryrun
+torcp-clean /home/test/  -e srt,ass --dryrun
 ```
 
 ## Acknowledgement 
  * @Aruba  @ozz
  * @NishinoKana @Esc @Hangsijing @Inu 
+ * [@leishi1313](https://github.com/leishi1313)
