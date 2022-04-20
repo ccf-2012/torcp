@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from tmdbv3api import TMDb, TV, Search
 import re
-from torcategory import TorCategory
-import tortitle
 from difflib import SequenceMatcher
+from tmdbv3api import TMDb, TV, Search
+
+from torcp import tortitle
+from torcp.torcategory import TorCategory
 
 
 def transFromCCFCat(cat):

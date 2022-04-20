@@ -1,7 +1,7 @@
 import os
+import time
 import shutil
 import argparse
-import time
 
 
 def dropEmptyFolders(directory):

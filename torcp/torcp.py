@@ -11,15 +11,15 @@ A script hardlink media files and directories in Emby-happy naming and structs.
 #
 import re
 import os
-import argparse
-import shutil
-from torcategory import TorCategory
-from tortitle import TorTitle, is0DayName
-import logging
-import glob
-from tmdbparser import TMDbNameParser
 import time
 import datetime
+import argparse
+import shutil
+import glob
+
+from torcp.tmdbparser import TMDbNameParser
+from torcp.torcategory import TorCategory
+from torcp.tortitle import TorTitle, is0DayName
 
 
 ARGS = None

@@ -12,13 +12,18 @@ A script to organize media files in Emby-happy way, create hardlink in a seperat
 * 2022.3.13: `--lang` dispatch to different folders base on TMDb language
 * 2022.2.26: `--tmdb-api-key` Support TMDb search 
 
+## Install torcp:
+```sh
+pip3 install torcp
+```
+
 ##  Usage:
 ```sh 
-python3 torcp.py -h
+torcp -h
 ```
 
 ```
-usage: torcp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv]
+usage: torcp [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv]
                 [--full-bdmv] [--origin-name] [--sleep SLEEP] [--move-run] [--make-log] [--symbolink] [--emby-bracket] [--plex-bracket]
                 MEDIA_DIR
 
@@ -56,33 +61,33 @@ optional arguments:
 
 * hardlink whole dir to a seperate dir, with guessed category:
 ```sh 
-python3 torcp.py /home/ccf2012/Downloads/  -d /home/ccf2012/emby/ 
+torcp /home/ccf2012/Downloads/  -d /home/ccf2012/emby/ 
 ```
 
 * hardlink, specify ALL subdirs are Movie:
 ```sh
-python3 torcp.py /home/ccf2012/Downloads/RSSMovie/ -d /home/ccf2012/emby/ --movie
+torcp /home/ccf2012/Downloads/RSSMovie/ -d /home/ccf2012/emby/ --movie
 ```
 
 * hardlink, specify one SINGLE dir is TV:
 ```sh
-python3 torcp.py /home/ccf2012/Downloads/权力的游戏.第1-8季.Game.Of.Thrones.S01-S08.1080p.Blu-Ray.AC3.x265.10bit-Yumi -d /home/ccf2012/emby/ -s --tv
+torcp /home/ccf2012/Downloads/权力的游戏.第1-8季.Game.Of.Thrones.S01-S08.1080p.Blu-Ray.AC3.x265.10bit-Yumi -d /home/ccf2012/emby/ -s --tv
 ```
 
 
 ### BDMV option:
 1. default, skip all dir with `BDMV` inside and `.iso` file
 ```sh
-python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir
+torcp /volume1/video/emby/test -d /volume1/video/emby/testdir
 ```
 2. `--extract-bdmv` option, extract largest file(s) from BDMV dir, of movie/tv
 > with `iso` files copy to sepereate dir
 ```sh
-python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir --extract-bdmv
+torcp /volume1/video/emby/test -d /volume1/video/emby/testdir --extract-bdmv
 ```
 3. `--full-bdmv` option, copy the full BDMV dir and `.iso` file 
 ```sh
-python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir --full-bdmv
+torcp /volume1/video/emby/test -d /volume1/video/emby/testdir --full-bdmv
 ```
 
 
@@ -90,6 +95,7 @@ python3 torcp.py /volume1/video/emby/test -d /volume1/video/emby/testdir --full-
 ## Acknowledgement 
 Special thank to Aruba@hutongyouwu & @ozz
 @NishinoKana @Esc @Hangsijing 
+[@leishi1313](https://github.com/leishi1313)
 
 
 ## Update 2022.2.5 @dev 
@@ -129,7 +135,7 @@ Special thank to Aruba@hutongyouwu & @ozz
 ### Sample
 * Command:
 ```sh
-python torcp.py  /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Video/emby/  --extract-bdmv 
+torcp  /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Video/emby/  --extract-bdmv 
 ```
 * Before:
 ```
