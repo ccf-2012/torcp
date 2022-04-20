@@ -1,6 +1,6 @@
 import re
 import string
-from torcategory import cutExt
+from torcp.torcategory import cutExt
 
 
 def isFullAscii(str):

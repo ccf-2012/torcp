@@ -1,6 +1,6 @@
 import pytest
-import tortitle
-from torcategory import TorCategory
+from torcp import tortitle
+from torcp.torcategory import TorCategory
 
 
 @pytest.mark.parametrize("test_input, e1, e2, e3, e4", [
