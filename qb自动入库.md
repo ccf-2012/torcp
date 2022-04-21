@@ -13,7 +13,7 @@ qBittorrent提供一种下载完成自动运行脚本的功能，可以利用这
 ```
 其含义为：当一个种子下载完成后，运行 `/home/ccf2012/torcp/rcp.sh` 脚本，传入参数 `%F` 种子的下载完整路径，`%N` 为种子名。由于文件名经常有空格，所以这里需要用引号 `"` 引起来。
 
-![qb设置](screenshots/qb_setting.png)
+![qb设置](https://ptpimg.me/ut59jn.png)
 
 
 ### 硬链到同分区目录入媒体库
@@ -29,7 +29,7 @@ qBittorrent提供一种下载完成自动运行脚本的功能，可以利用这
 python3 /home/ccf2012/torcp/torcp.py "$1" -d "/home/ccf2012/emby/" -s --tmdb-api-key your_tmdb_api_key --lang cn,jp  >>/home/ccf2012/rcp.log 2>>/home/ccf2012/rcp_error.log
 ```
 
-![rcp.sh脚本设置](screenshots/rcp_sh.png)
+![rcp.sh脚本设置](https://ptpimg.me/w0w36e.png)
 
 * 下载一个种子，完成后，查看 `rcp_error.log` 和 `rcp.log`
 
@@ -79,7 +79,7 @@ rm -rf "/home/ccf2012/emby/$2/"
 
 * `docker ps` 查看机器上qb docker的名字
 
-![docker-ps](screenshots/dock_ps.png)
+![docker-ps](https://ptpimg.me/x41f1o.png)
 
 
 * 假设安装的docker名为 `linuxserver-qbittorrent1` , 后面的操作需要进入docker shell中进行:
@@ -87,35 +87,37 @@ rm -rf "/home/ccf2012/emby/$2/"
 docker exec -it linuxserver-qbittorrent1 /bin/bash
 ```
 
+![apk_add_pip](https://ptpimg.me/mz8m7a.png)
+
+
 QB的docker，一般是Alpine Linux，通常安装有python3但是没有pip, 这样可以在docker shell内打以下命令安装依赖：
 1. `apk add py3-pip`  安装 `pip3`
 2. `cd /downloads/torcp/` 转到torcp目录下，`pip3 install -r requirements.txt` 安装依赖
 
-![apk_add_pip](screenshots/exec_it.png)
 
-![pip_install](screenshots/pip_install.png)
+![pip_install](https://ptpimg.me/q6dxl2.png)
 
-3. 确定QB的读写权限，保证QB可以读写 `/downloads/emby/` 目录。如QB在Docker中的用户名是`abc`，则：
+1. 确定QB的读写权限，保证QB可以读写 `/downloads/emby/` 目录。如QB在Docker中的用户名是`abc`，则：
 ```sh
 chown -R abc /downloads/emby/
 ```
 
 
-![ps_aux](screenshots/ps_aux.png)
+![ps_aux](https://ptpimg.me/y820bh.png)
 
-4. 修改 `rcp.sh` 内容如下：
+1. 修改 `rcp.sh` 内容如下：
 ```sh 
 #!/bin/bashs
 python3 /downloads/torcp/torcp.py "$1" -d "/downloads/emby/" -s --tmdb-api-key your_tmdb_api_key --lang cn,jp  >>/downloads/torcp/rcp.log 2>>/downloads/torcp/rcp_error.log
 ```
 
 
-![rcp_sh2](screenshots/rcp_sh2.png)
+![rcp_sh2](https://ptpimg.me/ai315x.png)
 > 此示例中未使用tmdb查询
 
-5. 下载一个种子，完成后，查看 `rcp_error.log` 和 `rcp.log`
+1. 下载一个种子，完成后，查看 `rcp_error.log` 和 `rcp.log`
 
 在上述配置的位置中，`ls -ltr` 查看最新的文件情况, 当任务完成后，可以看到文件所被作的处理
 
 
-![log](screenshots/log.png)
+![log](https://ptpimg.me/5d7g3f.png)
