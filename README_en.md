@@ -93,9 +93,9 @@ torcp /volume1/video/emby/test -d /volume1/video/emby/testdir --full-bdmv
 
 
 ## Acknowledgement 
+Special thank to  [@leishi1313](https://github.com/leishi1313)
 Special thank to Aruba@hutongyouwu & @ozz
 @NishinoKana @Esc @Hangsijing 
-[@leishi1313](https://github.com/leishi1313)
 
 
 ## Update 2022.2.5 @dev 

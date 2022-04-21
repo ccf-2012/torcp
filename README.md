@@ -252,6 +252,6 @@ torcp-clean /home/test/  -e srt,ass --dryrun
 ```
 
 ## Acknowledgement 
+ * [@leishi1313](https://github.com/leishi1313)
  * @Aruba  @ozz
  * @NishinoKana @Esc @Hangsijing @Inu 
- * [@leishi1313](https://github.com/leishi1313)
