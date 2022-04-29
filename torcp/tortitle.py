@@ -1,5 +1,8 @@
 import re
+import sys
+import json
 import string
+import argparse
 from torcp.torcategory import cutExt
 
 
@@ -350,3 +353,29 @@ class TorTitle:
         self.seasonstr = ''
         self.title, self.yearstr, self.season, self.episode, self.cntitle = self.parseMovieName(torName)
 
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='torcp: a script to parse torrent name.'
+    )
+    parser.add_argument('TORRENT_NAME', help='The torrent name.')
+    parser.add_argument('-f', '--format', default='json', help='Output format, accept json,csv')
+
+    args = parser.parse_args()
+    torTitle = TorTitle(args.TORRENT_NAME)
+    result = {
+            'title': torTitle.title,
+            'year': torTitle.yearstr,
+            'season': torTitle.season,
+            'episode': torTitle.episode
+    }
+    if torTitle.cntitle:
+        result['cntitle'] = torTitle.cntitle
+    if args.format == 'csv':
+        print(','.join(result.keys()))
+        print(','.join(result.values()))
+    else:
+        print(json.dumps(result, ensure_ascii=False))
+    
+if __name__ == '__main__':
+    main()
