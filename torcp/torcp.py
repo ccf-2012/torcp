@@ -16,11 +16,12 @@ import datetime
 import argparse
 import shutil
 import glob
+import platform
 
 from torcp.tmdbparser import TMDbNameParser
 from torcp.torcategory import TorCategory
 from torcp.tortitle import TorTitle, is0DayName
-
+from torcp.cacheman import CacheManager
 
 ARGS = None
 
@@ -194,6 +195,12 @@ def getSeasonFromFolderName(folderName, failDir=''):
         # return failDir
 
 
+def fixNtName(file_path):
+    if platform.system() == 'Windows':
+        file_path = re.sub(r'\:', ' ', file_path)
+    return file_path
+
+
 def genMediaFolderName(nameParser):
     if nameParser.tmdbid > 0:
         if ARGS.emby_bracket:
@@ -204,6 +211,7 @@ def genMediaFolderName(nameParser):
             tmdbTail = ''
 
         subdir_title = nameParser.title
+
         if ARGS.lang:
             if ARGS.lang.lower() == 'all':
                 subdir_title = os.path.join(nameParser.original_language,
@@ -239,6 +247,8 @@ def genMediaFolderName(nameParser):
                 #     nameParser.year) + ')'
             else:
                 mediaFolderName = nameParser.title
+            
+    mediaFolderName = fixNtName(mediaFolderName)
     return mediaFolderName.strip()
 
 
@@ -295,6 +305,8 @@ def selfGenCategoryDir(dirName):
 def genTVSeasonEpisonGroup(mediaFilename, groupName, resolution):
     tt = TorTitle(mediaFilename)
     tvTitle, tvYear, tvSeason, tvEpisode, cntitle = tt.title, tt.yearstr, tt.season, tt.episode, tt.cntitle
+    tvTitle = fixNtName(tvTitle)
+
     tvEpisode = re.sub(r'^Ep\s*', 'E', tvEpisode, flags=re.I)
     filename, file_ext = os.path.splitext(mediaFilename)
     ch1 = '- ' if (resolution or groupName) else ''
@@ -797,6 +809,9 @@ def loadArgs():
     parser.add_argument('--symbolink',
                         action='store_true',
                         help='symbolink instead of hard link')
+    parser.add_argument('--cache',
+                        action='store_true',
+                        help='cache searched dir entries')
     parser.add_argument('--emby-bracket',
                         action='store_true',
                         help='ex: Alone (2020) [tmdbid=509635]')
@@ -818,6 +833,10 @@ def main():
     print("=========>>> " +
           datetime.datetime.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S %z"))
 
+    if ARGS.cache:
+        searchCache = CacheManager(cpLocation)
+        searchCache.openCache()
+
     if os.path.isfile(cpLocation):
         processOneDirItem(os.path.dirname(cpLocation),
                           os.path.basename(os.path.normpath(cpLocation)))
@@ -835,12 +854,26 @@ def main():
                           torFolderItem)
                     packDir = os.path.join(cpLocation, torFolderItem)
                     for fn in os.listdir(packDir):
+                        if ARGS.cache:
+                            if searchCache.isCached(fn):
+                                print('\033[32mSkipping. File previously linked: %s \033[0m' % ( fn ))
+                                continue
+                            else:
+                                searchCache.append(fn)
                         processOneDirItem(packDir, fn)
                 else:
+                    if ARGS.cache:
+                        if searchCache.isCached(torFolderItem):
+                            print('\033[32mSkipping. File previously linked: %s \033[0m' % ( torFolderItem ))
+                            continue
+                        else:
+                            searchCache.append(torFolderItem)
                     processOneDirItem(cpLocation, torFolderItem)
+
+    if ARGS.cache:
+        searchCache.closeCache()
 
 
 if __name__ == '__main__':
-    # # uncomment this to show rclone messages
     # logging.basicConfig(level=logging.DEBUG)
     main()
