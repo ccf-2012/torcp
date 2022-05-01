@@ -518,9 +518,9 @@ def genCatFolderName(parser):
         return 'TMDbNotFound'
     else:
         if parser.tmdbcat == 'movie':
-            return 'Movie'
+            return ARGS.movie_folder_name
         elif parser.tmdbcat == 'tv':
-            return 'TV'
+            return ARGS.tv_folder_name
         else:
             return parser.ccfcat
 
@@ -775,6 +775,12 @@ def loadArgs():
     parser.add_argument('--tmdb-lang',
                         default='zh-CN',
                         help='specify the TMDb language')
+    parser.add_argument('--tv-folder-name',
+                        default='TV',
+                        help='specify the name of TV directory, default TV.')
+    parser.add_argument('--movie-folder-name',
+                        default='Movie',
+                        help='specify the name of Movie directory, default Movie.')
     parser.add_argument('--tv',
                         action='store_true',
                         help='specify the src directory is TV.')
