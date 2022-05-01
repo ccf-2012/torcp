@@ -3,6 +3,7 @@ import sys
 import json
 import string
 import argparse
+from pprint import pprint
 from torcp.torcategory import cutExt
 
 
@@ -347,6 +348,17 @@ class TorTitle:
         else:
             return self.parse0DayMovieName(torName)
 
+    def to_json(self):
+        return {
+            'title': self.title,
+            'year': self.yearstr,
+            'season': self.season,
+            'episode': self.episode,
+            'cntitle': self.cntitle
+        }
+    
+    def to_csv(self, delimiter=','):
+        return delimiter.join([self.title, self.yearstr, self.season, self.episode, self.cntitle])
 
     def __init__(self, torName):
         self.subEpisode = ''
@@ -358,24 +370,21 @@ def main():
     parser = argparse.ArgumentParser(
         description='torcp: a script to parse torrent name.'
     )
-    parser.add_argument('TORRENT_NAME', help='The torrent name.')
+    parser.add_argument('TORRENT_NAME', nargs="+", help='The torrent name.')
     parser.add_argument('-f', '--format', default='json', help='Output format, accept json,csv')
+    parser.add_argument('-P', '--pretty-print', default=False, help='Pretty print json output')
 
     args = parser.parse_args()
-    torTitle = TorTitle(args.TORRENT_NAME)
-    result = {
-            'title': torTitle.title,
-            'year': torTitle.yearstr,
-            'season': torTitle.season,
-            'episode': torTitle.episode
-    }
-    if torTitle.cntitle:
-        result['cntitle'] = torTitle.cntitle
-    if args.format == 'csv':
-        print(','.join(result.keys()))
-        print(','.join(result.values()))
+    tortitles = [TorTitle(t) for t in args.TORRENT_NAME]
+    if tortitles and args.format == 'csv':
+        print(','.join(tortitles[0].to_json().keys()))
+        for t in tortitles:
+            print(t.to_csv())
     else:
-        print(json.dumps(result, ensure_ascii=False))
+        if args.pretty_print:
+            pprint([t.to_json() for t in tortitles])
+        else:
+            print(json.dumps([t.to_json() for t in tortitles], ensure_ascii=False))
     
 if __name__ == '__main__':
     main()
