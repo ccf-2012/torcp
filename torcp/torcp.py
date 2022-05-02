@@ -196,6 +196,7 @@ def getSeasonFromFolderName(folderName, failDir=''):
 
 
 def fixNtName(file_path):
+    # file_path = re.sub(r'\:', ' ', file_path)
     if platform.system() == 'Windows':
         file_path = re.sub(r'\:', ' ', file_path)
     return file_path
@@ -248,7 +249,6 @@ def genMediaFolderName(nameParser):
             else:
                 mediaFolderName = nameParser.title
             
-    mediaFolderName = fixNtName(mediaFolderName)
     return mediaFolderName.strip()
 
 
@@ -305,7 +305,7 @@ def selfGenCategoryDir(dirName):
 def genTVSeasonEpisonGroup(mediaFilename, groupName, resolution):
     tt = TorTitle(mediaFilename)
     tvTitle, tvYear, tvSeason, tvEpisode, cntitle = tt.title, tt.yearstr, tt.season, tt.episode, tt.cntitle
-    tvTitle = fixNtName(tvTitle)
+    # tvTitle = fixNtName(tvTitle)
 
     tvEpisode = re.sub(r'^Ep\s*', 'E', tvEpisode, flags=re.I)
     filename, file_ext = os.path.splitext(mediaFilename)
@@ -616,6 +616,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             pf = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang,
                                 ccfcat_hard=setArgsCategory())
             pf.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
+            pf.title = fixNtName(pf.title)
             if pf.tmdbid > 0 or fnok:
                 p = pf
 
@@ -659,6 +660,8 @@ def processOneDirItem(cpLocation, itemName):
     cat = setArgsCategory()
     p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=cat)
     p.parse(itemName, TMDb=(ARGS.tmdb_api_key is not None))
+    p.title = fixNtName(p.title)
+    
     cat = genCatFolderName(p)
 
     destFolderName = genMediaFolderName(p)

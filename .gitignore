@@ -9,6 +9,7 @@ __pycache__/
 .vscode/
 
 myTMDbParser*
+tt.py
 
 # Distribution / packaging
 .Python
