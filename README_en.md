@@ -23,13 +23,14 @@ torcp -h
 ```
 
 ```
-usage: torcptest.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG]
-                    [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG]
-                    [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv]
-                    [--full-bdmv] [--origin-name] [--sleep SLEEP] [--move-run]
-                    [--make-log] [--symbolink] [--cache] [--emby-bracket]
-                    [--plex-bracket]
-                    MEDIA_DIR
+usage: torcp [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG]
+             [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG]
+             [--tv-folder-name TV_FOLDER_NAME]
+             [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie]
+             [--dryrun] [--single] [--extract-bdmv] [--full-bdmv]
+             [--origin-name] [--sleep SLEEP] [--move-run] [--make-log]
+             [--symbolink] [--cache] [--emby-bracket] [--plex-bracket]
+             MEDIA_DIR
 
 torcp: a script hardlink media files and directories in Emby-happy naming and
 structs.

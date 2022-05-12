@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import re
-from difflib import SequenceMatcher
 from tmdbv3api import TMDb, TV, Search
 
 from torcp import tortitle
@@ -25,10 +24,12 @@ def transToCCFCat(mediatype, originCat):
     return originCat
 
 
-def similar(a, b):
-    return SequenceMatcher(None, a, b).ratio()
-
-
+def tryint(instr):
+    try:
+        string_int = int(instr)
+    except ValueError:    
+        string_int = 0
+    return string_int
 class TMDbNameParser():
     def __init__(self, tmdb_api_key, tmdb_lang, ccfcat_hard=None):
         self.ccfcatHard = ccfcat_hard
@@ -78,10 +79,7 @@ class TMDbNameParser():
         self.resolution = tc.resolution
         tt = tortitle.TorTitle(torname)
         self.title, parseYear, self.season, self.episode, self.cntitle = tt.title, tt.yearstr, tt.season, tt.episode, tt.cntitle 
-        try:
-            self.year = int(parseYear)
-        except:
-            self.year = 0
+        self.year = tryint(parseYear)
 
         if self.season and (self.ccfcat != 'TV'):
             # print('Category fixed: ' + movieItem)
@@ -212,14 +210,7 @@ class TMDbNameParser():
             flags=re.A | re.I)
         if m2:
             yearstr = m2.group(2)
-            try:
-                intyear = int(yearstr)
-            except:
-                intyear = 0
-        # m = re.match(r'^(\d+)\b', datestr)
-        # if m:
-        #     yearstr = m.group(0)
-        #     intyear = int(yearstr)
+            intyear = tryint(yearstr)
         return intyear
 
     def getTitle(self, result):
