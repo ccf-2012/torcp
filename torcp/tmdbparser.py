@@ -78,6 +78,10 @@ class TMDbNameParser():
         self.resolution = tc.resolution
         tt = tortitle.TorTitle(torname)
         self.title, parseYear, self.season, self.episode, self.cntitle = tt.title, tt.yearstr, tt.season, tt.episode, tt.cntitle 
+        try:
+            self.year = int(parseYear)
+        except:
+            self.year = 0
 
         if self.season and (self.ccfcat != 'TV'):
             # print('Category fixed: ' + movieItem)
@@ -95,6 +99,7 @@ class TMDbNameParser():
                 self.searchTMDb(self.title, self.tmdbcat,
                                 parseYear, self.cntitle)
             self.ccfcat = transToCCFCat(self.tmdbcat, self.ccfcat)
+            
 
     def fixSeasonName(self, seasonStr):
         if re.match(r'^Ep?\d+(-Ep?\d+)?$', seasonStr,
@@ -207,7 +212,10 @@ class TMDbNameParser():
             flags=re.A | re.I)
         if m2:
             yearstr = m2.group(2)
-            intyear = int(yearstr)
+            try:
+                intyear = int(yearstr)
+            except:
+                intyear = 0
         # m = re.match(r'^(\d+)\b', datestr)
         # if m:
         #     yearstr = m.group(0)
