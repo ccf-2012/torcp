@@ -66,7 +66,7 @@ optional arguments:
   --plex-bracket        ex: Alone (2020) {tmdb-509635}
 ```
 
-### Alternatively, call with `python tt.py`
+### Alternatively, call with `python tp.py`
 * if you still want to manipulate with source code, you may call like this:
 ```sh
 python tp.py -h 
