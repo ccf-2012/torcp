@@ -65,6 +65,14 @@ optional arguments:
   --emby-bracket        ex: Alone (2020) [tmdbid=509635]
   --plex-bracket        ex: Alone (2020) {tmdb-509635}
 ```
+
+### Alternatively, call with `python tt.py`
+* if you still want to manipulate with source code, you may call like this:
+```sh
+python tp.py -h 
+```
+* change the `torcp` with  `python tp.py` in the following examples.
+
 ##  Examples:
 
 * hardlink whole dir to a seperate dir, with guessed category:

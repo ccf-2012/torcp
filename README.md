@@ -82,6 +82,20 @@ optional arguments:
   --plex-bracket        ex: Alone (2020) {tmdb-509635}
 ```
 
+### 使用源码调用的方式
+* 如果你仍然习惯源码调用的方式，安装代码，仍然使用:
+```sh 
+git clone https://github.com/ccf-2012/torcp.git
+```
+
+* 这里添加了一个小的入口程序`tp.py`，你可以这样调用：
+```sh
+python tp.py -h 
+```
+
+* 后面例子中的`torcp` 都可以替换成 `python tp.py` 这样的调用方式。
+
+
 ## 例子
 
 * 将一个目录中所有影视文件和目录，硬链到另一个目录，其间会按目录名/文件名猜测分类，并挑出 `.mkv` 和 `.mp4`:
