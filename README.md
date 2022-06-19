@@ -12,6 +12,7 @@ for english version [CLICK ME](README_en.md)
 6. Last updated 2022.3.23: 支持软链 `--symbolink`
 
 ## Last Update
+* 2022.6.20 `-e, --keep-ext`, 可使用参数 `all` 
 * 2022.4.3: `--make-log` 在目标目录中建立一个log文件，以便追溯原文件名
 * 2022.3.23: `--symbolink` support symbol link
 * 2022.3.13: `--lang` dispatch to different folders base on TMDb language

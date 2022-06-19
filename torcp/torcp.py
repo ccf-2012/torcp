@@ -253,7 +253,7 @@ def genMediaFolderName(nameParser):
 
 
 def isMediaFileType(file_ext):
-    return file_ext.lower() in KEEPEXTS
+    return KEEPEXTALL or file_ext.lower() in KEEPEXTS
 
 
 def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName,
@@ -741,8 +741,12 @@ def processOneDirItem(cpLocation, itemName):
 
 
 def makeKeepExts():
-    global KEEPEXTS
+    global KEEPEXTS, KEEPEXTALL
+    KEEPEXTALL = False
     KEEPEXTS = ['.mkv', '.mp4', '.ts', '.m2ts']
+    if ARGS.keep_ext == 'all':
+        KEEPEXTALL = True
+        return
     if ARGS.keep_ext:
         argExts = ARGS.keep_ext.split(',')
         for ext in argExts:
