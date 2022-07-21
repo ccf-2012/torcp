@@ -634,11 +634,12 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
 
 
 def targetDirHook(targetDir):
-    fullTargetDir = os.path.join(ARGS.hd_path, targetDir)
-    print('Target Dir: ' + fullTargetDir)
+    # exportTargetDir = os.path.join(ARGS.hd_path, targetDir)
+    exportTargetDir = targetDir
+    print('Target Dir: ' + exportTargetDir)
     if ARGS.after_copy_script:
         import subprocess        
-        cmd = [ARGS.after_copy_script, fullTargetDir]
+        cmd = [ARGS.after_copy_script, exportTargetDir]
         subprocess.Popen(cmd).wait()
         # os.system("%s %s" % (ARGS.next_script, targetDir))
     return
