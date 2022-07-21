@@ -638,7 +638,7 @@ def targetDirHook(targetDir):
     print('Target Dir: ' + fullTargetDir)
     if ARGS.after_copy_script:
         import subprocess        
-        cmd = [ARGS.next_script, fullTargetDir]
+        cmd = [ARGS.after_copy_script, fullTargetDir]
         subprocess.Popen(cmd).wait()
         # os.system("%s %s" % (ARGS.next_script, targetDir))
     return
