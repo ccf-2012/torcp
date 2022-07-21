@@ -9,9 +9,10 @@ for english version [CLICK ME](README_en.md)
 > 所谓硬链，就是不占磁盘空间对同一文件的引用，而在使用时就像两个分别的文件一样，可以改名和移动
 4. Since 2022.2.26: 支持搜索TMDb，以获得准确的、选定语言的影视名字，然后以此名字进行更名和组织目录
 5. Since 2022.3.13: 对于查出了TMDb id的媒体，支持按语言分类
-6. Last updated 2022.3.23: 支持软链 `--symbolink`
+6. Since 2022.3.23: 支持软链 `--symbolink`
 
 ## Last Update
+* 2022.7.21 `--after-copy-script` 在完成硬链后，执行一外部脚本，以便实现Plex刮削
 * 2022.6.20 `-e, --keep-ext`, 可使用参数 `all` 
 * 2022.4.3: `--make-log` 在目标目录中建立一个log文件，以便追溯原文件名
 * 2022.3.23: `--symbolink` support symbol link
@@ -39,23 +40,20 @@ python3 -m ensurepip
 torcp -h
 ```
 
+* 或使用源码安装的话，打 `python tp.py -h `
 ```
-usage: torcp [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG]
-             [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG]
-             [--tv-folder-name TV_FOLDER_NAME]
-             [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie]
-             [--dryrun] [--single] [--extract-bdmv] [--full-bdmv]
-             [--origin-name] [--sleep SLEEP] [--move-run] [--make-log]
-             [--symbolink] [--cache] [--emby-bracket] [--plex-bracket]
+usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG]
+             [--tv-folder-name TV_FOLDER_NAME] [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie] [--dryrun]
+             [--single] [--extract-bdmv] [--full-bdmv] [--origin-name] [--sleep SLEEP] [--move-run] [--make-log]
+             [--symbolink] [--cache] [--emby-bracket] [--plex-bracket] [--after-copy-script AFTER_COPY_SCRIPT]
              MEDIA_DIR
 
-torcp: a script hardlink media files and directories in Emby-happy naming and
-structs.
+torcp: a script hardlink media files and directories in Emby-happy naming and structs.
 
 positional arguments:
   MEDIA_DIR             The directory contains TVs and Movies to be copied.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -d HD_PATH, --hd_path HD_PATH
                         the dest path to create Hard Link.
@@ -63,10 +61,13 @@ optional arguments:
                         keep files with these extention('srt,ass').
   -l LANG, --lang LANG  seperate move by language('cn,en').
   --tmdb-api-key TMDB_API_KEY
-                        Search API for the tmdb id, and gen dirname as Name
-                        (year)\{tmdbid=xxx\}
+                        Search API for the tmdb id, and gen dirname as Name (year)\{tmdbid=xxx\}
   --tmdb-lang TMDB_LANG
                         specify the TMDb language
+  --tv-folder-name TV_FOLDER_NAME
+                        specify the name of TV directory, default TV.
+  --movie-folder-name MOVIE_FOLDER_NAME
+                        specify the name of Movie directory, default Movie.
   --tv                  specify the src directory is TV.
   --movie               specify the src directory is Movie.
   --dryrun              print message instead of real copy.
@@ -81,6 +82,8 @@ optional arguments:
   --cache               cache searched dir entries
   --emby-bracket        ex: Alone (2020) [tmdbid=509635]
   --plex-bracket        ex: Alone (2020) {tmdb-509635}
+  --after-copy-script AFTER_COPY_SCRIPT
+                        call this script with destination folder path after link/move
 ```
 
 ### 使用源码调用的方式
