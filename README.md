@@ -12,6 +12,7 @@ for english version [CLICK ME](README_en.md)
 6. Since 2022.3.23: 支持软链 `--symbolink`
 
 ## Last Update
+* 2022.8.18 如果资源文件夹命名里面带`[imdbid=xxx]`或`[tmdbid=xxx]`，则直接使用这样的id去TMDb中搜索资源信息
 * 2022.7.21 `--after-copy-script` 在完成硬链后，执行一外部脚本，以便实现Plex刮削
 * 2022.6.20 `-e, --keep-ext`, 可使用参数 `all` 
 * 2022.4.3: `--make-log` 在目标目录中建立一个log文件，以便追溯原文件名
