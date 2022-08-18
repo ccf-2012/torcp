@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
-from tmdbv3api import TMDb, TV, Search
+from tmdbv3api import TMDb, Movie, TV, Search, Find
+# from tmdbv3api.objs.find import Find
 
 from torcp import tortitle
 from torcp.torcategory import TorCategory
@@ -93,9 +94,10 @@ class TMDbNameParser():
         self.tmdbcat = transFromCCFCat(self.ccfcat)
 
         if TMDb:
-            if self.tmdbcat in ['tv', 'movie', 'Other', 'HDTV']:
-                self.searchTMDb(self.title, self.tmdbcat,
-                                parseYear, self.cntitle)
+            if not self.checkNameContainsId(torname):
+                if self.tmdbcat in ['tv', 'movie', 'Other', 'HDTV']:
+                    self.searchTMDb(self.title, self.tmdbcat,
+                                    parseYear, self.cntitle)
             self.ccfcat = transToCCFCat(self.tmdbcat, self.ccfcat)
             
 
@@ -409,3 +411,51 @@ class TMDbNameParser():
         print('\033[31mTMDb Not found: [%s] [%s]\033[0m ' % (title, cntitle))
         return 0, title, intyear
 
+
+    # TODO: to be continue
+    def checkNameContainsId(self, torname):
+        m = re.search(r'\[imdb\=(tt\d+)\]', torname, flags=re.A | re.I)
+        if m:
+            tmdbid, title, year = self.searchTMDbByIMDbId(self.tmdbcat, m[1])
+            if tmdbid:
+                return True
+        m = re.search(r'\[tmdb\=(\d+)\]', torname, flags=re.A | re.I)
+        if m:
+            tmdbid, title, year = self.searchTMDbByTMDbId(self.tmdbcat, m[1])
+            if tmdbid:
+                return True
+        return False
+
+    def searchTMDbByIMDbId(self, cat, imdbid):
+        f = Find()
+        print("Search : " + imdbid)
+        # t = tv.details(tmdbid)
+        t = f.find_by_imdb_id(imdb_id=imdbid)
+        if t:
+
+            print(t)
+            # self.tmdbid = t.id
+            self.title = t.name
+            self.year = self.getYear(t.first_air_date)
+            self.original_language = t.original_language
+
+        return self.tmdbid, self.title, self.year 
+
+    def searchTMDbByTMDbId(self, cat, tmdbid):
+        if cat == 'tv':
+            tv = TV()
+            t = tv.details(tmdbid)
+            if t:
+                self.tmdbid = tryint(tmdbid)
+                self.title = t.name
+                self.year = self.getYear(t.first_air_date)
+                self.original_language = t.original_language
+        elif cat == 'move':
+            movie = Movie()
+            m = movie.details(tmdbid)
+            if m:
+                self.tmdbid = tryint(tmdbid)
+                self.title = m.title
+                self.year = self.getYear(m.release_date)
+                self.original_language = m.original_language
+        return self.tmdbid, self.title, self.year 
