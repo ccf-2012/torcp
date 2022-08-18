@@ -414,14 +414,14 @@ class TMDbNameParser():
 
     # TODO: to be continue
     def checkNameContainsId(self, torname):
-        m = re.search(r'\[imdb\=(tt\d+)\]', torname, flags=re.A | re.I)
+        m = re.search(r'\[imdb(id)?\=(tt\d+)\]', torname, flags=re.A | re.I)
         if m:
-            tmdbid, title, year = self.searchTMDbByIMDbId(self.tmdbcat, m[1])
+            tmdbid, title, year = self.searchTMDbByIMDbId(self.tmdbcat, m[2])
             if tmdbid:
                 return True
-        m = re.search(r'\[tmdb\=(\d+)\]', torname, flags=re.A | re.I)
+        m = re.search(r'\[tmdb(id)?\=(\d+)\]', torname, flags=re.A | re.I)
         if m:
-            tmdbid, title, year = self.searchTMDbByTMDbId(self.tmdbcat, m[1])
+            tmdbid, title, year = self.searchTMDbByTMDbId(self.tmdbcat, m[2])
             if tmdbid:
                 return True
         return False
@@ -432,12 +432,18 @@ class TMDbNameParser():
         # t = tv.details(tmdbid)
         t = f.find_by_imdb_id(imdb_id=imdbid)
         if t:
-
-            print(t)
-            # self.tmdbid = t.id
-            self.title = t.name
-            self.year = self.getYear(t.first_air_date)
-            self.original_language = t.original_language
+            # print(t)
+            # breakpoint()
+            if t.movie_results:
+                self.tmdbcat = "movie"
+                r = t['movie_results'][0]
+                self.saveTmdbMovieResult(r)
+            elif t.tv_results:
+                self.tmdbcat = "tv"
+                r = t['tv_results'][0]
+                self.saveTmdbTVResultMatch(r)
+            else:
+                pass
 
         return self.tmdbid, self.title, self.year 
 
@@ -446,16 +452,10 @@ class TMDbNameParser():
             tv = TV()
             t = tv.details(tmdbid)
             if t:
-                self.tmdbid = tryint(tmdbid)
-                self.title = t.name
-                self.year = self.getYear(t.first_air_date)
-                self.original_language = t.original_language
+                self.saveTmdbTVResultMatch(t)
         elif cat == 'move':
             movie = Movie()
             m = movie.details(tmdbid)
             if m:
-                self.tmdbid = tryint(tmdbid)
-                self.title = m.title
-                self.year = self.getYear(m.release_date)
-                self.original_language = m.original_language
+                self.saveTmdbMovieResult(m)
         return self.tmdbid, self.title, self.year 
