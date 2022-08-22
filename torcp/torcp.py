@@ -17,6 +17,7 @@ import argparse
 import shutil
 import glob
 import platform
+import codecs
 
 from torcp.tmdbparser import TMDbNameParser
 from torcp.torcategory import TorCategory
@@ -54,8 +55,9 @@ def makeLogfile(fromLoc, toLocPath, logDir=None):
     
     if not os.path.exists(destDir):
         ensureDir(destDir)
-    with open(logFilename, mode='a+') as logfile:
+    with codecs.open(logFilename, "a+", "utf-8") as logfile:
         logfile.write(fromLoc+'\n')
+        logfile.close()
 
 
 def hdlinkCopy(fromLoc, toLocPath, toLocFile=''):
@@ -65,7 +67,7 @@ def hdlinkCopy(fromLoc, toLocPath, toLocFile=''):
     destDir = os.path.join(ARGS.hd_path, toLocPath)
     if not ARGS.dryrun:
         ensureDir(destDir)
-        makeLogfile(fromLoc, destDir)
+        makeLogfile(fromLoc, toLocPath)
     if os.path.isfile(fromLoc):
         if toLocFile:
             destFile = os.path.join(destDir, toLocFile)
@@ -101,7 +103,7 @@ def pathMove(fromLoc, toLocFolder, toLocFile=''):
     destDir = os.path.join(ARGS.hd_path, toLocFolder)
     if not ARGS.dryrun:
         ensureDir(destDir)
-        makeLogfile(fromLoc, destDir)
+        makeLogfile(fromLoc, toLocFolder)
         if ARGS.sleep:
             time.sleep(ARGS.sleep)
     if os.path.isfile(fromLoc):
@@ -136,7 +138,7 @@ def symbolLink(fromLoc, toLocPath, toLocFile=''):
     destDir = os.path.join(ARGS.hd_path, toLocPath)
     if not ARGS.dryrun:
         ensureDir(destDir)
-        makeLogfile(fromLoc, destDir)
+        makeLogfile(fromLoc, toLocPath)
     if os.path.isfile(fromLoc):
         if toLocFile:
             destFile = os.path.join(destDir, toLocFile)
