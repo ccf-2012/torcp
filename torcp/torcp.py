@@ -684,7 +684,7 @@ def processOneDirItem(cpLocation, itemName):
                 seasonFolderFullPath = os.path.join(ARGS.tv_folder_name, destFolderName,
                                                     p.season)
                 targetCopy(mediaSrc, seasonFolderFullPath, newTVFileName)
-                targetDirHook(os.path.join(ARGS.tv_folder_name, destFolderName), tmdbidstr=str(p.imdbid))
+                targetDirHook(os.path.join(ARGS.tv_folder_name, destFolderName), tmdbidstr=str(p.tmdbid))
             elif cat == CATNAME_MOVIE:
                 if ARGS.origin_name:
                     newMovieName = itemName
@@ -694,15 +694,15 @@ def processOneDirItem(cpLocation, itemName):
                                                     yearstr, p.resolution,
                                                     p.group)
                 targetCopy(mediaSrc, destCatFolderName, newMovieName)
-                targetDirHook(destCatFolderName, tmdbidstr=str(p.imdbid))
+                targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid))
             elif cat == 'TMDbNotFound':
                 targetCopy(mediaSrc, cat)
-                targetDirHook(os.path.join(cat, itemName), tmdbidstr=str(p.imdbid))
+                targetDirHook(os.path.join(cat, itemName), tmdbidstr=str(p.tmdbid))
             else:
                 print('\033[33mSingle media file : [ %s ] %s \033[0m' %
                       (cat, mediaSrc))
                 targetCopy(mediaSrc, destCatFolderName)
-                targetDirHook(destCatFolderName, tmdbidstr=str(p.imdbid))
+                targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid))
         elif file_ext.lower() in ['.iso']:
             #  TODO: aruba need iso when extract_bdmv
             if ARGS.full_bdmv or ARGS.extract_bdmv:
