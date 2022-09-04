@@ -12,6 +12,7 @@ for english version [CLICK ME](README_en.md)
 6. Since 2022.3.23: 支持软链 `--symbolink`
 
 ## Last Update
+* 2022.9.4  `--after-copy-script` 执行外部脚本时，会传入3个参数：生成的媒体路径，原媒体文件(夹)名，tmdbid
 * 2022.8.18 如果资源文件夹命名里面带`[imdbid=xxx]`或`[tmdbid=xxx]`，则直接使用这样的id去TMDb中搜索资源信息
 * 2022.7.21 `--after-copy-script` 在完成硬链后，执行一外部脚本，以便实现Plex刮削
 * 2022.6.20 `-e, --keep-ext`, 可使用参数 `all` 

@@ -398,13 +398,17 @@ def fixSeasonGroupWithFilename(folderPath, folderSeason, folderGroup, folderReso
 
 
 def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName,
-                      resolution):
+                      resolution, folderTmdbParser):
     if os.path.islink(tvSourceFolder):
         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % tvSourceFolder)
         return
     if os.path.isdir(os.path.join(tvSourceFolder, 'BDMV')):
-        # a BDMV dir in a TV folder, treat as Movie
-        processBDMV(tvSourceFolder, genFolder, 'MovieM2TS')
+        if ARGS.full_bdmv or ARGS.extract_bdmv:
+            # a BDMV dir in a TV folder, treat as Movie
+            processBDMV(tvSourceFolder, genFolder, 'MovieM2TS')
+            targetDirHook(os.path.join('MovieM2TS', genFolder), tmdbid=folderTmdbParser.tmdbid)
+        else:
+            print('\033[31mSkip BDMV/ISO  %s \033[0m' % genFolder)
         return
 
     parseSeason, parseGroup, genFolder, resolution = fixSeasonGroupWithFilename(
@@ -439,7 +443,7 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName,
                 # makeLogfile(tvitemPath, seasonFolderFullPath, tvSourceFolder)
                 targetCopy(tvitemPath, seasonFolderFullPath, newTVFileName)
 
-    targetDirHook(os.path.join(CATNAME_TV, genFolder))
+    targetDirHook(os.path.join(CATNAME_TV, genFolder), folderTmdbParser.tmdbid)
 
 
 def genMovieResGroup(mediaSrc, movieName, year, resolution, group):
@@ -514,7 +518,6 @@ def processBDMV(mediaSrc, folderGenName, catFolder):
         for bdmvItem in os.listdir(mediaSrc):
             fullBdmvItem = os.path.join(mediaSrc, bdmvItem)
             targetCopy(fullBdmvItem, destCatFolderName)
-        targetDirHook(destCatFolderName)
         return
 
     if ARGS.extract_bdmv:
@@ -529,7 +532,6 @@ def processBDMV(mediaSrc, folderGenName, catFolder):
             # fn, ext = os.path.splitext(stream)
             tsname = os.path.basename(mediaSrc) + ' - ' + os.path.basename( stream)
             targetCopy(stream, destCatFolderName, tsname)
-        targetDirHook(destCatFolderName)
 
     else:
         print('\033[31mSkip BDMV/ISO  %s \033[0m' % mediaSrc)
@@ -539,13 +541,17 @@ def processMusic(mediaSrc, folderCat, folderGenName):
     # destCatFolderName = os.path.join(folderCat, folderGenName)
     targetCopy(mediaSrc, folderCat)
     # TODO: new item add to Music folder cause full update
-    targetDirHook('Music')
+    targetDirHook('Music', tmdbid='-3')
 
 
 def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
     if os.path.isdir(os.path.join(mediaSrc, 'BDMV')):
         # break, process BDMV dir for this dir
-        processBDMV(mediaSrc, folderGenName, 'MovieM2TS')
+        if ARGS.full_bdmv or ARGS.extract_bdmv:
+            processBDMV(mediaSrc, folderGenName, 'MovieM2TS')
+            targetDirHook(os.path.join('MovieM2TS', folderGenName), tmdbid=folderTmdbParser.tmdbid)
+        else:
+            print('\033[31mSkip BDMV/ISO  %s \033[0m' % mediaSrc)
         return
 
     if not os.path.isdir(mediaSrc):
@@ -583,7 +589,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
                 destCatFolderName = os.path.join('BDMVISO', folderGenName)
                 targetCopy(os.path.join(mediaSrc, movieItem),
                            destCatFolderName)
-                targetDirHook(destCatFolderName) 
+                targetDirHook(destCatFolderName, tmdbid='0') 
             else:
                 print('\033[31mSKip iso file: [%s]\033[0m ' % movieItem)
             continue
@@ -609,7 +615,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
         if cat == CATNAME_TV:
             print('\033[31mMiss Categoried TV: [%s]\033[0m ' % mediaSrc)
             copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group,
-                              p.resolution)
+                              p.resolution, p)
             # parseSeason = fixSeasonName(parseSeason)
             # if cat != folderCat:
             #     copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group,
@@ -620,7 +626,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             return
         elif cat == 'TMDbNotFound':
             targetCopy(mediaSrc, cat)
-            targetDirHook(cat)
+            targetDirHook(cat, p.tmdbid)
             return
         else:
             if ARGS.origin_name:
@@ -632,22 +638,24 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             mediaSrcItem = os.path.join(mediaSrc, movieItem)
             # makeLogfile(mediaSrcItem, destCatFolderName)
             targetCopy(mediaSrcItem, destCatFolderName, newMovieName)
-            targetDirHook(destCatFolderName)
+            targetDirHook(destCatFolderName, p.tmdbid)
 
 
-def targetDirHook(targetDir):
+def targetDirHook(targetDir, tmdbid=''):
     # exportTargetDir = os.path.join(ARGS.hd_path, targetDir)
     exportTargetDir = targetDir
     print('Target Dir: ' + exportTargetDir)
     if ARGS.after_copy_script:
         import subprocess        
-        cmd = [ARGS.after_copy_script, exportTargetDir]
+        cmd = [ARGS.after_copy_script, exportTargetDir, CUR_MEDIA_NAME, tmdbid]
         subprocess.Popen(cmd).wait()
         # os.system("%s %s" % (ARGS.next_script, targetDir))
     return
 
 
 def processOneDirItem(cpLocation, itemName):
+    global CUR_MEDIA_NAME 
+    CUR_MEDIA_NAME = itemName
     mediaSrc = os.path.join(cpLocation, itemName)
     if os.path.islink(mediaSrc):
         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % mediaSrc)
@@ -708,7 +716,7 @@ def processOneDirItem(cpLocation, itemName):
     else:
         if cat == CATNAME_TV:
             copyTVFolderItems(mediaSrc, destFolderName, p.season, p.group,
-                              p.resolution)
+                              p.resolution, p)
         elif cat == CATNAME_MOVIE:
             processMovieDir(mediaSrc, p.ccfcat,
                             destFolderName, folderTmdbParser=p)
