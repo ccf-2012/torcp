@@ -406,7 +406,7 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName,
         if ARGS.full_bdmv or ARGS.extract_bdmv:
             # a BDMV dir in a TV folder, treat as Movie
             processBDMV(tvSourceFolder, genFolder, 'MovieM2TS')
-            targetDirHook(os.path.join('MovieM2TS', genFolder), tmdbid=folderTmdbParser.tmdbid)
+            targetDirHook(os.path.join('MovieM2TS', genFolder), tmdbidstr=str(folderTmdbParser.tmdbid))
         else:
             print('\033[31mSkip BDMV/ISO  %s \033[0m' % genFolder)
         return
@@ -443,7 +443,7 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName,
                 # makeLogfile(tvitemPath, seasonFolderFullPath, tvSourceFolder)
                 targetCopy(tvitemPath, seasonFolderFullPath, newTVFileName)
 
-    targetDirHook(os.path.join(CATNAME_TV, genFolder), folderTmdbParser.tmdbid)
+    targetDirHook(os.path.join(CATNAME_TV, genFolder), tmdbidstr=str(folderTmdbParser.tmdbid))
 
 
 def genMovieResGroup(mediaSrc, movieName, year, resolution, group):
@@ -541,7 +541,7 @@ def processMusic(mediaSrc, folderCat, folderGenName):
     # destCatFolderName = os.path.join(folderCat, folderGenName)
     targetCopy(mediaSrc, folderCat)
     # TODO: new item add to Music folder cause full update
-    targetDirHook('Music', tmdbid='-3')
+    targetDirHook('Music', tmdbidstr='music')
 
 
 def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
@@ -549,7 +549,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
         # break, process BDMV dir for this dir
         if ARGS.full_bdmv or ARGS.extract_bdmv:
             processBDMV(mediaSrc, folderGenName, 'MovieM2TS')
-            targetDirHook(os.path.join('MovieM2TS', folderGenName), tmdbid=folderTmdbParser.tmdbid)
+            targetDirHook(os.path.join('MovieM2TS', folderGenName), tmdbidstr=str(folderTmdbParser.tmdbid))
         else:
             print('\033[31mSkip BDMV/ISO  %s \033[0m' % mediaSrc)
         return
@@ -589,7 +589,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
                 destCatFolderName = os.path.join('BDMVISO', folderGenName)
                 targetCopy(os.path.join(mediaSrc, movieItem),
                            destCatFolderName)
-                targetDirHook(destCatFolderName, tmdbid='0') 
+                targetDirHook(destCatFolderName, tmdbidstr='iso') 
             else:
                 print('\033[31mSKip iso file: [%s]\033[0m ' % movieItem)
             continue
@@ -626,7 +626,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             return
         elif cat == 'TMDbNotFound':
             targetCopy(mediaSrc, cat)
-            targetDirHook(cat, p.tmdbid)
+            targetDirHook(cat, tmdbidstr=str(p.tmdbid))
             return
         else:
             if ARGS.origin_name:
@@ -638,16 +638,16 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             mediaSrcItem = os.path.join(mediaSrc, movieItem)
             # makeLogfile(mediaSrcItem, destCatFolderName)
             targetCopy(mediaSrcItem, destCatFolderName, newMovieName)
-            targetDirHook(destCatFolderName, p.tmdbid)
+            targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid))
 
 
-def targetDirHook(targetDir, tmdbid=''):
+def targetDirHook(targetDir, tmdbidstr=''):
     # exportTargetDir = os.path.join(ARGS.hd_path, targetDir)
     exportTargetDir = targetDir
     print('Target Dir: ' + exportTargetDir)
     if ARGS.after_copy_script:
         import subprocess        
-        cmd = [ARGS.after_copy_script, exportTargetDir, CUR_MEDIA_NAME, tmdbid]
+        cmd = [ARGS.after_copy_script, exportTargetDir, CUR_MEDIA_NAME, str(tmdbidstr)]
         subprocess.Popen(cmd).wait()
         # os.system("%s %s" % (ARGS.next_script, targetDir))
     return
@@ -684,7 +684,7 @@ def processOneDirItem(cpLocation, itemName):
                 seasonFolderFullPath = os.path.join(ARGS.tv_folder_name, destFolderName,
                                                     p.season)
                 targetCopy(mediaSrc, seasonFolderFullPath, newTVFileName)
-                targetDirHook(os.path.join(ARGS.tv_folder_name, destFolderName))
+                targetDirHook(os.path.join(ARGS.tv_folder_name, destFolderName), tmdbidstr=str(p.imdbid))
             elif cat == CATNAME_MOVIE:
                 if ARGS.origin_name:
                     newMovieName = itemName
@@ -694,21 +694,21 @@ def processOneDirItem(cpLocation, itemName):
                                                     yearstr, p.resolution,
                                                     p.group)
                 targetCopy(mediaSrc, destCatFolderName, newMovieName)
-                targetDirHook(destCatFolderName)
+                targetDirHook(destCatFolderName, tmdbidstr=str(p.imdbid))
             elif cat == 'TMDbNotFound':
                 targetCopy(mediaSrc, cat)
-                targetDirHook(os.path.join(cat, itemName))
+                targetDirHook(os.path.join(cat, itemName), tmdbidstr=str(p.imdbid))
             else:
                 print('\033[33mSingle media file : [ %s ] %s \033[0m' %
                       (cat, mediaSrc))
                 targetCopy(mediaSrc, destCatFolderName)
-                targetDirHook(destCatFolderName)
+                targetDirHook(destCatFolderName, tmdbidstr=str(p.imdbid))
         elif file_ext.lower() in ['.iso']:
             #  TODO: aruba need iso when extract_bdmv
             if ARGS.full_bdmv or ARGS.extract_bdmv:
                 bdmvFolder = os.path.join('BDMVISO', destFolderName)
                 targetCopy(mediaSrc, bdmvFolder)
-                targetDirHook(bdmvFolder)
+                targetDirHook(bdmvFolder, tmdbidstr='iso')
             else:
                 print('\033[33mSkip .iso file:  %s \033[0m' % mediaSrc)
         else:
@@ -722,7 +722,7 @@ def processOneDirItem(cpLocation, itemName):
                             destFolderName, folderTmdbParser=p)
         elif cat in ['MV']:
             targetCopy(mediaSrc, cat)
-            targetDirHook(os.path.join(cat, itemName))
+            targetDirHook(os.path.join(cat, itemName), tmdbidstr='mv')
         elif cat in ['Music']:
             processMusic(mediaSrc, cat, destFolderName)
         elif cat in ['TMDbNotFound']:
@@ -732,11 +732,11 @@ def processOneDirItem(cpLocation, itemName):
                 processMovieDir(mediaSrc, cat, destFolderName, folderTmdbParser=p)
             else:
                 targetCopy(mediaSrc, cat)
-                targetDirHook(os.path.join(cat, itemName))
+                targetDirHook(os.path.join(cat, itemName), tmdbidstr='notfound')
 
         elif cat in ['HDTV', 'Audio']:
             targetCopy(mediaSrc, cat)
-            targetDirHook(os.path.join(cat, itemName))
+            targetDirHook(os.path.join(cat, itemName), tmdbidstr='audio')
         elif cat in ['eBook']:
             print('\033[33mSkip eBoook: [%s], %s\033[0m ' %
                   (cat, mediaSrc))
