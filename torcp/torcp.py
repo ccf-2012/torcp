@@ -661,9 +661,11 @@ def processOneDirItem(cpLocation, itemName):
         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % mediaSrc)
         return
 
+    imdbidstr = ARGS.imdbid if (ARGS.single and ARGS.imdbid) else ''
+
     cat = setArgsCategory()
     p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=cat)
-    p.parse(itemName, TMDb=(ARGS.tmdb_api_key is not None))
+    p.parse(itemName, TMDb=(ARGS.tmdb_api_key is not None), hasIMDb=imdbidstr)
     p.title = fixNtName(p.title)
     
     cat = genCatFolderName(p)
@@ -842,6 +844,9 @@ def loadArgs():
     parser.add_argument('--after-copy-script',
                         default='',
                         help='call this script with destination folder path after link/move')
+    parser.add_argument('--imdbid',
+                        default='',
+                        help='specify the TMDb id, -s single mode only')
 
     global ARGS
     ARGS = parser.parse_args()

@@ -12,6 +12,7 @@ for english version [CLICK ME](README_en.md)
 6. Since 2022.3.23: 支持软链 `--symbolink`
 
 ## Last Update
+* 2022.9.5 `--imdbid` 在 `-s` 模式下指定媒体的 IMDb id
 * 2022.9.4  `--after-copy-script` 执行外部脚本时，会传入3个参数：生成的媒体路径，原媒体文件(夹)名，tmdbid
 * 2022.8.18 如果资源文件夹命名里面带`[imdbid=xxx]`或`[tmdbid=xxx]`，则直接使用这样的id去TMDb中搜索资源信息
 * 2022.7.21 `--after-copy-script` 在完成硬链后，执行一外部脚本，以便实现Plex刮削
@@ -45,9 +46,9 @@ torcp -h
 * 或使用源码安装的话，打 `python tp.py -h `
 ```
 usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG]
-             [--tv-folder-name TV_FOLDER_NAME] [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie] [--dryrun]
-             [--single] [--extract-bdmv] [--full-bdmv] [--origin-name] [--sleep SLEEP] [--move-run] [--make-log]
-             [--symbolink] [--cache] [--emby-bracket] [--plex-bracket] [--after-copy-script AFTER_COPY_SCRIPT]
+             [--tv-folder-name TV_FOLDER_NAME] [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie] [--dryrun] [--single]
+             [--extract-bdmv] [--full-bdmv] [--origin-name] [--sleep SLEEP] [--move-run] [--make-log] [--symbolink] [--cache]
+             [--emby-bracket] [--plex-bracket] [--after-copy-script AFTER_COPY_SCRIPT] [--imdbid IMDBID]
              MEDIA_DIR
 
 torcp: a script hardlink media files and directories in Emby-happy naming and structs.
@@ -86,6 +87,7 @@ options:
   --plex-bracket        ex: Alone (2020) {tmdb-509635}
   --after-copy-script AFTER_COPY_SCRIPT
                         call this script with destination folder path after link/move
+  --imdbid IMDBID       specify the TMDb id, -s single mode only
 ```
 
 ### 使用源码调用的方式

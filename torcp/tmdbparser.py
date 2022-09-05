@@ -73,7 +73,7 @@ class TMDbNameParser():
         self.poster_path = ''
         self.genre_ids =[]
 
-    def parse(self, torname, TMDb=False):
+    def parse(self, torname, TMDb=False, hasIMDb=None):
         self.clearData()
         tc = TorCategory(torname)
         self.ccfcat, self.group = tc.ccfcat, tc.group
@@ -94,6 +94,11 @@ class TMDbNameParser():
         self.tmdbcat = transFromCCFCat(self.ccfcat)
 
         if TMDb:
+            if hasIMDb:
+                tmdbid, title, year = self.searchTMDbByIMDbId(hasIMDb)
+                if tmdbid:
+                    print(self.ccfcat, self.year)
+                    return
             if not self.checkNameContainsId(torname):
                 if self.tmdbcat in ['tv', 'movie', 'Other', 'HDTV']:
                     self.searchTMDb(self.title, self.tmdbcat,
@@ -416,7 +421,7 @@ class TMDbNameParser():
     def checkNameContainsId(self, torname):
         m = re.search(r'\[imdb(id)?\=(tt\d+)\]', torname, flags=re.A | re.I)
         if m:
-            tmdbid, title, year = self.searchTMDbByIMDbId(self.tmdbcat, m[2])
+            tmdbid, title, year = self.searchTMDbByIMDbId(m[2])
             if tmdbid:
                 return True
         m = re.search(r'\[tmdb(id)?\=(\d+)\]', torname, flags=re.A | re.I)
@@ -426,14 +431,12 @@ class TMDbNameParser():
                 return True
         return False
 
-    def searchTMDbByIMDbId(self, cat, imdbid):
+    def searchTMDbByIMDbId(self, imdbid):
         f = Find()
         print("Search : " + imdbid)
-        # t = tv.details(tmdbid)
         t = f.find_by_imdb_id(imdb_id=imdbid)
         if t:
             # print(t)
-            # breakpoint()
             if t.movie_results:
                 self.tmdbcat = "movie"
                 r = t['movie_results'][0]
@@ -445,7 +448,7 @@ class TMDbNameParser():
             else:
                 pass
 
-        return self.tmdbid, self.title, self.year 
+        return self.tmdbid, self.title, self.year
 
     def searchTMDbByTMDbId(self, cat, tmdbid):
         if cat == 'tv':
