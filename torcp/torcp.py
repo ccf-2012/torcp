@@ -768,6 +768,15 @@ def makeKeepExts():
                     KEEPEXTS.append('.' + ext)
 
 
+def ensureIMDb():
+    if ARGS.imdbid:
+        m1 = re.search(r'(tt\d+)', ARGS.imdbid, re.A)
+        if m1:
+            ARGS.imdbid = m1[1]
+        else:
+            ARGS.imdbid = ''
+
+
 def loadArgs():
     parser = argparse.ArgumentParser(
         description='torcp: a script hardlink media files and directories in Emby-happy naming and structs.'
@@ -850,6 +859,7 @@ def loadArgs():
 
     global ARGS
     ARGS = parser.parse_args()
+    ensureIMDb()
     ARGS.MEDIA_DIR = os.path.expanduser(ARGS.MEDIA_DIR)
     makeKeepExts()
 
