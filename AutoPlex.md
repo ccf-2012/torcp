@@ -1,10 +1,17 @@
-# 配合 PTPP 完成 Emby/Plex 自动入库流程
+# 配合 PTPP 与torcc 实现 Emby/Plex 自动入库流程
 
 ## 0 概述
-1. 安装 [修改的PT Plugin Plus](https://github.com/ccf-2012/PT-Plugin-Plus/tree/dev)，在各PT站的种子详情页，点击“一键下载”，解析详情页中的 **IMDb id**，并在添加种子时以此 **IMDb id** 作为标签，当前仅支持qBittorrent
-2. 设置qBittorrent在下载完成时，对完成的种子存储目录执行脚本，输出种子的**存储路径**，和上述 **IMDb id**，作为参数
-3. 在脚本中，调用 torcp 相关命令完成目录的改名和重新组织，torcp 对于传进来的**IMDb id** 会直接在TMDb中查找
-4. 对于Plex, 可以调用 [Plex Notify](https://github.com/ccf-2012/plex_notify) 通知Plex更新指定的目录
+torcp原本设计仅依靠种子文件夹名，结合TMDb进行猜测来建立适合刮削的目录，然而如果能从种子的详情信息页获取（通常都有的）IMDb信息，则可以准确地确定媒体。
+
+因此，一方面torcp支持了在`--single`模式对媒体指定IMDb的功能；另一方面，需要在添加种子时，就记录下媒体的IMDb。现在选择的记录方式，是在qBittorrent中对种子添加tag（标签)，在种子完成时，这个标签可以输出给运行torcp的脚本。
+
+在PT站下载种子时解析IMDb并添加qBittorrent标签，现在有两类形式：
+1. 手工在PT站上，在详情页一键下载。
+   *  安装 [修改的PT Plugin Plus](https://github.com/ccf-2012/PT-Plugin-Plus/tree/dev)，在各PT站的种子详情页，点击“一键下载”
+2. rss下载。
+   * 使用[torcc](https://github.com/ccf-2012/torcc)
+   
+
 
 ## 1 修改版PTPP
 > 此处致敬致谢 [ronggang](https://github.com/ronggang/PT-Plugin-Plus)等创作者。当前本修改代码和功能太过不完善，希望后续比较成型后提交pr给原PTPP库
@@ -25,9 +32,10 @@ yarn build
 3. 安装后，PTPP中设置一个默认下载器，需要是qBittorrent，然后在各pt站的种子详情页中，会显示“一键下载”
 ![一键下载](https://ptpimg.me/y7dw6b.png)
 
-* 当前修改版仅作测试体验，仅在这种情况下的 “一键下载” 才会解析添加 IMDb 标签
+* 当前修改版仅作测试体验，仅在这种情况下的 “一键下载” 才会解析添加 IMDb 标签。下载器中添加了IMDb标签的种子如下图：
 
 ![添加标签的种子](https://ptpimg.me/k509vo.png)
+
 
 ## 2 设置 qBittorrent
 * 设置 qBittorrent 使种子在完成下载后，自动运行脚本：
