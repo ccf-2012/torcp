@@ -17,16 +17,16 @@ qBittorrent提供一种下载完成自动运行脚本的功能，可以利用这
 
 
 ### 硬链到同分区目录入媒体库
-* 假设 torcp 已经安装好依赖，可以独立运行，可以试试 `python3 torcp.py -h` 看有没有出错。
+* 假设 torcp 已经安装好依赖，可以独立运行，可以试试 `python3 tp.py -h` 看有没有出错。
 * 对应于上面QB中所设置的脚本位置 `/home/ccf2012/torcp/rcp.sh` ，修改其内容，注意修改其中的:
-1. 确认torcp.py 的位置，即下面示例中的： `/home/ccf2012/torcp/torcp.py` 
+1. 确认torcp入口脚本的位置，即下面示例中的： `/home/ccf2012/torcp/tp.py` 
 2. 媒体库目录，下面示例中的： `/home/ccf2012/emby/`
 3. TMDb的api key： `your_tmdb_api_key`
 4. log输出的位置： `/home/ccf2012/rcp.log` 和 `/home/ccf2012/rcp_error.log`
 
 ```sh 
 #!/bin/bash
-python3 /home/ccf2012/torcp/torcp.py "$1" -d "/home/ccf2012/emby/" -s --tmdb-api-key your_tmdb_api_key --lang cn,jp  >>/home/ccf2012/rcp.log 2>>/home/ccf2012/rcp_error.log
+python3 /home/ccf2012/torcp/tp.py "$1" -d "/home/ccf2012/emby/" -s --tmdb-api-key your_tmdb_api_key --lang cn,jp  >>/home/ccf2012/rcp.log 2>>/home/ccf2012/rcp_error.log
 ```
 
 ![rcp.sh脚本设置](https://ptpimg.me/w0w36e.png)
@@ -45,7 +45,7 @@ python3 /home/ccf2012/torcp/torcp.py "$1" -d "/home/ccf2012/emby/" -s --tmdb-api
 
 ```sh 
 #!/bin/bash
-python3 /home/ccf2012/torcp/torcp.py "$1" -d "/home/ccf2012/emby/$2/" -s --tmdb-api-key your_tmdb_api_key --lang cn,jp  >>/home/ccf2012/rcp.log 2>>/home/ccf2012/rcp_error.log
+python3 /home/ccf2012/torcp/tp.py "$1" -d "/home/ccf2012/emby/$2/" -s --tmdb-api-key your_tmdb_api_key --lang cn,jp  >>/home/ccf2012/rcp.log 2>>/home/ccf2012/rcp_error.log
 
 rclone copy "/home/ccf2012/emby/$2/"  gd:/media/emby/
 rm -rf "/home/ccf2012/emby/$2/"
@@ -108,7 +108,7 @@ chown -R abc /downloads/emby/
 1. 修改 `rcp.sh` 内容如下：
 ```sh 
 #!/bin/bashs
-python3 /downloads/torcp/torcp.py "$1" -d "/downloads/emby/" -s --tmdb-api-key your_tmdb_api_key --lang cn,jp  >>/downloads/torcp/rcp.log 2>>/downloads/torcp/rcp_error.log
+python3 /downloads/torcp/tp.py "$1" -d "/downloads/emby/" -s --tmdb-api-key your_tmdb_api_key --lang cn,jp  >>/downloads/torcp/rcp.log 2>>/downloads/torcp/rcp_error.log
 ```
 
 
