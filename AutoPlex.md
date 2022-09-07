@@ -19,7 +19,7 @@ torcp原本设计仅依靠种子文件夹名，结合TMDb进行猜测来建立�
 ```sh
 git clone https://github.com/ccf-2012/PT-Plugin-Plus
 cd PT-Plugin-Plus
-git check dev
+git checkout dev
 ```
 
 2. 编译
