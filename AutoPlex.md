@@ -1,17 +1,17 @@
 # 配合 PTPP 与torcc 实现 Emby/Plex 自动入库流程
 
 ## 0 概述
-torcp原本设计仅依靠种子文件夹名，结合TMDb进行猜测来建立适合刮削的目录，然而如果能从种子的详情信息页获取（通常都有的）IMDb信息，则可以准确地确定媒体。
+torcp原本设计仅依靠种子文件夹名，结合TMDb进行猜测来建立适合刮削的目录，然而如果能在下载时就从种子的详情信息页获取（通常都有的）IMDb信息，则可以准确地确定媒体。
 
-因此，一方面torcp支持了在`--single`模式对媒体指定IMDb的功能；另一方面，需要在添加种子时，就记录下媒体的IMDb。现在选择的记录方式，是在qBittorrent中对种子添加tag（标签)，在种子完成时，这个标签可以输出给运行torcp的脚本。
+因此，一方面torcp支持了在`--single`模式对媒体指定IMDb的功能；另一方面，需要在下载种子时，就通过种子的信息页面解析出媒体的IMDb，进而在qBittorrent中添加种子时同时添加tag（标签)以记录此IMDb，在种子完成时，这个标签可以输出给torcp。
 
 在PT站下载种子并添加标签，现在有两类形式：
-1. 手工在PT站上，在详情页一键下载。
-   *  安装 [修改版 PT Plugin Plus](https://github.com/ccf-2012/PT-Plugin-Plus/tree/dev)，在各PT站的种子详情页，点击“一键下载”
-2. rss下载。
-   * 使用[torcc](https://github.com/ccf-2012/torcc) 
+1. 手工单次下载，在PT站上，在单个种子的详情页点PTPP的一键下载：
+   *  安装 [修改版 PT Plugin Plus](https://github.com/ccf-2012/PT-Plugin-Plus/tree/dev)，在各PT站的种子详情页，点击“一键下载”。此修改版PTPP在添加种子到qBittorrent时会添加IMDb标签。
+2. rss自动批量下载：
+   * 使用[torcc](https://github.com/ccf-2012/torcc) 在获取rss条目时，对各条目的信息页进行解析，在添加到qBittorrent时添加标签。
+   * 此rss脚本为命令行模式运行，可使用crontab 定时启动运行
    
-
 
 ## 1 修改版PTPP
 > 此处致敬致谢 [ronggang](https://github.com/ronggang/PT-Plugin-Plus)等创作者。当前本修改代码和功能太过不完善，希望后续比较成型后提交pr给原PTPP库
@@ -37,8 +37,8 @@ yarn build
 ![添加标签的种子](https://ptpimg.me/k509vo.png)
 
 
-## 2 设置 qBittorrent
-* 设置 qBittorrent 使种子在完成下载后，自动运行脚本。命令中的 `$G` 参数，即是将IMDb标签输出给脚本：
+## 2 设置 qBittorrent 完成后执行脚本
+* 设置 qBittorrent 当种子在完成下载后，自动运行脚本。命令中的 `$G` 参数，即是将IMDb标签输出给脚本：
 ![qb-set](https://ptpimg.me/rb09o2.png)
 
 * 其中脚本中，可以使用传进来的3个参数，例如上述所设的 rcp.sh 中写如下语句：
@@ -46,7 +46,7 @@ yarn build
 python3 /home/ccf2013/torcp/tp.py "$1" -d "/home/ccf2013/emby/$2/" -s --imdbid "$3" --tmdb-api-key xxxxxx  --tmdb-lang en-US --lang cn,ja,ko 
 ```
 * 以上代码表示：以 torcp 处理新完成的种子的存储目录（$1)，生成在 /home/ccf2013/emby/<种子名称($2)> 目录下，指定此媒体IMDb为 qBit传来的参数($3)
-* 完成 torcp 改名和目录重组后，可以将此目录 rclone 到目标存储(如gd)中，更多的示例，参考 [qb自动入库](qb自动入库.md)
+* 完成 torcp 改名和目录重组后，可以将此目录 rclone 到目标存储(如gd)中，更多的示例和完整的说明，参考 [qb自动入库](qb自动入库.md)
 
 
 ## 3 RSS下载
@@ -61,6 +61,7 @@ python torcc.py -R "https://some.pt.site/torrentrss.php?rows=10&..." -c "c_secur
 ```
 
 * 如果希望对rss来的条目进一步作正则(regex)过滤，可加 `--regex` 参数
+* 更多的示例和完整的说明，参考：[torcc 主页](https://github.com/ccf-2012/torcc)
 
 ## 4 通知 Plex 更新
 * 对于Plex，有单独更新指定媒体文件夹的功能，为此写了一个 [Plex Notify](https://github.com/ccf-2012/plex_notify)
