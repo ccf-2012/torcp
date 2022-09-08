@@ -29,7 +29,7 @@ yarn build
 ```
 * 详情参考 https://github.com/ronggang/PT-Plugin-Plus/wiki/developer
 
-3. 安装后，PTPP中设置一个默认下载器，需要是qBittorrent，然后在各pt站的种子详情页中，会显示“一键下载”
+3. 安装后，PTPP“常规设置”中设置一个默认下载器，需要是qBittorrent，然后在各pt站的种子详情页中，会显示“一键下载”
 ![一键下载](https://ptpimg.me/y7dw6b.png)
 
 * 当前修改版仅作测试体验，仅在这种情况下的 “一键下载” 才会解析添加 IMDb 标签。下载器中添加了IMDb标签的种子如下图：
@@ -41,11 +41,11 @@ yarn build
 * 设置 qBittorrent 当种子在完成下载后，自动运行脚本。命令中的 `$G` 参数，即是将IMDb标签输出给脚本，另外两个参数 `$F` 和 `$N` 分别是种子完整路径和文件名称：
 ![qb-set](https://ptpimg.me/rb09o2.png)
 
-* 其中脚本中，可以使用传进来的3个参数，例如上述所设的 rcp.sh 中写如下语句：
+* 所调用脚本中，可以使用传进来的3个参数，例如上述所设的 rcp.sh 中写如下语句：
 ```sh
 python3 /home/ccf2013/torcp/tp.py "$1" -d "/home/ccf2013/emby/$2/" -s --imdbid "$3" --tmdb-api-key xxxxxx  --tmdb-lang en-US --lang cn,ja,ko 
 ```
-* 以上代码表示：以 torcp 处理新完成的种子的存储目录（$1)，生成在 /home/ccf2013/emby/<种子名称($2)> 目录下，指定此媒体IMDb为 qBit传来的参数($3)
+* 以上代码表示：以 torcp 处理新完成的种子的存储目录（$1)，生成在 /home/ccf2013/emby/<种子名称($2)> 目录下，指定此媒体IMDb为qBit传来的 Tag参数($3)
 * 完成 torcp 改名和目录重组后，可以将此目录 rclone copy 到目标存储(如gd)中，更多的示例和完整的说明，参考 [qb自动入库](qb自动入库.md)
 
 
