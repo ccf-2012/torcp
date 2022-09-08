@@ -1,17 +1,18 @@
 # torcp
 
-for english version [CLICK ME](README_en.md)
+[English version](README_en.md)
 
-将下载的影视文件，通过 `硬链` 在另一个文件夹中重组目录、改名以便 `Emby` 这样的程序便于刮削识别。本脚本：
-1. 对你的影视文件夹中的文件进行分类，主要处理 TV/Movie.
-2. 解析影视文件夹中的 `影视名称`，`年份`，`季`，`集`，以及 `制作组`
-3. 依照 [Emby-happy](https://support.emby.media/support/solutions/articles/44001159102-movie-naming) 的风格进行重组目录与改名，在目标目录中生成硬链.
-> 所谓硬链，就是不占磁盘空间对同一文件的引用，而在使用时就像两个分别的文件一样，可以改名和移动
-4. Since 2022.2.26: 支持搜索TMDb，以获得准确的、选定语言的影视名字，然后以此名字进行更名和组织目录
-5. Since 2022.3.13: 对于查出了TMDb id的媒体，支持按语言分类
-6. Since 2022.3.23: 支持软链 `--symbolink`
+对下载的影视文件，通过 `硬链` 或 `软链` 在另一个文件夹中改名和重组目录、以便 Emby/Plex 这样的应用程序便于刮削识别。本脚本：
+1. 对你的影视文件夹中的文件进行分类，主要处理 TV/Movie， 解析影视文件夹中的 `影视名称`，`年份`，`季`，`集`，以及 `制作组`
+2. 依照 [Emby-happy](https://support.emby.media/support/solutions/articles/44001159102-movie-naming) 的风格进行重组目录与改名，在目标目录中生成硬链或软链.
+3. 支持搜索TMDb，以获得准确的、选定语言的影视名字，然后以此名字进行更名和组织目录，对于查出了TMDb的媒体，支持按语言分类
 
-## Last Update
+## 1 应用说明
+* [配合 PTPP 与torcc 实现 Emby/Plex 自动入库流程](AutoPlex.md)
+* [利用 qBittorrent 的完成后自动执行脚本功能实现入库](qb自动入库.md)
+
+
+## 2 Last Update
 * 2022.9.5 `--imdbid` 在 `-s` 模式下指定媒体的 IMDb id
 * 2022.9.4  `--after-copy-script` 执行外部脚本时，会传入3个参数：生成的媒体路径，原媒体文件(夹)名，tmdbid
 * 2022.8.18 如果资源文件夹命名里面带`[imdbid=xxx]`或`[tmdbid=xxx]`，则直接使用这样的id去TMDb中搜索资源信息
@@ -22,7 +23,7 @@ for english version [CLICK ME](README_en.md)
 * 2022.3.13: `--lang` dispatch to different folders base on TMDb language
 * 2022.2.26: `--tmdb-api-key` Support TMDb search 
 
-## 准备
+## 3 准备
 > 本程序需要在 `python3` 运行环境，以命令行方式运行
 
 * 安装torcp
@@ -30,14 +31,14 @@ for english version [CLICK ME](README_en.md)
 pip3 install torcp
 ```
 
-### 群晖中使用python3 和 pip3
+### 3.1 群晖中使用python3 和 pip3
 * DSM 6.x 默认没有安装Python 3，需要要在套件中心中搜索安装 `Python 3` 
 * 群晖安装pip
 ```sh
 python3 -m ensurepip
 ```
 
-#  使用方法:
+## 4 使用方法:
 * 完整的命令参数，可以通过这样查看：
 ```sh 
 torcp -h
@@ -90,7 +91,7 @@ options:
   --imdbid IMDBID       specify the TMDb id, -s single mode only
 ```
 
-### 使用源码调用的方式
+### 4.1 使用源码调用的方式
 * 如果你仍然习惯源码调用的方式，安装代码，仍然使用:
 ```sh 
 git clone https://github.com/ccf-2012/torcp.git
@@ -105,7 +106,7 @@ python tp.py -h
 * 这样的方式，全程操作是以同一用户同一env，可能会减少出错机会。
 
 
-## 例子
+## 5 例子
 
 * 将一个目录中所有影视文件和目录，硬链到另一个目录，其间会按目录名/文件名猜测分类，并挑出 `.mkv` 和 `.mp4`:
 ```sh 
@@ -122,7 +123,47 @@ torcp /home/ccf2012/Downloads/RSSMovie/ -d /home/ccf2012/emby/ --movie
 torcp /home/ccf2012/Downloads/权力的游戏.第1-8季.Game.Of.Thrones.S01-S08.1080p.Blu-Ray.AC3.x265.10bit-Yumi -d /home/ccf2012/emby/ -s --tv
 ```
 
-## `--extract-bdmv` 和 `--full-bdmv`，BDMV的处理
+---
+
+## 6 `--tmdb-api-key` TMDb 查询
+* 通过The Movie Database (TMDb) API 查询，得到确切的tmdbid, 确保生成的文件夹可被刮削
+* 可选 `--tmdb-lang` 参数，默认是 `zh-CN`
+* 查询不到的文件，将会被 `链` 或 `移` 到目标目录下 `TMDbNotFound` 目录中
+
+```sh
+torcp /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb api key'
+```
+
+* 组合 `--move-run` 的例子
+```sh
+torcp /home/test/ -d /home/test/result2/ --tmdb-api-key='your TMDb api key' --plex-bracket --move-run  --dryrun
+```
+
+### 6.1 `--lang` 按语言分类
+* 如果查出了TMDb id，那么可以将媒体按语言分类
+* `--lang` 后面以逗号分隔写所需要分出来的语言，其它的归到 `others` 
+* 如果写 `--lang all` 则所有语言都被分类
+* 在TMDb 中，中文语言会是 `zh` 和 `cn`
+  
+```sh
+torcp /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb api key' --lang zh,cn,en
+```
+
+
+----
+
+## 7 `--move-run` 直接改名和移动 
+* 不作硬链，直接进行move和改名操作，用于对已经放在gd中的文件进行整理
+* `-d` 指定要搬移的目标位置，请自己把握不跨区 
+* 加了一个`--sleep`参数，可以每次操作搬移一个文件后暂停 `SLEEP` 秒，此参数仅在 `--move-run` 时有效
+* 由于这样的操作不可逆，请一定先作 `--dry-run` 确认后才执行
+
+### 7.1 例子
+```sh
+torcp /home/test/ -d /home/test/result5/ --move-run --dryrun
+```
+
+## 8 `--extract-bdmv` 和 `--full-bdmv`，BDMV的处理
 * 特别说一下对BDMV的处理：
 1. 如果什么参数都不加，在碰到含有 `BDMV` 目录和 `.iso` 文件时，将会跳过。
 ```sh
@@ -138,7 +179,7 @@ torcp /volume1/video/emby/test -d /volume1/video/emby/testdir --extract-bdmv
 torcp /volume1/video/emby/test -d /volume1/video/emby/testdir --full-bdmv
 ```
 
-#### `--extract-bdmv` 的例子
+#### 8.1 `--extract-bdmv` 的例子
 * 命令:
 ```sh
 torcp /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Video/emby/  --extract-bdmv 
@@ -228,60 +269,18 @@ torcp /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Video/emby/  -
 
 ```
 
-## `--tmdb-api-key` TMDb 查询
-* 通过The Movie Database (TMDb) API 查询，得到确切的tmdbid, 确保生成的文件夹可被刮削
-* 可选 `--tmdb-lang` 参数，默认是 `zh-CN`
-* 查询不到的文件，将会被 `链` 或 `移` 到目标目录下 `TMDbNotFound` 目录中
 
-```sh
-torcp /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb api key'
-```
-
-* 组合 `--move-run` 的例子
-```sh
-torcp /home/test/ -d /home/test/result2/ --tmdb-api-key='your TMDb api key' --plex-bracket --move-run  --dryrun
-```
-
-### `--lang` 按语言分类
-* 如果查出了TMDb id，那么可以将媒体按语言分类
-* `--lang` 后面以逗号分隔写所需要分出来的语言，其它的归到 `others` 
-* 如果写 `--lang all` 则所有语言都被分类
-* 在TMDb 中，中文语言会是 `zh` 和 `cn`
-  
-```sh
-torcp /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb api key' --lang zh,cn,en
-```
-
-
-### 利用 qBittorrent 的完成后自动执行脚本功能实现入库
-
-[另开文解说](qb自动入库.md)
-
-
-----
-
-## `--move-run` 直接改名和移动 
-* 不作硬链，直接进行move和改名操作，用于对已经放在gd中的文件进行整理
-* `-d` 指定要搬移的目标位置，请自己把握不跨区 
-* 加了一个`--sleep`参数，可以每次操作搬移一个文件后暂停 `SLEEP` 秒，此参数仅在 `--move-run` 时有效
-* 由于这样的操作不可逆，请一定先作 `--dry-run` 确认后才执行
-
-### 例子
-```sh
-torcp /home/test/ -d /home/test/result5/ --move-run --dryrun
-```
-
-
-## DeleteEmptyFolders.py 清除空目录
+## 9 DeleteEmptyFolders.py 清除空目录
 * 在作了上面 `--move-run` 操作后，原目录将会剩留大量 空的，或仅包含 `.jpg`, `.nfo` 这类小文件的目录
 * 除了默认的 `.mkv`, `.mp4`, `.ts`, `.iso` 之外，使用与 `torcp.py` 相同的 `--keep-ext` 来表示那些已经 **不再包含这些扩展名文件** 的目录，将被删除
 * 使用 `--dryrun` 先看下将会发生什么
 
-### 例子
+### 9.1 例子
 ```sh
 torcp-clean /home/test/  -e srt,ass --dryrun
 ```
 
+---
 ## Acknowledgement 
  * [@leishi1313](https://github.com/leishi1313)
  * @Aruba  @ozz

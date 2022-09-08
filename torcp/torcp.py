@@ -507,7 +507,7 @@ def genCatFolderName(parser):
 
 
 def isCollections(folderName):
-    return re.search(r'(\bPack$|合集|Anthology|Trilogy|Quadrilogy|Tetralogy|\bCollections?|国语配音4K动画电影$)',
+    return re.search(r'(\bPack$|合集|Anthology|Trilogy|Quadrilogy|Tetralogy|(?<!Criterion)\s+Collections?|国语配音4K动画电影$)',
                      folderName,
                      flags=re.I)
 

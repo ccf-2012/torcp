@@ -38,7 +38,7 @@ yarn build
 
 
 ## 2 设置 qBittorrent 完成后执行脚本
-* 设置 qBittorrent 当种子在完成下载后，自动运行脚本。命令中的 `$G` 参数，即是将IMDb标签输出给脚本：
+* 设置 qBittorrent 当种子在完成下载后，自动运行脚本。命令中的 `$G` 参数，即是将IMDb标签输出给脚本，另外两个参数 `$F` 和 `$N` 分别是种子完整路径和文件名称：
 ![qb-set](https://ptpimg.me/rb09o2.png)
 
 * 其中脚本中，可以使用传进来的3个参数，例如上述所设的 rcp.sh 中写如下语句：
@@ -46,11 +46,11 @@ yarn build
 python3 /home/ccf2013/torcp/tp.py "$1" -d "/home/ccf2013/emby/$2/" -s --imdbid "$3" --tmdb-api-key xxxxxx  --tmdb-lang en-US --lang cn,ja,ko 
 ```
 * 以上代码表示：以 torcp 处理新完成的种子的存储目录（$1)，生成在 /home/ccf2013/emby/<种子名称($2)> 目录下，指定此媒体IMDb为 qBit传来的参数($3)
-* 完成 torcp 改名和目录重组后，可以将此目录 rclone 到目标存储(如gd)中，更多的示例和完整的说明，参考 [qb自动入库](qb自动入库.md)
+* 完成 torcp 改名和目录重组后，可以将此目录 rclone copy 到目标存储(如gd)中，更多的示例和完整的说明，参考 [qb自动入库](qb自动入库.md)
 
 
 ## 3 RSS下载
-使用[torcc](https://github.com/ccf-2012/torcc) 可以放在crontab中定时后台运行，批量下载最新的种子。需要参数包括：
+使用[torcc](https://github.com/ccf-2012/torcc) 可以批量下载站点最新的种子，同时解析并添加标签，可以放在crontab中定时后台运行。需要参数包括：
 1. 站点的rss链接
 2. 站点的cookie
 3. qBittorrent的信息，包括Host, Port, User, Pass
@@ -60,7 +60,7 @@ python3 /home/ccf2013/torcp/tp.py "$1" -d "/home/ccf2013/emby/$2/" -s --imdbid "
 python torcc.py -R "https://some.pt.site/torrentrss.php?rows=10&..." -c "c_secure_uid=ABCDE; ....c_secure_tracker_ssl=bm9wZQ=="  -H qb.server.ip -P 8088 -u qb_user -p qb_pass
 ```
 
-* 如果希望对rss来的条目进一步作正则(regex)过滤，可加 `--regex` 参数
+* 如果希望对rss来的条目进一步作正则(regex)过滤，可加 `--title-regex` 参数 和 `info-regex` 以及 `info-not-regex` 进行筛选。
 * 更多的示例和完整的说明，参考：[torcc 主页](https://github.com/ccf-2012/torcc)
 
 ## 4 通知 Plex 更新
