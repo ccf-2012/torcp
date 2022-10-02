@@ -96,7 +96,7 @@ class TMDbNameParser():
         if TMDb:
             if hasIMDb:
                 tmdbid, title, year = self.searchTMDbByIMDbId(hasIMDb)
-                if tmdbid:
+                if tmdbid > 0:
                     print(self.ccfcat, self.year)
                     return
             if not self.checkNameContainsId(torname):
@@ -422,12 +422,12 @@ class TMDbNameParser():
         m = re.search(r'\[imdb(id)?\=(tt\d+)\]', torname, flags=re.A | re.I)
         if m:
             tmdbid, title, year = self.searchTMDbByIMDbId(m[2])
-            if tmdbid:
+            if tmdbid > 0:
                 return True
         m = re.search(r'\[tmdb(id)?\=(\d+)\]', torname, flags=re.A | re.I)
         if m:
             tmdbid, title, year = self.searchTMDbByTMDbId(self.tmdbcat, m[2])
-            if tmdbid:
+            if tmdbid > 0:
                 return True
         return False
 
