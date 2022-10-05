@@ -446,11 +446,14 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName,
     targetDirHook(os.path.join(CATNAME_TV, genFolder), tmdbidstr=str(folderTmdbParser.tmdbid))
 
 
-def genMovieResGroup(mediaSrc, movieName, year, resolution, group):
+def genMovieResGroup(mediaSrc, movieName, year, resolution, group, nameParser=None):
     filename, file_ext = os.path.splitext(mediaSrc)
     ch1 = ' - ' if (resolution or group) else ''
     ch2 = '_' if (resolution and group) else ''
-    medianame = movieName + ((' (' + year + ')') if year else '') + ch1 + (
+    tmdbTail = ''
+    if (nameParser and nameParser.tmdbid > 0 and ARGS.filename_emby_bracket and ARGS.emby_bracket):
+        tmdbTail = ' [tmdbid=' + str(nameParser.tmdbid) + ']'
+    medianame = movieName + ((' (' + year + ')' ) if year else '') + tmdbTail + ch1 + (
         resolution if resolution else '') + ch2 + (group
                                                    if group else '') + file_ext
     return medianame.strip()
@@ -634,7 +637,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             else:
                 yearstr = str(p.year) if p.year > 0 else ''
                 newMovieName = genMovieResGroup(movieItem, p.title, yearstr,
-                                                p.resolution, p.group)
+                                                p.resolution, p.group, nameParser=p)
             mediaSrcItem = os.path.join(mediaSrc, movieItem)
             # makeLogfile(mediaSrcItem, destCatFolderName)
             targetCopy(mediaSrcItem, destCatFolderName, newMovieName)
@@ -694,7 +697,7 @@ def processOneDirItem(cpLocation, itemName):
                     yearstr = str(p.year) if p.year > 0 else ''
                     newMovieName = genMovieResGroup(mediaSrc, p.title,
                                                     yearstr, p.resolution,
-                                                    p.group)
+                                                    p.group, nameParser=p)
                 targetCopy(mediaSrc, destCatFolderName, newMovieName)
                 targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid))
             elif cat == 'TMDbNotFound':
@@ -847,6 +850,9 @@ def loadArgs():
     parser.add_argument('--emby-bracket',
                         action='store_true',
                         help='ex: Alone (2020) [tmdbid=509635]')
+    parser.add_argument('--filename-emby-bracket',
+                        action='store_true',
+                        help='filename with emby bracket')
     parser.add_argument('--plex-bracket',
                         action='store_true',
                         help='ex: Alone (2020) {tmdb-509635}')
