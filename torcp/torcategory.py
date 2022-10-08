@@ -253,8 +253,8 @@ class TorCategory:
         if self.categoryByKeyword(torName):
             return self.category, self.group
 
-        if self.categoryByGuessGroup(torName, self.group):
-            return self.category, self.group
+        # if self.categoryByGuessGroup(torName, self.group):
+        #     return self.category, self.group
 
         # 非web组出的
         if self.categoryByQuality(torName):
