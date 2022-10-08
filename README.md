@@ -47,10 +47,9 @@ torcp -h
 
 * 或使用源码安装的话，打 `python tp.py -h `
 ```
-usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG]
-             [--tv-folder-name TV_FOLDER_NAME] [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie] [--dryrun] [--single]
-             [--extract-bdmv] [--full-bdmv] [--origin-name] [--sleep SLEEP] [--move-run] [--make-log] [--symbolink] [--cache]
-             [--emby-bracket] [--plex-bracket] [--after-copy-script AFTER_COPY_SCRIPT] [--imdbid IMDBID]
+usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG] [--tv-folder-name TV_FOLDER_NAME] [--movie-folder-name MOVIE_FOLDER_NAME]
+             [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv] [--full-bdmv] [--origin-name] [--sleep SLEEP] [--move-run] [--make-log] [--symbolink] [--cache] [--emby-bracket]
+             [--filename-emby-bracket] [--plex-bracket] [--after-copy-script AFTER_COPY_SCRIPT] [--imdbid IMDBID]
              MEDIA_DIR
 
 torcp: a script hardlink media files and directories in Emby-happy naming and structs.
@@ -86,6 +85,8 @@ options:
   --symbolink           symbolink instead of hard link
   --cache               cache searched dir entries
   --emby-bracket        ex: Alone (2020) [tmdbid=509635]
+  --filename-emby-bracket
+                        filename with emby bracket
   --plex-bracket        ex: Alone (2020) {tmdb-509635}
   --after-copy-script AFTER_COPY_SCRIPT
                         call this script with destination folder path after link/move
