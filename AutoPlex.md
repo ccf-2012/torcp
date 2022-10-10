@@ -11,7 +11,8 @@ torcp原本设计仅依靠种子文件夹名，结合TMDb进行猜测来建立�
 2. rss自动批量下载：
    * 使用[torcc](https://github.com/ccf-2012/torcc) 在获取rss条目时，对各条目的信息页进行解析，在添加到qBittorrent时添加标签。
    * 此rss脚本为命令行模式运行，可使用crontab 定时启动运行
-   
+3. 手工批量下载
+   * 在浏览器中安装[种子列表过滤油猴脚本](https://github.com/ccf-2012/torfilter), 本地启动**下载入库api服务 filterapi**，在页面上过滤出的标题，批量推送至 **filterapi** 进行查重和下载
 
 ## 1 修改版PTPP
 > 此处致敬致谢 [ronggang](https://github.com/ronggang/PT-Plugin-Plus)等创作者。当前本修改代码和功能太过不完善，希望后续比较成型后提交pr给原PTPP库

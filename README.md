@@ -8,9 +8,9 @@
 3. 支持搜索TMDb，以获得准确的、选定语言的影视名字，然后以此名字进行更名和组织目录，对于查出了TMDb的媒体，支持按语言分类
 
 ## 1 应用说明
-* [配合 PTPP 与torcc 实现 Emby/Plex 自动入库流程](AutoPlex.md)
 * [利用 qBittorrent 的完成后自动执行脚本功能实现入库](qb自动入库.md)
-
+* 在浏览器中安装[种子列表过滤油猴脚本](https://github.com/ccf-2012/torfilter), 本地启动**下载入库api服务 filterapi**，在页面上过滤出的标题，批量推送至 **filterapi** 进行查重和下载
+* [配合 PTPP 与torcc 实现 Emby/Plex 自动入库流程](AutoPlex.md)
 
 ## 2 Last Update
 * 2022.10.5 `--filename-emby-bracket` 对于电影，在使用`--emby-bracket` 时，使文件名与目录都加上emby后缀
