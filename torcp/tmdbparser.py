@@ -31,6 +31,8 @@ def tryint(instr):
     except ValueError:    
         string_int = 0
     return string_int
+
+
 class TMDbNameParser():
     def __init__(self, tmdb_api_key, tmdb_lang, ccfcat_hard=None):
         self.ccfcatHard = ccfcat_hard

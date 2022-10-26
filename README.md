@@ -13,6 +13,7 @@
 * [配合 PTPP 与torcc 实现 Emby/Plex 自动入库流程](AutoPlex.md)
 
 ## 2 Last Update
+* 2022.10.26 `--make-plex-match`  Create a .plexmatch file at the top level of a series
 * 2022.10.5 `--filename-emby-bracket` 对于电影，在使用`--emby-bracket` 时，使文件名与目录都加上emby后缀
 * 2022.9.5 `--imdbid` 在 `-s` 模式下指定媒体的 IMDb id
 * 2022.9.4  `--after-copy-script` 执行外部脚本时，会传入3个参数：生成的媒体路径，原媒体文件(夹)名，tmdbid
@@ -47,12 +48,19 @@ torcp -h
 
 * 或使用源码安装的话，打 `python tp.py -h `
 ```
-usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG] [--tv-folder-name TV_FOLDER_NAME] [--movie-folder-name MOVIE_FOLDER_NAME]
-             [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv] [--full-bdmv] [--origin-name] [--sleep SLEEP] [--move-run] [--make-log] [--symbolink] [--cache] [--emby-bracket]
-             [--filename-emby-bracket] [--plex-bracket] [--after-copy-script AFTER_COPY_SCRIPT] [--imdbid IMDBID]
+usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG]
+             [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG]
+             [--tv-folder-name TV_FOLDER_NAME]
+             [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie]
+             [--dryrun] [--single] [--extract-bdmv] [--full-bdmv]
+             [--origin-name] [--sleep SLEEP] [--move-run] [--make-log]
+             [--symbolink] [--cache] [--emby-bracket]
+             [--filename-emby-bracket] [--plex-bracket] [--make-plex-match]
+             [--after-copy-script AFTER_COPY_SCRIPT] [--imdbid IMDBID]
              MEDIA_DIR
 
-torcp: a script hardlink media files and directories in Emby-happy naming and structs.
+torcp: a script hardlink media files and directories in Emby-happy naming and
+structs.
 
 positional arguments:
   MEDIA_DIR             The directory contains TVs and Movies to be copied.
@@ -65,7 +73,8 @@ options:
                         keep files with these extention('srt,ass').
   -l LANG, --lang LANG  seperate move by language('cn,en').
   --tmdb-api-key TMDB_API_KEY
-                        Search API for the tmdb id, and gen dirname as Name (year)\{tmdbid=xxx\}
+                        Search API for the tmdb id, and gen dirname as Name
+                        (year)\{tmdbid=xxx\}
   --tmdb-lang TMDB_LANG
                         specify the TMDb language
   --tv-folder-name TV_FOLDER_NAME
@@ -88,8 +97,10 @@ options:
   --filename-emby-bracket
                         filename with emby bracket
   --plex-bracket        ex: Alone (2020) {tmdb-509635}
+  --make-plex-match     Create a .plexmatch file at the top level of a series
   --after-copy-script AFTER_COPY_SCRIPT
-                        call this script with destination folder path after link/move
+                        call this script with destination folder path after
+                        link/move
   --imdbid IMDBID       specify the TMDb id, -s single mode only
 ```
 

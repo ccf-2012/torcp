@@ -443,6 +443,7 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName,
                 # makeLogfile(tvitemPath, seasonFolderFullPath, tvSourceFolder)
                 targetCopy(tvitemPath, seasonFolderFullPath, newTVFileName)
 
+    mkPlexMatch(os.path.join(CATNAME_TV, genFolder), folderTmdbParser)
     targetDirHook(os.path.join(CATNAME_TV, genFolder), tmdbidstr=str(folderTmdbParser.tmdbid))
 
 
@@ -644,6 +645,21 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid))
 
 
+def mkPlexMatch(targetDir, tmdbParser):
+    if not ARGS.make_plex_match:
+        return
+
+    if not tmdbParser:
+        return
+
+    pmfilepath = os.path.join(ARGS.hd_path, targetDir, '.plexmatch')
+    with open(pmfilepath, "w") as pmfile:
+        pmfile.write("Title: %s\ntmdbid: %d\n" %
+                     (tmdbParser.title, tmdbParser.tmdbid))
+        if tmdbParser.year > 1990:
+            pmfile.write("Year: %d\n" % (tmdbParser.year))
+
+
 def targetDirHook(targetDir, tmdbidstr=''):
     # exportTargetDir = os.path.join(ARGS.hd_path, targetDir)
     exportTargetDir = targetDir
@@ -689,6 +705,7 @@ def processOneDirItem(cpLocation, itemName):
                 seasonFolderFullPath = os.path.join(ARGS.tv_folder_name, destFolderName,
                                                     p.season)
                 targetCopy(mediaSrc, seasonFolderFullPath, newTVFileName)
+                mkPlexMatch(os.path.join(ARGS.tv_folder_name, destFolderName), p)
                 targetDirHook(os.path.join(ARGS.tv_folder_name, destFolderName), tmdbidstr=str(p.tmdbid))
             elif cat == CATNAME_MOVIE:
                 if ARGS.origin_name:
@@ -856,6 +873,9 @@ def loadArgs():
     parser.add_argument('--plex-bracket',
                         action='store_true',
                         help='ex: Alone (2020) {tmdb-509635}')
+    parser.add_argument('--make-plex-match',
+                        action='store_true',
+                        help='Create a .plexmatch file at the top level of a series')
     parser.add_argument('--after-copy-script',
                         default='',
                         help='call this script with destination folder path after link/move')
