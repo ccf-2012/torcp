@@ -203,7 +203,7 @@ def getSeasonFromFolderName(folderName, failDir=''):
 def fixNtName(file_path):
     # file_path = re.sub(r'(\:|\?|<|>|\*|\\|\")', ' ', file_path)
     if platform.system() == 'Windows':
-        file_path = re.sub(r'(\:|\?|<|>|\*|\\|\")', ' ', file_path)
+        file_path = re.sub(r'(\:|\?|<|>|\*|\\|/|\")', ' ', file_path)
     else:
         file_path = re.sub(r'/', ' ', file_path)
     return file_path
