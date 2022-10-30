@@ -204,6 +204,8 @@ def fixNtName(file_path):
     # file_path = re.sub(r'(\:|\?|<|>|\*|\\|\")', ' ', file_path)
     if platform.system() == 'Windows':
         file_path = re.sub(r'(\:|\?|<|>|\*|\\|\")', ' ', file_path)
+    else:
+        file_path = re.sub(r'/', ' ', file_path)
     return file_path
 
 
@@ -387,7 +389,7 @@ def fixSeasonGroupWithFilename(folderPath, folderSeason, folderGroup, folderReso
     testFile = getFirstMediaFile(folderPath)
     if testFile:
         p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang)
-        p.parse(testFile, TMDb=False)
+        p.parse(testFile, useTMDb=False)
         if not folderGroup:
             group = p.group
         if not folderSeason:
@@ -607,7 +609,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
         if (folderTmdbParser.tmdbid <= 0) or countMediaFiles > 1 or fnok:
             pf = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang,
                                 ccfcat_hard=setArgsCategory())
-            pf.parse(movieItem, TMDb=(ARGS.tmdb_api_key is not None))
+            pf.parse(movieItem, useTMDb=(ARGS.tmdb_api_key is not None))
             pf.title = fixNtName(pf.title)
             if pf.tmdbid > 0 or fnok:
                 p = pf
@@ -684,7 +686,7 @@ def processOneDirItem(cpLocation, itemName):
 
     cat = setArgsCategory()
     p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=cat)
-    p.parse(itemName, TMDb=(ARGS.tmdb_api_key is not None), hasIMDb=imdbidstr)
+    p.parse(itemName, useTMDb=(ARGS.tmdb_api_key is not None), hasIMDbId=imdbidstr)
     p.title = fixNtName(p.title)
     
     cat = genCatFolderName(p)

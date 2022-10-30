@@ -75,7 +75,7 @@ class TMDbNameParser():
         self.poster_path = ''
         self.genre_ids =[]
 
-    def parse(self, torname, TMDb=False, hasIMDb=None):
+    def parse(self, torname, useTMDb=False, hasIMDbId=None):
         self.clearData()
         tc = TorCategory(torname)
         self.ccfcat, self.group = tc.ccfcat, tc.group
@@ -95,9 +95,9 @@ class TMDbNameParser():
 
         self.tmdbcat = transFromCCFCat(self.ccfcat)
 
-        if TMDb:
-            if hasIMDb:
-                tmdbid, title, year = self.searchTMDbByIMDbId(hasIMDb)
+        if useTMDb:
+            if hasIMDbId:
+                tmdbid, title, year = self.searchTMDbByIMDbId(hasIMDbId)
                 if tmdbid > 0:
                     print(self.ccfcat, self.year)
                     return
@@ -435,7 +435,7 @@ class TMDbNameParser():
         return False
 
     def searchTMDbByIMDbId(self, imdbid):
-        f = Find()
+        f = Find(self.tmdb)
         print("Search : " + imdbid)
         t = f.find_by_imdb_id(imdb_id=imdbid)
         if t:
@@ -453,15 +453,35 @@ class TMDbNameParser():
 
         return self.tmdbid, self.title, self.year
 
-    def searchTMDbByTMDbId(self, cat, tmdbid):
-        if cat == 'tv':
-            tv = TV()
+
+    def searchTMDbByTMDbIdTv(self, tmdbid):
+        tv = TV(self.tmdb)
+        try:
             t = tv.details(tmdbid)
             if t:
                 self.saveTmdbTVResultMatch(t)
-        elif cat == 'move':
-            movie = Movie()
+        except:
+            pass
+        return self.tmdbid, self.title, self.year 
+
+    def searchTMDbByTMDbIdMovie(self, tmdbid):
+        movie = Movie(self.tmdb)
+        try:
             m = movie.details(tmdbid)
             if m:
                 self.saveTmdbMovieResult(m)
+        except:
+            pass
+        return self.tmdbid, self.title, self.year 
+
+    def searchTMDbByTMDbId(self, cat, tmdbid):
+        if cat == 'tv':
+            return self.searchTMDbByTMDbIdTv(tmdbid)
+        elif cat == 'move':
+            return self.searchTMDbByTMDbIdMovie(tmdbid)
+        else:
+            self.searchTMDbByTMDbIdTv(tmdbid)
+            if self.tmdbid <= 0:
+                return self.searchTMDbByTMDbIdMovie(tmdbid)
+
         return self.tmdbid, self.title, self.year 
