@@ -171,6 +171,7 @@ from torcp.torcategory import TorCategory
     ('黄石前传S01.1883.2021.1080p.WEB-DL.x265.AC3￡cXcY@FRDS', '1883', '2021', 'S01', ''),
     ('Who\'s.the.Murderer.2022.S07E05A.PartA.1080p.WEB-DL.H264.AAC-TJUPT', 'Who\'s the Murderer', '2022', 'S07', 'E05'),
     ('[二十五，二十一].Twenty.Five.Twenty.One.2022.1080p.S01E03.WEB-DL.H264.AAC-PTerWEB.mp4', 'Twenty Five Twenty One', '2022', 'S01', 'E03'),
+    ('威尼斯疑魂.4K修复版.1973.CC.1080p.中英字幕￡CMCT风潇潇', '威尼斯疑魂', '1973', '', ''),
     # ('[劫与罪].Heist.2021.S01.S01E03.NF.WEB-DL.1080p.H264.DDP.5.1-CMCTV.mp4', 'Heist', '2021', 'S01', 'E03'),
     # ('Grateful Dead - Listen to the River：St. Louis \'71 \'72 \'73 (Live) (2021) (24-192)', 'Grateful Dead - Listen to the River：St. Louis', '2021', '', ''),
     # ('32.迪卡唱片.-.《极致：勃拉姆斯选集》.(5CDs.Box-set)', '32 迪卡唱片 《极致：勃拉姆斯选集》', '', '', ''),
