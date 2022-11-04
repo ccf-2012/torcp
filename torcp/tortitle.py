@@ -297,6 +297,7 @@ class TorTitle:
             sstr = cutspan(sstr, yearspan[0], yearspan[1])
         if sstr:
             failsafeTitle = sstr
+        sstr = re.sub(r'\b(Classic|Unrated)\s*$', '', sstr, flags=re.I)
         sstr = re.sub(r'\b\w+(影|场|念|港|修复)版', '', sstr, flags=re.I)
         sstr = re.sub(r'(\b剧集|\b全\d+集|\b\d+集全|\b\w+(影|场|念|港)版|\b国语|\bDis[kc]\s*\d*|\bBD\d*).*$', '', sstr, flags=re.I)
         sstr = re.sub(r'(粤语|DIY|中字)[\u4e00-\u9fa5\u3041-\u30fc ]*$', '', sstr, flags=re.I)
@@ -312,7 +313,7 @@ class TorTitle:
             cntitle = sstr
             # m = re.search(r'^.*[^\x00-\x7F](S\d+|\s|\.|\d|-|\))*\b(?=[a-zA-Z])', sstr, flags=re.A)
             # m = re.search( r'^.*[^a-zA-Z_\- &0-9](S\d+|\s|\.|\d|-)*\b(?=[A-Z])', titlestr, flags=re.A)
-            m = re.search(r'^.*[一-鿆]\s*(S\d+(-S\d+)?|\([^(]*\)|\d+-\d+)?[： ]*(?=[0-9a-zA-Z])',
+            m = re.search(r'^.*[一-鿆\?？]\s*(S\d+(-S\d+)?|\([^(]*\)|\d+-\d+)?[： ]*(?=[0-9a-zA-Z])',
                             sstr, flags=re.A)
             if m:
                 # ['(', ')', '-', '–', '_', '+']
@@ -321,7 +322,7 @@ class TorTitle:
                     # if len(sstr)-len(cntitle) > 4:
                     sstr = sstr.replace(cntitle, '')
             else:
-                m = re.search(r'^([\w\s]+)\s([一-鿆]+)\s*$', sstr, flags=re.A)
+                m = re.search(r'^([\w\s]+)\s([一-鿆\?？]+)\s*$', sstr, flags=re.A)
                 if m:
                     cntitle = m.group(1)
                     if not re.search(r'\s[\-\+]\s', cntitle):
