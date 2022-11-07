@@ -297,6 +297,7 @@ class TorTitle:
             sstr = cutspan(sstr, yearspan[0], yearspan[1])
         if sstr:
             failsafeTitle = sstr
+        sstr = re.sub(r'\b(Theatrical|Extended)\s+Version', '', sstr, flags=re.I)
         sstr = re.sub(r'\b\w+(影|场|念|港|修复)版', '', sstr, flags=re.I)
         sstr = re.sub(r'(\b剧集|\b全\d+集|\b\d+集全|\b\w+(影|场|念|港)版|\b国语|\bDis[kc]\s*\d*|\bBD\d*).*$', '', sstr, flags=re.I)
         sstr = re.sub(r'(粤语|DIY|中字)[\u4e00-\u9fa5\u3041-\u30fc ]*$', '', sstr, flags=re.I)
