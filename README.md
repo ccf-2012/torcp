@@ -13,6 +13,7 @@
 * [配合 PTPP 与torcc 实现 Emby/Plex 自动入库流程](AutoPlex.md)
 
 ## 2 Last Update
+* 2022.1111 支持**IMDb**文件夹，即在资源目录之上，有一个目录名中带有 `[imdb=tt123456]` 或以 `tt123456` 结尾的目录
 * 2022.10.26 `--make-plex-match`  Create a .plexmatch file at the top level of a series
 * 2022.10.5 `--filename-emby-bracket` 对于电影，在使用`--emby-bracket` 时，使文件名与目录都加上emby后缀
 * 2022.9.5 `--imdbid` 在 `-s` 模式下指定媒体的 IMDb id

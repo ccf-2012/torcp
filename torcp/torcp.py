@@ -891,9 +891,12 @@ def loadArgs():
     makeKeepExts()
 
 def hasIMDbId(str):
-    m = re.search(r'\[imdb(id)?\=(tt\d+)\]', str, flags=re.A | re.I)
-    if m:
-        return m[2]
+    m1 = re.search(r'\[imdb(id)?\=(tt\d+)\]', str, flags=re.A | re.I)
+    m2 = re.search(r'(tt\d+)\s*$', str, flags=re.A | re.I)
+    if m1:
+        return m1[2]
+    elif m2:
+        return m2[1]
     else:
         return None
 
