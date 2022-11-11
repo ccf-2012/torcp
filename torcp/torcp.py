@@ -675,15 +675,13 @@ def targetDirHook(targetDir, tmdbidstr=''):
     return
 
 
-def processOneDirItem(cpLocation, itemName):
+def processOneDirItem(cpLocation, itemName, imdbidstr=''):
     global CUR_MEDIA_NAME 
     CUR_MEDIA_NAME = itemName
     mediaSrc = os.path.join(cpLocation, itemName)
     if os.path.islink(mediaSrc):
         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % mediaSrc)
         return
-
-    imdbidstr = ARGS.imdbid if (ARGS.single and ARGS.imdbid) else ''
 
     cat = setArgsCategory()
     p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=cat)
@@ -892,6 +890,20 @@ def loadArgs():
     ARGS.MEDIA_DIR = os.path.expanduser(ARGS.MEDIA_DIR)
     makeKeepExts()
 
+def hasIMDbId(str):
+    m = re.search(r'\[imdb(id)?\=(tt\d+)\]', str, flags=re.A | re.I)
+    if m:
+        return m[2]
+    else:
+        return None
+
+def onlyOneDirInIMDbFolder(cpLocation, foldername):
+    imdbstr = hasIMDbId(foldername)
+    if imdbstr:
+        dirlist = [name for name in os.listdir(os.path.join(cpLocation, foldername)) if os.path.isdir(os.path.join(cpLocation, foldername, name))]
+        if len(dirlist) == 1:
+            return imdbstr, dirlist[0]
+    return '', ''
 
 def main():
     loadArgs()
@@ -905,22 +917,33 @@ def main():
         searchCache = CacheManager(cpLocation)
         searchCache.openCache()
 
+    imdbidstr = ARGS.imdbid if (ARGS.single and ARGS.imdbid) else ''
+
     if os.path.isfile(cpLocation):
         processOneDirItem(os.path.dirname(cpLocation),
-                          os.path.basename(os.path.normpath(cpLocation)))
+                          os.path.basename(os.path.normpath(cpLocation)), imdbidstr)
     else:
         if ARGS.single and not isCollections(cpLocation):
             processOneDirItem(os.path.dirname(cpLocation),
-                              os.path.basename(os.path.normpath(cpLocation)))
+                              os.path.basename(os.path.normpath(cpLocation)), imdbidstr)
         else:
             for torFolderItem in os.listdir(cpLocation):
                 if uselessFile(torFolderItem):
                     continue
-                if isCollections(torFolderItem) and os.path.isdir(
-                        os.path.join(cpLocation, torFolderItem)):
+
+                folderimdb, insideFolderName = onlyOneDirInIMDbFolder(cpLocation, torFolderItem)
+                if folderimdb:
+                    parentLocation = os.path.join(cpLocation, torFolderItem)
+                    itemName = insideFolderName
+                else:
+                    parentLocation = cpLocation
+                    itemName = torFolderItem
+
+                if isCollections(itemName) and os.path.isdir(
+                        os.path.join(parentLocation, itemName)):
                     print('\033[35mProcess collections: %s \033[0m' %
-                          torFolderItem)
-                    packDir = os.path.join(cpLocation, torFolderItem)
+                          itemName)
+                    packDir = os.path.join(parentLocation, itemName)
                     for fn in os.listdir(packDir):
                         if ARGS.cache:
                             if searchCache.isCached(fn):
@@ -928,15 +951,15 @@ def main():
                                 continue
                             else:
                                 searchCache.append(fn)
-                        processOneDirItem(packDir, fn)
+                        processOneDirItem(packDir, fn, imdbidstr='')
                 else:
                     if ARGS.cache:
-                        if searchCache.isCached(torFolderItem):
-                            print('\033[32mSkipping. File previously linked: %s \033[0m' % ( torFolderItem ))
+                        if searchCache.isCached(itemName):
+                            print('\033[32mSkipping. File previously linked: %s \033[0m' % ( itemName ))
                             continue
                         else:
-                            searchCache.append(torFolderItem)
-                    processOneDirItem(cpLocation, torFolderItem)
+                            searchCache.append(itemName)
+                    processOneDirItem(parentLocation, itemName, folderimdb)
 
     if ARGS.cache:
         searchCache.closeCache()
