@@ -634,7 +634,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
         elif cat == 'TMDbNotFound':
             targetCopy(mediaSrc, cat)
             targetDirHook(cat, tmdbidstr=str(p.tmdbid))
-            return
+            continue
         else:
             if ARGS.origin_name:
                 newMovieName = os.path.basename(movieItem)
