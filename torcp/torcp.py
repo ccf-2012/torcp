@@ -890,8 +890,9 @@ def loadArgs():
     ARGS.MEDIA_DIR = os.path.expanduser(ARGS.MEDIA_DIR)
     makeKeepExts()
 
+
 def hasIMDbId(str):
-    m1 = re.search(r'\[imdb(id)?\=(tt\d+)\]', str, flags=re.A | re.I)
+    m1 = re.search(r'\[imdb(id)?\=(tt\d+)\]', str.strip(), flags=re.A | re.I)
     m2 = re.search(r'(tt\d+)\s*$', str, flags=re.A | re.I)
     if m1:
         return m1[2]
@@ -900,6 +901,24 @@ def hasIMDbId(str):
     else:
         return None
 
+
+def matchSiteId(str):
+    m1 = re.search(r'(chd|sky|ourbits|hdc|ttg|ade|cmct|frds|pter|u2|mteam|lemon)-(\d+)$', str.strip(), flags=re.A | re.I)
+    if m1:
+        return m1[2]
+    else:
+        return None
+
+
+def onlyOneDirInSiteIdFolder(cpLocation, foldername):
+    siteid = matchSiteId(foldername)
+    if siteid:
+        dirlist = [name for name in os.listdir(os.path.join(cpLocation, foldername)) if os.path.isdir(os.path.join(cpLocation, foldername, name))]
+        if len(dirlist) == 1:
+            return siteid, dirlist[0]
+    return '', ''
+
+
 def onlyOneDirInIMDbFolder(cpLocation, foldername):
     imdbstr = hasIMDbId(foldername)
     if imdbstr:
@@ -907,6 +926,7 @@ def onlyOneDirInIMDbFolder(cpLocation, foldername):
         if len(dirlist) == 1:
             return imdbstr, dirlist[0]
     return '', ''
+
 
 def main():
     loadArgs()
@@ -933,11 +953,15 @@ def main():
             for torFolderItem in os.listdir(cpLocation):
                 if uselessFile(torFolderItem):
                     continue
-
-                folderimdb, insideFolderName = onlyOneDirInIMDbFolder(cpLocation, torFolderItem)
+                
+                siteid, insideSiteFolderName = onlyOneDirInSiteIdFolder(cpLocation, torFolderItem)
+                folderimdb, insideIMDbFolderName = onlyOneDirInIMDbFolder(cpLocation, torFolderItem)
                 if folderimdb:
                     parentLocation = os.path.join(cpLocation, torFolderItem)
-                    itemName = insideFolderName
+                    itemName = insideIMDbFolderName
+                elif siteid:
+                    parentLocation = os.path.join(cpLocation, torFolderItem)
+                    itemName = insideSiteFolderName
                 else:
                     parentLocation = cpLocation
                     itemName = torFolderItem
