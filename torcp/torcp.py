@@ -903,7 +903,7 @@ def hasIMDbId(str):
 
 
 def matchSiteId(str):
-    m1 = re.search(r'(chd|hds|ourbits|hdc|ttg|ade|cmct|frds|pter|u2|mteam|lemon)-(\d+)$', str.strip(), flags=re.A | re.I)
+    m1 = re.search(r'(chd|hds|ourbits|hdc|ttg|ade|cmct|frds|pter|u2|mteam|hdh|lemon)-(\d+)$', str.strip(), flags=re.A | re.I)
     if m1:
         return m1[2]
     else:
