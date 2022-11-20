@@ -922,8 +922,9 @@ def matchSiteId(str):
 def onlyOneDirInSiteIdFolder(cpLocation, foldername):
     siteid = matchSiteId(foldername)
     if siteid:
-        dirlist = [name for name in os.listdir(os.path.join(cpLocation, foldername)) if os.path.isdir(os.path.join(cpLocation, foldername, name))]
-        if len(dirlist) == 1:
+        # dirlist = [name for name in os.listdir(os.path.join(cpLocation, foldername)) if os.path.isdir(os.path.join(cpLocation, foldername, name))]
+        dirlist = os.listdir(os.path.join(cpLocation, foldername))
+        if len(dirlist) >= 1:
             return siteid, dirlist[0]
     return '', ''
 
@@ -931,10 +932,28 @@ def onlyOneDirInSiteIdFolder(cpLocation, foldername):
 def onlyOneDirInIMDbFolder(cpLocation, foldername):
     imdbstr = hasIMDbId(foldername)
     if imdbstr:
-        dirlist = [name for name in os.listdir(os.path.join(cpLocation, foldername)) if os.path.isdir(os.path.join(cpLocation, foldername, name))]
-        if len(dirlist) == 1:
+        dirlist = os.listdir(os.path.join(cpLocation, foldername))
+        if len(dirlist) >= 1:
             return imdbstr, dirlist[0]
+        # dirlist = [name for name in os.listdir(os.path.join(cpLocation, foldername)) if os.path.isdir(os.path.join(cpLocation, foldername, name))]
+        # if len(dirlist) == 1:
+            # return imdbstr, dirlist[0]
     return '', ''
+
+
+def parseFolderIMDbId(locIn, itemIn):
+    siteid, insideSiteFolderName = onlyOneDirInSiteIdFolder(locIn, itemIn)
+    folderIMDb, insideIMDbFolderName = onlyOneDirInIMDbFolder(locIn, itemIn)
+    if folderIMDb:
+        parentLocation = os.path.join(locIn, itemIn)
+        itemName = insideIMDbFolderName
+    elif siteid:
+        parentLocation = os.path.join(locIn, itemIn)
+        itemName = insideSiteFolderName
+    else:
+        parentLocation = os.path.dirname(locIn)
+        itemName = itemIn
+    return parentLocation, itemName, folderIMDb
 
 
 def main():
@@ -956,24 +975,19 @@ def main():
                           os.path.basename(os.path.normpath(cpLocation)), imdbidstr)
     else:
         if ARGS.single and not isCollections(cpLocation):
-            processOneDirItem(os.path.dirname(cpLocation),
-                              os.path.basename(os.path.normpath(cpLocation)), imdbidstr)
+            # processOneDirItem(os.path.dirname(cpLocation),
+            #                   os.path.basename(os.path.normpath(cpLocation)), imdbidstr)
+            
+            parentLocation, itemName, folderimdb = parseFolderIMDbId(os.path.dirname(cpLocation),
+                              os.path.basename(os.path.normpath(cpLocation)))
+            processOneDirItem(parentLocation, itemName, folderimdb)
+
         else:
             for torFolderItem in os.listdir(cpLocation):
                 if uselessFile(torFolderItem):
                     continue
                 
-                siteid, insideSiteFolderName = onlyOneDirInSiteIdFolder(cpLocation, torFolderItem)
-                folderimdb, insideIMDbFolderName = onlyOneDirInIMDbFolder(cpLocation, torFolderItem)
-                if folderimdb:
-                    parentLocation = os.path.join(cpLocation, torFolderItem)
-                    itemName = insideIMDbFolderName
-                elif siteid:
-                    parentLocation = os.path.join(cpLocation, torFolderItem)
-                    itemName = insideSiteFolderName
-                else:
-                    parentLocation = cpLocation
-                    itemName = torFolderItem
+                parentLocation, itemName, folderimdb = parseFolderIMDbId(cpLocation, torFolderItem)
 
                 if isCollections(itemName) and os.path.isdir(
                         os.path.join(parentLocation, itemName)):
@@ -983,7 +997,7 @@ def main():
                     for fn in os.listdir(packDir):
                         if ARGS.cache:
                             if searchCache.isCached(fn):
-                                print('\033[32mSkipping. File previously linked: %s \033[0m' % ( fn ))
+                                print('\033[32mSkipping. File previously linked: %s \033[0m' % (fn))
                                 continue
                             else:
                                 searchCache.append(fn)
@@ -991,7 +1005,7 @@ def main():
                 else:
                     if ARGS.cache:
                         if searchCache.isCached(itemName):
-                            print('\033[32mSkipping. File previously linked: %s \033[0m' % ( itemName ))
+                            print('\033[32mSkipping. File previously linked: %s \033[0m' % (itemName))
                             continue
                         else:
                             searchCache.append(itemName)
