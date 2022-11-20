@@ -883,6 +883,8 @@ def loadArgs():
     parser.add_argument('--imdbid',
                         default='',
                         help='specify the TMDb id, -s single mode only')
+    parser.add_argument('--site-str',
+                        help='site-id folder name (\'chd,hds,ade,ttg\').')
 
     global ARGS
     ARGS = parser.parse_args()
@@ -903,7 +905,14 @@ def hasIMDbId(str):
 
 
 def matchSiteId(str):
-    m1 = re.search(r'(chd|hds|ourbits|hdc|ttg|ade|cmct|frds|pter|u2|mteam|hdh|lemon)-(\d+)$', str.strip(), flags=re.A | re.I)
+    if ARGS.site_str:
+        # argSites = ARGS.site_str.split(',')
+        # siteStr = '|'.joint(argSites)
+        siteStr = ARGS.site_str.replace(',', '|')
+    else:
+        siteStr = 'chd|hds|ourbits|hdc|ttg|ade|cmct|frds|pter|u2|mteam|hdh|lemon'
+    # m1 = re.search(r'(chd|hds|ourbits|hdc|ttg|ade|cmct|frds|pter|u2|mteam|hdh|lemon)-(\d+)$', str.strip(), flags=re.A | re.I)
+    m1 = re.search(r'('+siteStr+')-(\d+)$', str.strip(), flags=re.A | re.I)
     if m1:
         return m1[2]
     else:
