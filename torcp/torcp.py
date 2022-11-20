@@ -884,7 +884,7 @@ def loadArgs():
                         default='',
                         help='specify the TMDb id, -s single mode only')
     parser.add_argument('--site-str',
-                        help='site-id folder name (\'chd,hds,ade,ttg\').')
+                        help='site-id(ex. hds-12345) folder name, set site strs like (\'chd,hds,ade,ttg\').')
 
     global ARGS
     ARGS = parser.parse_args()
