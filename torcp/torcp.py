@@ -968,11 +968,11 @@ def main():
         searchCache = CacheManager(cpLocation)
         searchCache.openCache()
 
-    imdbidstr = ARGS.imdbid if (ARGS.single and ARGS.imdbid) else ''
+    argIMDb = ARGS.imdbid if (ARGS.single and ARGS.imdbid) else ''
 
     if os.path.isfile(cpLocation):
         processOneDirItem(os.path.dirname(cpLocation),
-                          os.path.basename(os.path.normpath(cpLocation)), imdbidstr)
+                          os.path.basename(os.path.normpath(cpLocation)), argIMDb)
     else:
         if ARGS.single and not isCollections(cpLocation):
             # processOneDirItem(os.path.dirname(cpLocation),
@@ -980,7 +980,10 @@ def main():
             
             parentLocation, itemName, folderimdb = parseFolderIMDbId(os.path.dirname(cpLocation),
                               os.path.basename(os.path.normpath(cpLocation)))
-            processOneDirItem(parentLocation, itemName, folderimdb)
+            if argIMDb:
+                processOneDirItem(parentLocation, itemName, argIMDb)
+            else:
+                processOneDirItem(parentLocation, itemName, folderimdb)
 
         else:
             for torFolderItem in os.listdir(cpLocation):
