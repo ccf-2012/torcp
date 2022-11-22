@@ -951,7 +951,7 @@ def parseFolderIMDbId(locIn, itemIn):
         parentLocation = os.path.join(locIn, itemIn)
         itemName = insideSiteFolderName
     else:
-        parentLocation = os.path.dirname(locIn)
+        parentLocation = locIn
         itemName = itemIn
     return parentLocation, itemName, folderIMDb
 
