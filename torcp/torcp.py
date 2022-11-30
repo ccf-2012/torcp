@@ -449,6 +449,17 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName,
     targetDirHook(os.path.join(CATNAME_TV, genFolder), tmdbidstr=str(folderTmdbParser.tmdbid))
 
 
+def genMovieTMDbOriginName(mediaSrc, movieName, year, nameParser=None):
+    originName = os.path.basename(mediaSrc)
+    # filename, file_ext = os.path.splitext(mediaSrc)
+    ch1 = ' - '
+    tmdbTail = ''
+    if (nameParser and nameParser.tmdbid > 0 and ARGS.filename_emby_bracket and ARGS.emby_bracket):
+        tmdbTail = ' [tmdbid=' + str(nameParser.tmdbid) + ']'
+    medianame = movieName + ((' (' + year + ')' ) if year else '') + tmdbTail + ch1 + originName
+    return medianame.strip()
+
+
 def genMovieResGroup(mediaSrc, movieName, year, resolution, group, nameParser=None):
     filename, file_ext = os.path.splitext(mediaSrc)
     ch1 = ' - ' if (resolution or group) else ''
@@ -631,13 +642,17 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
             #     copyTVFolderItems(mediaSrc, folderGenName, p.season, p.group,
             #                       p.resolution)
             return
-        elif cat == 'TMDbNotFound':
+        elif cat in ['TMDbNotFound', 'HDTV', 'Audio', 'eBook']:
             targetCopy(mediaSrc, cat)
             targetDirHook(cat, tmdbidstr=str(p.tmdbid))
             continue
         else:
             if ARGS.origin_name:
                 newMovieName = os.path.basename(movieItem)
+            elif ARGS.tmdb_origin_name:
+                yearstr = str(p.year) if p.year > 0 else ''
+                newMovieName = genMovieTMDbOriginName(movieItem, p.title, yearstr,
+                                                nameParser=p)
             else:
                 yearstr = str(p.year) if p.year > 0 else ''
                 newMovieName = genMovieResGroup(movieItem, p.title, yearstr,
@@ -711,6 +726,10 @@ def processOneDirItem(cpLocation, itemName, imdbidstr=''):
             elif cat == CATNAME_MOVIE:
                 if ARGS.origin_name:
                     newMovieName = itemName
+                elif ARGS.tmdb_origin_name:
+                    yearstr = str(p.year) if p.year > 0 else ''
+                    newMovieName = genMovieTMDbOriginName(mediaSrc, p.title,
+                                                    yearstr, nameParser=p)
                 else:
                     yearstr = str(p.year) if p.year > 0 else ''
                     newMovieName = genMovieResGroup(mediaSrc, p.title,
@@ -850,6 +869,9 @@ def loadArgs():
     parser.add_argument('--origin-name',
                         action='store_true',
                         help='keep origin file name.')
+    parser.add_argument('--tmdb-origin-name',
+                        action='store_true',
+                        help='filename emby bracket - origin file name.')
     parser.add_argument('--sleep',
                         type=int,
                         help='sleep x seconds after operation.')
