@@ -30,77 +30,20 @@
 ## 3 准备
 > 本程序需要在 `python3` 运行环境，以命令行方式运行
 
+### 3.1 pip 安装
 * 安装torcp
 ```sh
 pip3 install torcp
 ```
 
-### 3.1 群晖中使用python3 和 pip3
+#### 3.1.1 群晖中使用python3 和 pip3
 * DSM 6.x 默认没有安装Python 3，需要要在套件中心中搜索安装 `Python 3` 
 * 群晖安装pip
 ```sh
 python3 -m ensurepip
 ```
 
-## 4 使用方法:
-* 完整的命令参数，可以通过这样查看：
-```sh 
-torcp -h
-```
-
-* 或使用源码安装的话，打 `python tp.py -h `
-```
-usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG]
-             [--tv-folder-name TV_FOLDER_NAME] [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie] [--dryrun] [--single]
-             [--extract-bdmv] [--full-bdmv] [--origin-name] [--sleep SLEEP] [--move-run] [--make-log] [--symbolink] [--cache]
-             [--emby-bracket] [--filename-emby-bracket] [--plex-bracket] [--make-plex-match]
-             [--after-copy-script AFTER_COPY_SCRIPT] [--imdbid IMDBID] [--site-str SITE_STR]
-             MEDIA_DIR
-
-torcp: a script hardlink media files and directories in Emby-happy naming and structs.
-
-positional arguments:
-  MEDIA_DIR             The directory contains TVs and Movies to be copied.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -d HD_PATH, --hd_path HD_PATH
-                        the dest path to create Hard Link.
-  -e KEEP_EXT, --keep-ext KEEP_EXT
-                        keep files with these extention('srt,ass').
-  -l LANG, --lang LANG  seperate move by language('cn,en').
-  --tmdb-api-key TMDB_API_KEY
-                        Search API for the tmdb id, and gen dirname as Name (year)\{tmdbid=xxx\}
-  --tmdb-lang TMDB_LANG
-                        specify the TMDb language
-  --tv-folder-name TV_FOLDER_NAME
-                        specify the name of TV directory, default TV.
-  --movie-folder-name MOVIE_FOLDER_NAME
-                        specify the name of Movie directory, default Movie.
-  --tv                  specify the src directory is TV.
-  --movie               specify the src directory is Movie.
-  --dryrun              print message instead of real copy.
-  --single, -s          parse and copy one single folder.
-  --extract-bdmv        extract largest file in BDMV dir.
-  --full-bdmv           copy full BDMV dir and iso files.
-  --origin-name         keep origin file name.
-  --sleep SLEEP         sleep x seconds after operation.
-  --move-run            WARN: REAL MOVE...with NO REGRET.
-  --make-log            Make a log file.
-  --symbolink           symbolink instead of hard link
-  --cache               cache searched dir entries
-  --emby-bracket        ex: Alone (2020) [tmdbid=509635]
-  --filename-emby-bracket
-                        filename with emby bracket
-  --plex-bracket        ex: Alone (2020) {tmdb-509635}
-  --make-plex-match     Create a .plexmatch file at the top level of a series
-  --after-copy-script AFTER_COPY_SCRIPT
-                        call this script with destination folder path after link/move
-  --imdbid IMDBID       specify the TMDb id, -s single mode only
-  --site-str SITE_STR   site-id(ex. hds-12345) folder name, set site strs like ('chd,hds,ade,ttg').
-```
-
-### 4.1 使用源码调用的方式
+### 3.2 使用源码调用的方式
 * 如果你仍然习惯源码调用的方式，安装代码，仍然使用:
 ```sh 
 git clone https://github.com/ccf-2012/torcp.git
@@ -115,7 +58,78 @@ python tp.py -h
 * 这样的方式，全程操作是以同一用户同一env，可能会减少出错机会。
 
 
-## 5 例子
+## 4 使用方法:
+* 完整的命令参数，可以通过这样查看：
+```sh 
+torcp -h
+```
+
+* 或使用源码安装的话，打 `python tp.py -h `
+```
+python tp.py -h
+
+usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG]
+             [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG]
+             [--tv-folder-name TV_FOLDER_NAME]
+             [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie]
+             [--dryrun] [--single] [--extract-bdmv] [--full-bdmv]
+             [--origin-name] [--tmdb-origin-name] [--sleep SLEEP] [--move-run]
+             [--make-log] [--symbolink] [--cache] [--emby-bracket]
+             [--filename-emby-bracket] [--plex-bracket] [--make-plex-match]
+             [--after-copy-script AFTER_COPY_SCRIPT] [--imdbid IMDBID]
+             [--site-str SITE_STR]
+             MEDIA_DIR
+
+torcp: a script hardlink media files and directories in Emby-happy naming and
+structs.
+
+positional arguments:
+  MEDIA_DIR             The directory contains TVs and Movies to be copied.
+
+options:
+  -h, --help            show this help message and exit
+  -d HD_PATH, --hd_path HD_PATH
+                        the dest path to create Hard Link.
+  -e KEEP_EXT, --keep-ext KEEP_EXT
+                        keep files with these extention('srt,ass').
+  -l LANG, --lang LANG  seperate move by language('cn,en').
+  --tmdb-api-key TMDB_API_KEY
+                        Search API for the tmdb id, and gen dirname as Name
+                        (year)\{tmdbid=xxx\}
+  --tmdb-lang TMDB_LANG
+                        specify the TMDb language
+  --tv-folder-name TV_FOLDER_NAME
+                        specify the name of TV directory, default TV.
+  --movie-folder-name MOVIE_FOLDER_NAME
+                        specify the name of Movie directory, default Movie.
+  --tv                  specify the src directory is TV.
+  --movie               specify the src directory is Movie.
+  --dryrun              print message instead of real copy.
+  --single, -s          parse and copy one single folder.
+  --extract-bdmv        extract largest file in BDMV dir.
+  --full-bdmv           copy full BDMV dir and iso files.
+  --origin-name         keep origin file name.
+  --tmdb-origin-name    filename emby bracket - origin file name.
+  --sleep SLEEP         sleep x seconds after operation.
+  --move-run            WARN: REAL MOVE...with NO REGRET.
+  --make-log            Make a log file.
+  --symbolink           symbolink instead of hard link
+  --cache               cache searched dir entries
+  --emby-bracket        ex: Alone (2020) [tmdbid=509635]
+  --filename-emby-bracket
+                        filename with emby bracket
+  --plex-bracket        ex: Alone (2020) {tmdb-509635}
+  --make-plex-match     Create a .plexmatch file at the top level of a series
+  --after-copy-script AFTER_COPY_SCRIPT
+                        call this script with destination folder path after
+                        link/move
+  --imdbid IMDBID       specify the TMDb id, -s single mode only
+  --site-str SITE_STR   site-id(ex. hds-12345) folder name, set site strs like
+                        ('chd,hds,ade,ttg').
+```
+
+
+## 5 基础例子
 
 * 将一个目录中所有影视文件和目录，硬链到另一个目录，其间会按目录名/文件名猜测分类，并挑出 `.mkv` 和 `.mp4`:
 ```sh 
@@ -148,16 +162,20 @@ torcp /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb api key'
 torcp /home/test/ -d /home/test/result2/ --tmdb-api-key='your TMDb api key' --plex-bracket --move-run  --dryrun
 ```
 
-### 6.1 `--lang` 按语言分类
-* 如果查出了TMDb id，那么可以将媒体按语言分类
+### 6.1 `--tmdb-lang` 设置TMDb刮削的语言
+* 设定使用TMDb进行刮削搜索时所获取媒体信息的语言，比如：
+  * `--tmdb-lan en-US` 搜索 「The.Dripping.Sauce.S01.2020.1080p.KKTV.WEB-DL.x264.AAC-ADWeb」会生成目录为 「The Dripping Sauce (2020)」
+  * `--tmdb-lan zh-CN` 搜索则生成目录为 「大酱园 (2022)」
+
+### 6.2 `--lang` 按语言分类
+* 如果查出了TMDb id，那么可以将媒体按语言分到不同目录存储
 * `--lang` 后面以逗号分隔写所需要分出来的语言，其它的归到 `others` 
+* 中文语言为 `cn`，日语为 `ja`，韩语为 `ko`
 * 如果写 `--lang all` 则所有语言都被分类
-* 在TMDb 中，中文语言会是 `zh` 和 `cn`
   
 ```sh
-torcp /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb api key' --lang zh,cn,en
+torcp /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb api key' --lang cn,ja,ko
 ```
-
 
 ----
 
@@ -167,7 +185,7 @@ torcp /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb api key' --la
 * 加了一个`--sleep`参数，可以每次操作搬移一个文件后暂停 `SLEEP` 秒，此参数仅在 `--move-run` 时有效
 * 由于这样的操作不可逆，请一定先作 `--dry-run` 确认后才执行
 
-### 7.1 例子
+
 ```sh
 torcp /home/test/ -d /home/test/result5/ --move-run --dryrun
 ```
@@ -278,13 +296,87 @@ torcp /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Video/emby/  -
 
 ```
 
+## 9 配合Emby版本识别的媒体文件名
 
-## 9 DeleteEmptyFolders.py 清除空目录
+### 9.1 `--origin-name` 与 `--imdb-origin-name`
+* 对于IMDb搜索到的媒体资源，目录结构将按Emby/Plex所约定的规范进行组织，目录内的文件名，有3种可能的方式：
+1. 默认的：刮削名 (年份) - 分辨率_组名.mkv
+2. `--origin-name`：直接使用 原文件名
+3. `--imdb-origin-name`：刮削名 (年份) - 原文件名
+
+
+### 9.2 `--emby-bracket`， `--filename-emby-bracket`
+* 可以使用 `--emby-bracket` 选项在 「刮削名 (年份)」之后加上如「[tmdbid=509635]」这样的emby bracket，以便Emby在刮削时直接辨认使用；对于plex，可以使用 `--plex-bracket` 生成如 「{tmdb-509635}」这样的后缀
+* 对于电影，如果使用了 `--emby-bracket`，可以附加使用 `--filename-emby-bracket`，使其中的电影媒体文件的文件名也附加「[tmdbid=509635]」这样的emby bracket。
+* 这两个选项在使用  `--imdb-origin-name` 时也是生效的
+
+
+* 比如：
+```sh
+python3 tp.py ../test -d ../test/result  --tmdb-api-key 'your TMDb api key'  --tmdb-origin-name  --emby-bracket --filename-emby-bracket
+```
+* 结果如下：
+```
+.
+├── A.Good.Day.to.Die.Hard.2013.1080p.BluRay.x265.10bit.3Audio.MNHD-FRDS
+│   ├── A.Good.Day.to.Die.Hard.Extended.Version.2013.1080p.BluRay.x265.10bit.3Audio.MNHD-FRDS.mkv
+│   ├── A.Good.Day.to.Die.Hard.Theatrical.Version.2013.1080p.BluRay.x265.10bit.3Audio.MNHD-FRDS.mkv
+│   └── Bonus
+└── result
+    └── Movie
+        └── 虎胆龙威5 (2013) [tmdbid=47964]
+            ├── 虎胆龙威5 (2013) [tmdbid=47964] - A.Good.Day.to.Die.Hard.Extended.Version.2013.1080p.BluRay.x265.10bit.3Audio.MNHD-FRDS.mkv
+            └── 虎胆龙威5 (2013) [tmdbid=47964] - A.Good.Day.to.Die.Hard.Theatrical.Version.2013.1080p.BluRay.x265.10bit.3Audio.MNHD-FRDS.mkv
+
+```
+* 而如果不使用 `--tmdb-origin-name `
+```sh
+python3 tp.py ../test -d ../test/result  --tmdb-api-key 'your TMDb api key'  --emby-bracket --filename-emby-bracket 
+```
+* 得到结果如下：
+```
+.
+├── A.Good.Day.to.Die.Hard.2013.1080p.BluRay.x265.10bit.3Audio.MNHD-FRDS
+│   ├── A.Good.Day.to.Die.Hard.Extended.Version.2013.1080p.BluRay.x265.10bit.3Audio.MNHD-FRDS.mkv
+│   ├── A.Good.Day.to.Die.Hard.Theatrical.Version.2013.1080p.BluRay.x265.10bit.3Audio.MNHD-FRDS.mkv
+│   └── Bonus
+└── result
+    └── Movie
+        └── 虎胆龙威5 (2013) [tmdbid=47964]
+            └── 虎胆龙威5 (2013) [tmdbid=47964] - 1080p_FRDS.mkv
+```
+> 其中后一个版本会因文件已存在而跳过
+
+
+-----
+
+## 10 传入IMDb信息
+* 在大部分情况下，有IMDb信息，可以确定地查出TMDb信息，有两类方法：
+### 10.1 建一个包含IMDb id的目录
+* 下载资源时多建一层父目录，包含IMDb信息： 即用户可以在rss站时，添加种子时就建一个以 `站点-id-IMDb` 为名的目录，作为下载资源的父目录，则torcp将以此IMDb id作为信息，对下层目录作为资源进行刮削。（by boomPa), 如：
+```
+audies_movie-1234-tt123456\
+  Some.Movie.2022.1080p.BluRay.x264.DTS-ADE\
+      Some.Movie.2022.1080p.BluRay.x264.DTS-ADE.mkv
+```
+
+* `站点-id-IMDb` 目录可能没有IMDb，对于 `站点关键字-id` 结构的目录torcp也会视为资源的父目录，即多进一层进行解析，其中 `站点关键字` 可由 `--site-str` 指定，如指定了 `--site-str audies_movie` 则碰到 `audies_movie-1234` 目录，则会进入内层目录对其中的文件夹或文件进行刮削。
+
+* 另外，如果资源文件夹的名字，本身带有 `[imdb=tt123456]` 或 `[tmdb=123456]` 结尾，也会被用于直接指定媒体
+
+
+
+### 10.2 以`--imdbid`参数指定 IMDBID
+* 在qb中添加种子时，加一个IMDb tag。这可以使用 [torcc](https://github.com/ccf-2012/torcc) 或 [torfilter](https://github.com/ccf-2012/torfilter) 实现
+* 在下载完成时，将此 IMDb tag 传给运行torcp的脚本。这种方法要求是在 `-s` 模式。
+* 详情参考[利用 qBittorrent 的完成后自动执行脚本功能实现入库](qb自动入库.md)
+
+----
+## 11 DeleteEmptyFolders.py 清除空目录
 * 在作了上面 `--move-run` 操作后，原目录将会剩留大量 空的，或仅包含 `.jpg`, `.nfo` 这类小文件的目录
 * 除了默认的 `.mkv`, `.mp4`, `.ts`, `.iso` 之外，使用与 `torcp.py` 相同的 `--keep-ext` 来表示那些已经 **不再包含这些扩展名文件** 的目录，将被删除
 * 使用 `--dryrun` 先看下将会发生什么
 
-### 9.1 例子
 ```sh
 torcp-clean /home/test/  -e srt,ass --dryrun
 ```
