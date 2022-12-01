@@ -13,7 +13,7 @@
 * [配合 PTPP 与torcc 实现 Emby/Plex 自动入库流程](AutoPlex.md)
 
 ## 2 Last Update
-* 2022.11.30 `--imdb-origin-name`, 对于电影，生成 `刮削名 (年份) - 原文件名` (如 王牌特工3：源起 (2021) - The.King's.Man.2021.UHD.BluRay.2160p....mkv) 这样的文件名，对于Emby可以以原文件名作为版本名。
+* 2022.11.30 `--imdb-origin-name`, 对于电影，生成 `刮削名 (年份) - 原文件名`  这样的文件名，对于Emby可以实现以原文件名作为版本名。
 * 2022.11.11 支持**Site-Id-IMDb**文件夹，即在资源目录之上，有一个目录名中带有 `[imdb=tt123456]` 或以 `tt123456` 结尾的目录
 * 2022.10.26 `--make-plex-match`  Create a .plexmatch file at the top level of a series
 * 2022.10.5 `--filename-emby-bracket` 对于电影，在使用`--emby-bracket` 时，使文件名与目录都加上emby后缀
@@ -129,7 +129,7 @@ options:
 ```
 
 
-## 5 基础例子
+## 5 基本使用
 
 * 将一个目录中所有影视文件和目录，硬链到另一个目录，其间会按目录名/文件名猜测分类，并挑出 `.mkv` 和 `.mp4`:
 ```sh 
@@ -189,6 +189,8 @@ torcp /home/test/ -d /home/test/result3/ --tmdb-api-key='your TMDb api key' --la
 ```sh
 torcp /home/test/ -d /home/test/result5/ --move-run --dryrun
 ```
+
+----
 
 ## 8 `--extract-bdmv` 和 `--full-bdmv`，BDMV的处理
 * 特别说一下对BDMV的处理：
@@ -296,7 +298,9 @@ torcp /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Video/emby/  -
 
 ```
 
-## 9 配合Emby版本识别的媒体文件名
+----
+
+## 9 媒体文件名生成方案
 
 ### 9.1 `--origin-name` 与 `--imdb-origin-name`
 * 对于IMDb搜索到的媒体资源，目录结构将按Emby/Plex所约定的规范进行组织，目录内的文件名，有3种可能的方式：
@@ -351,7 +355,8 @@ python3 tp.py ../test -d ../test/result  --tmdb-api-key 'your TMDb api key'  --e
 -----
 
 ## 10 传入IMDb信息
-* 在大部分情况下，有IMDb信息，可以确定地查出TMDb信息，有两类方法：
+* 在大部分情况下，有IMDb信息，可以确定地查出TMDb信息，有两种类型的方法：
+
 ### 10.1 建一个包含IMDb id的目录
 * 下载资源时多建一层父目录，包含IMDb信息： 即用户可以在rss站时，添加种子时就建一个以 `站点-id-IMDb` 为名的目录，作为下载资源的父目录，则torcp将以此IMDb id作为信息，对下层目录作为资源进行刮削。（by boomPa), 如：
 ```
@@ -366,9 +371,9 @@ audies_movie-1234-tt123456\
 
 
 
-### 10.2 以`--imdbid`参数指定 IMDBID
+### 10.2 以`--imdbid`参数指定 IMDb id
 * 在qb中添加种子时，加一个IMDb tag。这可以使用 [torcc](https://github.com/ccf-2012/torcc) 或 [torfilter](https://github.com/ccf-2012/torfilter) 实现
-* 在下载完成时，将此 IMDb tag 传给运行torcp的脚本。这种方法要求是在 `-s` 模式。
+* 在下载完成时，将此 IMDb tag 以`--imdbid` 参数传给torcp。
 * 详情参考[利用 qBittorrent 的完成后自动执行脚本功能实现入库](qb自动入库.md)
 
 ----
