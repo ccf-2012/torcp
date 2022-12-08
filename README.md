@@ -13,7 +13,7 @@
 * [配合 PTPP 与torcc 实现 Emby/Plex 自动入库流程](AutoPlex.md)
 
 ## 2 Last Update
-* 2022.11.30 `--imdb-origin-name`, 对于电影，生成 `刮削名 (年份) - 原文件名`  这样的文件名，对于Emby可以实现以原文件名作为版本名。
+* 2022.11.30 `--tmdb-origin-name`, 对于电影，生成 `刮削名 (年份) - 原文件名`  这样的文件名，对于Emby可以实现以原文件名作为版本名。
 * 2022.11.11 支持**Site-Id-IMDb**文件夹，即在资源目录之上，有一个目录名中带有 `[imdb=tt123456]` 或以 `tt123456` 结尾的目录
 * 2022.10.26 `--make-plex-match`  Create a .plexmatch file at the top level of a series
 * 2022.10.5 `--filename-emby-bracket` 对于电影，在使用`--emby-bracket` 时，使文件名与目录都加上emby后缀
@@ -66,8 +66,7 @@ torcp -h
 
 * 或使用源码安装的话，打 `python tp.py -h `
 ```
-python tp.py -h
-
+python3 tp.py -h
 usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG]
              [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG]
              [--tv-folder-name TV_FOLDER_NAME]
@@ -86,7 +85,7 @@ structs.
 positional arguments:
   MEDIA_DIR             The directory contains TVs and Movies to be copied.
 
-options:
+optional arguments:
   -h, --help            show this help message and exit
   -d HD_PATH, --hd_path HD_PATH
                         the dest path to create Hard Link.
@@ -302,17 +301,17 @@ torcp /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Video/emby/  -
 
 ## 9 媒体文件名生成方案
 
-### 9.1 `--origin-name` 与 `--imdb-origin-name`
+### 9.1 `--origin-name` 与 `--tmdb-origin-name`
 * 对于IMDb搜索到的媒体资源，目录结构将按Emby/Plex所约定的规范进行组织，目录内的文件名，有3种可能的方式：
 1. 默认的：刮削名 (年份) - 分辨率_组名.mkv
 2. `--origin-name`：直接使用 原文件名
-3. `--imdb-origin-name`：刮削名 (年份) - 原文件名
+3. `--tmdb-origin-name`：刮削名 (年份) - 原文件名
 
 
 ### 9.2 `--emby-bracket`， `--filename-emby-bracket`
 * 可以使用 `--emby-bracket` 选项在 「刮削名 (年份)」之后加上如「[tmdbid=509635]」这样的emby bracket，以便Emby在刮削时直接辨认使用；对于plex，可以使用 `--plex-bracket` 生成如 「{tmdb-509635}」这样的后缀
 * 对于电影，如果使用了 `--emby-bracket`，可以附加使用 `--filename-emby-bracket`，使其中的电影媒体文件的文件名也附加「[tmdbid=509635]」这样的emby bracket。
-* 这两个选项在使用  `--imdb-origin-name` 时也是生效的
+* 这两个选项在使用  `--tmdb-origin-name` 时也是生效的
 
 
 * 比如：
