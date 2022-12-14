@@ -242,6 +242,7 @@ class TorTitle:
 
         failsafeTitle = sstr
 
+        sstr = re.sub(r'\W(Disney|DSNP|Hami|ATVP|Netflix|NF|KKTV|Amazon|AMZN|HMAX|Friday|\d+fps)\W*WEB-?DL.*$', '', sstr, flags=re.I)
         sstr = re.sub(
             r'\b((UHD)?\s+BluRay|Blu-?ray|720p|1080[pi]|2160p|576i|WEB-DL|\.DVD\.|UHD|WEBRip|HDTV|Director(\'s)?[ .]Cut|REMASTERED|LIMITED|Complete(?=[. -]\d+)|SUBBED|TV Series).*$',
             '',
