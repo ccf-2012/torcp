@@ -1025,16 +1025,16 @@ def main():
                                 print('\033[32mSkipping. File previously linked: %s \033[0m' % (fn))
                                 continue
                             else:
-                                processOneDirItem(packDir, fn, imdbidstr='')
                                 searchCache.append(fn)
+                        processOneDirItem(packDir, fn, imdbidstr='')
                 else:
                     if ARGS.cache:
                         if searchCache.isCached(itemName):
                             print('\033[32mSkipping. File previously linked: %s \033[0m' % (itemName))
                             continue
                         else:
-                            processOneDirItem(parentLocation, itemName, folderimdb)
                             searchCache.append(itemName)
+                    processOneDirItem(parentLocation, itemName, folderimdb)
 
     if ARGS.cache:
         searchCache.closeCache()
