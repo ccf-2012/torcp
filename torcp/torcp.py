@@ -42,11 +42,12 @@ def makeLogfile(fromLoc, toLocPath, logDir=None):
         return 
     destDir = os.path.join(ARGS.hd_path, toLocPath)
     if not logDir:
+        fromLocDir = fromLoc
         if os.path.isfile(fromLoc):
-            fromLoc = os.path.dirname(fromLoc)
-            if re.search(r'\bS\d+$', fromLoc):
-                fromLoc = os.path.dirname(fromLoc)
-        originName, ext = os.path.splitext(os.path.basename(fromLoc))
+            fromLocDir = os.path.dirname(fromLoc)
+            if re.search(r'\bS\d+$', fromLocDir):
+                fromLocDir = os.path.dirname(fromLocDir)
+        originName, ext = os.path.splitext(os.path.basename(fromLocDir))
     else:
         originName = os.path.basename(logDir)
     if not originName:
