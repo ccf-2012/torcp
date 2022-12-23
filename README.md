@@ -11,6 +11,7 @@
 * [利用 qBittorrent 的完成后自动执行脚本功能实现入库](qb自动入库.md)
 * 在浏览器中安装[种子列表过滤油猴脚本](https://github.com/ccf-2012/torfilter), 本地启动**下载入库api服务 filterapi**，在页面上过滤出的标题，批量推送至 **filterapi** 进行查重和下载
 * [配合 PTPP 与torcc 实现 Emby/Plex 自动入库流程](AutoPlex.md)
+* [刮削攻略](刮削攻略.md)
 
 ## 2 Last Update
 * 2022.12.23 `--tmdbid`，用`m-12345`或`movie-12345` 及 `t-54321`或`tv-54321`这样的形式，指定资源的TMDb信息
