@@ -50,7 +50,7 @@ python3 /home/ccf2012/torcp/tp.py "$1" -d "/home/ccf2012/emby/" -s  --imdbid "$3
 
 ```sh 
 #!/bin/bash
-python3 /home/ccf2012/torcp/tp.py "$1" -d "/home/ccf2012/emby/$2/" -s  --imdbid "$3" --tmdb-api-key your_tmdb_api_key --lang cn,jp  >>/home/ccf2012/rcp.log 2>>/home/ccf2012/rcp_error.log
+python3 /home/ccf2012/torcp/tp.py "$1" -d "/home/ccf2012/emby/$2/" -s  --imdbid "$3" --tmdb-api-key your_tmdb_api_key --lang cn,ja,ko  >>/home/ccf2012/rcp.log 2>>/home/ccf2012/rcp_error.log
 
 rclone copy "/home/ccf2012/emby/$2/"  gd:/media/emby/
 rm -rf "/home/ccf2012/emby/$2/"
