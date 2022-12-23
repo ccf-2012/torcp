@@ -335,7 +335,7 @@ class TMDbNameParser():
             elif cat.lower() == 'hdtv':
                 searchList = [('multi', cntitle), ('multi', cuttitle)]
             elif cat.lower() == 'movie':
-                searchList = self.selectOrder(cntitle, cuttitle, [('movie', cntitle), ('movie', cuttitle), ('multi', cntitle), ('multi', cuttitle)])
+                searchList = self.selectOrder(cntitle, cuttitle, [('movie', cntitle), ('multi', cntitle), ('movie', cuttitle), ('multi', cuttitle)])
             else:
                 searchList = [('multi', cntitle), ('multi', cuttitle)]
 
