@@ -690,7 +690,7 @@ def targetDirHook(targetDir, tmdbidstr=''):
     return
 
 
-def processOneDirItem(cpLocation, itemName, imdbidstr=''):
+def processOneDirItem(cpLocation, itemName, imdbidstr='', tmdbidstr=''):
     global CUR_MEDIA_NAME 
     CUR_MEDIA_NAME = itemName
     mediaSrc = os.path.join(cpLocation, itemName)
@@ -698,9 +698,10 @@ def processOneDirItem(cpLocation, itemName, imdbidstr=''):
         print('\033[31mSKIP symbolic link: [%s]\033[0m ' % mediaSrc)
         return
 
+    print(" >> [%s] %s %s" % (itemName, imdbidstr, tmdbidstr))
     cat = setArgsCategory()
     p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=cat)
-    p.parse(itemName, useTMDb=(ARGS.tmdb_api_key is not None), hasIMDbId=imdbidstr)
+    p.parse(itemName, useTMDb=(ARGS.tmdb_api_key is not None), hasIMDbId=imdbidstr, hasTMDbId=tmdbidstr)
     p.title = fixNtName(p.title)
     
     cat = genCatFolderName(p)
@@ -904,6 +905,9 @@ def loadArgs():
                         help='call this script with destination folder path after link/move')
     parser.add_argument('--imdbid',
                         default='',
+                        help='specify the IMDb id, -s single mode only')
+    parser.add_argument('--tmdbid',
+                        default='',
                         help='specify the TMDb id, -s single mode only')
     parser.add_argument('--site-str',
                         help='site-id(ex. hds-12345) folder name, set site strs like (\'chd,hds,ade,ttg\').')
@@ -991,10 +995,11 @@ def main():
         searchCache.openCache()
 
     argIMDb = ARGS.imdbid if (ARGS.single and ARGS.imdbid) else ''
+    argTMDb = ARGS.tmdbid if (ARGS.single and ARGS.tmdbid) else ''
 
     if os.path.isfile(cpLocation):
         processOneDirItem(os.path.dirname(cpLocation),
-                          os.path.basename(os.path.normpath(cpLocation)), argIMDb)
+                          os.path.basename(os.path.normpath(cpLocation)), imdbidstr=argIMDb, tmdbidstr=argTMDb)
     else:
         if ARGS.single and not isCollections(cpLocation):
             # processOneDirItem(os.path.dirname(cpLocation),
@@ -1002,8 +1007,8 @@ def main():
             
             parentLocation, itemName, folderimdb = parseFolderIMDbId(os.path.dirname(cpLocation),
                               os.path.basename(os.path.normpath(cpLocation)))
-            if argIMDb:
-                processOneDirItem(parentLocation, itemName, argIMDb)
+            if argIMDb or argTMDb:
+                processOneDirItem(parentLocation, itemName, imdbidstr=argIMDb, tmdbidstr=argTMDb)
             else:
                 processOneDirItem(parentLocation, itemName, folderimdb)
 

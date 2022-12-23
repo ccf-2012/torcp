@@ -13,6 +13,7 @@
 * [配合 PTPP 与torcc 实现 Emby/Plex 自动入库流程](AutoPlex.md)
 
 ## 2 Last Update
+* 2022.12.23 `--tmdbid`，用`m-12345`或`movie-12345` 及 `t-54321`或`tv-54321`这样的形式，指定资源的TMDb信息
 * 2022.11.30 `--tmdb-origin-name`, 对于电影，生成 `刮削名 (年份) - 原文件名`  这样的文件名，对于Emby可以实现以原文件名作为版本名。
 * 2022.11.11 支持**Site-Id-IMDb**文件夹，即在资源目录之上，有一个目录名中带有 `[imdb=tt123456]` 或以 `tt123456` 结尾的目录
 * 2022.10.26 `--make-plex-match`  Create a .plexmatch file at the top level of a series
@@ -66,26 +67,23 @@ torcp -h
 
 * 或使用源码安装的话，打 `python tp.py -h `
 ```
-python3 tp.py -h
-usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG]
-             [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG]
-             [--tv-folder-name TV_FOLDER_NAME]
-             [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie]
-             [--dryrun] [--single] [--extract-bdmv] [--full-bdmv]
-             [--origin-name] [--tmdb-origin-name] [--sleep SLEEP] [--move-run]
-             [--make-log] [--symbolink] [--cache] [--emby-bracket]
-             [--filename-emby-bracket] [--plex-bracket] [--make-plex-match]
-             [--after-copy-script AFTER_COPY_SCRIPT] [--imdbid IMDBID]
-             [--site-str SITE_STR]
+python3 tp.py -h                                          (main)torcp
+usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--tmdb-api-key TMDB_API_KEY]
+             [--tmdb-lang TMDB_LANG] [--tv-folder-name TV_FOLDER_NAME]
+             [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie] [--dryrun]
+             [--single] [--extract-bdmv] [--full-bdmv] [--origin-name]
+             [--tmdb-origin-name] [--sleep SLEEP] [--move-run] [--make-log] [--symbolink]
+             [--cache] [--emby-bracket] [--filename-emby-bracket] [--plex-bracket]
+             [--make-plex-match] [--after-copy-script AFTER_COPY_SCRIPT]
+             [--imdbid IMDBID] [--tmdbid TMDBID] [--site-str SITE_STR]
              MEDIA_DIR
 
-torcp: a script hardlink media files and directories in Emby-happy naming and
-structs.
+torcp: a script hardlink media files and directories in Emby-happy naming and structs.
 
 positional arguments:
   MEDIA_DIR             The directory contains TVs and Movies to be copied.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -d HD_PATH, --hd_path HD_PATH
                         the dest path to create Hard Link.
@@ -120,9 +118,9 @@ optional arguments:
   --plex-bracket        ex: Alone (2020) {tmdb-509635}
   --make-plex-match     Create a .plexmatch file at the top level of a series
   --after-copy-script AFTER_COPY_SCRIPT
-                        call this script with destination folder path after
-                        link/move
-  --imdbid IMDBID       specify the TMDb id, -s single mode only
+                        call this script with destination folder path after link/move
+  --imdbid IMDBID       specify the IMDb id, -s single mode only
+  --tmdbid TMDBID       specify the TMDb id, -s single mode only
   --site-str SITE_STR   site-id(ex. hds-12345) folder name, set site strs like
                         ('chd,hds,ade,ttg').
 ```
@@ -163,8 +161,8 @@ torcp /home/test/ -d /home/test/result2/ --tmdb-api-key='your TMDb api key' --pl
 
 ### 6.1 `--tmdb-lang` 设置TMDb刮削的语言
 * 设定使用TMDb进行刮削搜索时所获取媒体信息的语言，比如：
-  * `--tmdb-lan en-US` 搜索 「The.Dripping.Sauce.S01.2020.1080p.KKTV.WEB-DL.x264.AAC-ADWeb」会生成目录为 「The Dripping Sauce (2020)」
-  * `--tmdb-lan zh-CN` 搜索则生成目录为 「大酱园 (2022)」
+  * `--tmdb-lang en-US` 搜索 「The.Dripping.Sauce.S01.2020.1080p.KKTV.WEB-DL.x264.AAC-ADWeb」会生成目录为 「The Dripping Sauce (2020)」
+  * `--tmdb-lang zh-CN` 搜索则生成目录为 「大酱园 (2022)」
 
 ### 6.2 `--lang` 按语言分类
 * 如果查出了TMDb id，那么可以将媒体按语言分到不同目录存储

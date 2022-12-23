@@ -32,6 +32,15 @@ def tryint(instr):
         string_int = 0
     return string_int
 
+def parseTMDbStr(tmdbstr):
+    if tmdbstr.isnumeric():
+        return '', tmdbstr
+    m = re.search(r'(m(ovie)?|t(v)?)[- ]?(\d+)', tmdbstr.strip(), flags=re.A | re.I)
+    if m:
+        catstr = 'movie' if m[1].startswith('m') else 'tv'
+        return catstr, m[4]
+    else:
+        return '', ''
 
 class TMDbNameParser():
     def __init__(self, tmdb_api_key, tmdb_lang, ccfcat_hard=None):
@@ -75,7 +84,7 @@ class TMDbNameParser():
         self.poster_path = ''
         self.genre_ids =[]
 
-    def parse(self, torname, useTMDb=False, hasIMDbId=None):
+    def parse(self, torname, useTMDb=False, hasIMDbId=None, hasTMDbId=None):
         self.clearData()
         tc = TorCategory(torname)
         self.ccfcat, self.group = tc.ccfcat, tc.group
@@ -96,10 +105,17 @@ class TMDbNameParser():
         self.tmdbcat = transFromCCFCat(self.ccfcat)
 
         if useTMDb:
+            if hasTMDbId:
+                cat, tmdbstr = parseTMDbStr(hasTMDbId)
+                if tmdbstr:
+                    tmdbid, title, year = self.searchTMDbByTMDbId(cat, tmdbstr)
+                    if tmdbid > 0:
+                        print(tmdbid, title, self.ccfcat, self.year)
+                        return True
             if hasIMDbId:
                 tmdbid, title, year = self.searchTMDbByIMDbId(hasIMDbId)
                 if tmdbid > 0:
-                    print(self.ccfcat, self.year)
+                    print(tmdbid, title, self.ccfcat, self.year)
                     return
             if not self.checkNameContainsId(torname):
                 if self.tmdbcat in ['tv', 'movie', 'Other', 'HDTV']:
@@ -456,6 +472,7 @@ class TMDbNameParser():
 
     def searchTMDbByTMDbIdTv(self, tmdbid):
         tv = TV(self.tmdb)
+        print("Search tmdbid in TV: " + tmdbid)
         try:
             t = tv.details(tmdbid)
             if t:
@@ -466,6 +483,7 @@ class TMDbNameParser():
 
     def searchTMDbByTMDbIdMovie(self, tmdbid):
         movie = Movie(self.tmdb)
+        print("Search tmdbid in Movie: " + tmdbid)
         try:
             m = movie.details(tmdbid)
             if m:
@@ -477,7 +495,7 @@ class TMDbNameParser():
     def searchTMDbByTMDbId(self, cat, tmdbid):
         if cat == 'tv':
             return self.searchTMDbByTMDbIdTv(tmdbid)
-        elif cat == 'move':
+        elif cat == 'movie':
             return self.searchTMDbByTMDbIdMovie(tmdbid)
         else:
             self.searchTMDbByTMDbIdTv(tmdbid)
