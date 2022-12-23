@@ -114,8 +114,8 @@ class TorCategory:
             self.setCategory('Music')
         elif re.search(r'^(Beethoven|Schubert)\s*[\-_]', torName, re.I):
             self.setCategory('Music')
-        elif re.search(r'(乐团|交响曲|协奏曲|奏鸣曲|[二三四]重奏|专辑\b)', torName):
-            self.setCategory('Music')
+        # elif re.search(r'(乐团|交响曲|协奏曲|奏鸣曲|[二三四]重奏|专辑\b)', torName):
+        #     self.setCategory('Music')
         elif re.search(r'(\[BDMV\])', torName, re.I):
             self.setCategory('MovieBDMV')
         elif re.search(r'(\bThe.Movie.\d{4}|电影版)\b', torName, flags=re.A | re.I):
