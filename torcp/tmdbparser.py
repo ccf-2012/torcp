@@ -8,9 +8,9 @@ from torcp.torcategory import TorCategory
 
 
 def transFromCCFCat(cat):
-    if re.match('(Movie)', cat, re.I):
+    if re.match(r'(Movie)', cat, re.I):
         return 'movie'
-    elif re.match('(TV)', cat, re.I):
+    elif re.match(r'(TV)', cat, re.I):
         return 'tv'
     else:
         return cat
@@ -20,7 +20,7 @@ def transToCCFCat(mediatype, originCat):
     if mediatype == 'tv':
         return 'TV'
     elif mediatype == 'movie':
-        if not re.match('(movie)', originCat, re.I):
+        if not re.match(r'(movie)', originCat, re.I):
             return 'Movie'
     return originCat
 
@@ -35,7 +35,7 @@ def tryint(instr):
 def parseTMDbStr(tmdbstr):
     if tmdbstr.isnumeric():
         return '', tmdbstr
-    m = re.search(r'(m(ovie)?|t(v)?)[- ]?(\d+)', tmdbstr.strip(), flags=re.A | re.I)
+    m = re.search(r'(m(ovie)?|t(v)?)[-_]?(\d+)', tmdbstr.strip(), flags=re.A | re.I)
     if m:
         catstr = 'movie' if m[1].startswith('m') else 'tv'
         return catstr, m[4]
