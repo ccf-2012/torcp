@@ -3,27 +3,27 @@
 ## 0 概述
 torcp原本设计仅依靠种子文件夹名，结合TMDb进行猜测来建立适合刮削的目录，然而如果能在下载时就从种子的详情信息页获取（通常都有的）IMDb信息，则可以准确地确定媒体。
 
-因此，一方面torcp支持了在`--single`模式对媒体指定IMDb的功能；另一方面，需要在下载种子时，就通过种子的信息页面解析出媒体的IMDb，进而在qBittorrent中添加种子时同时添加tag（标签)以记录此IMDb，在种子完成时，这个标签可以输出给torcp。
+因此，一方面torcp支持了在`--single`模式下以`--imdbid` 对媒体指定IMDb的功能；另一方面，需要在下载种子时，就通过种子的信息页面解析出媒体的IMDb，进而在qBittorrent中添加种子时同时添加tag（标签)以记录此IMDb，在种子完成时，这个标签可以输出给torcp。
 
-在PT站下载种子并添加标签，现在有两类形式：
-1. 手工单次下载，在PT站上，在单个种子的详情页点PTPP的一键下载：
-   *  安装 [最新版 PT Plugin Plus](https://github.com/pt-plugins/PT-Plugin-Plus) (dev分支)，在配置qBittorrent下载器时，可以设置“发送种子时自动添回天IMDb标签”。
+在PT站下载种子并添加标签，现在有三类形式：
+1. 手工单次下载，在PT站上，在单个种子的详情页用PTPP 下载：
+   *  安装 [最新版 PT Plugin Plus](https://github.com/pt-plugins/PT-Plugin-Plus) (dev分支)，在配置qBittorrent下载器时，可以设置“发送种子时自动添加IMDb标签”。
 2. rss自动批量下载：
    * 使用[torcc](https://github.com/ccf-2012/torcc) 在获取rss条目时，对各条目的信息页进行解析，在添加到qBittorrent时添加标签。
    * 此rss脚本为命令行模式运行，可使用crontab 定时启动运行
 3. 手工批量下载
-   * 在浏览器中安装[种子列表过滤油猴脚本](https://github.com/ccf-2012/torfilter), 本地启动**下载入库api服务 filterapi**，在页面上过滤出的标题，批量推送至 **filterapi** 进行查重和下载
+   * 在浏览器中安装[种子列表过滤油猴脚本](https://github.com/ccf-2012/torfilter), 本地启动**下载入库api服务 dupapi**，在页面上过滤出的标题，批量推送至 **dupapi** 进行查重和下载
 
 ## 1 最新版PTPP已经支持在添加下载时加上IMDb标签
 
-1. 感谢PTPP的开发者们，现在最新版PTPP(dev分支)已经支持在添加下载时加上IMDb标签
+1. 感谢PTPP的开发者们，现在最新版PTPP(dev分支)已经支持在添加下载时加上IMDb标签，编译方法：
 ```sh
 git clone https://github.com/pt-plugins/PT-Plugin-Plus
 cd PT-Plugin-Plus
 git checkout dev
 yarn build
 ```
-
+* 或者到tg上找到 PT-Plugin-Plus 的频道，找到action编译好的版本
 
 ## 2 设置 qBittorrent 完成后执行脚本
 * 设置 qBittorrent 当种子在完成下载后，自动运行脚本。命令中的 `$G` 参数，即是将IMDb标签输出给脚本，另外两个参数 `$F` 和 `$N` 分别是种子完整路径和文件名称：
