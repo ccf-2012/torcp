@@ -7,30 +7,24 @@ torcp原本设计仅依靠种子文件夹名，结合TMDb进行猜测来建立�
 
 在PT站下载种子并添加标签，现在有两类形式：
 1. 手工单次下载，在PT站上，在单个种子的详情页点PTPP的一键下载：
-   *  安装 [修改版 PT Plugin Plus](https://github.com/ccf-2012/PT-Plugin-Plus/tree/dev)，在各PT站的种子详情页，点击“一键下载”。此修改版PTPP在添加种子到qBittorrent时会添加IMDb标签。
+   *  安装 [最新版 PT Plugin Plus](https://github.com/pt-plugins/PT-Plugin-Plus) (dev分支)，在配置qBittorrent下载器时，可以设置“发送种子时自动添回天IMDb标签”。
 2. rss自动批量下载：
    * 使用[torcc](https://github.com/ccf-2012/torcc) 在获取rss条目时，对各条目的信息页进行解析，在添加到qBittorrent时添加标签。
    * 此rss脚本为命令行模式运行，可使用crontab 定时启动运行
 3. 手工批量下载
    * 在浏览器中安装[种子列表过滤油猴脚本](https://github.com/ccf-2012/torfilter), 本地启动**下载入库api服务 filterapi**，在页面上过滤出的标题，批量推送至 **filterapi** 进行查重和下载
 
-## 1 修改版PTPP
-> 此处致敬致谢 [ronggang](https://github.com/ronggang/PT-Plugin-Plus)等创作者。当前本修改代码和功能太过不完善，希望后续比较成型后提交pr给原PTPP库
-1. 下载并切dev库
+## 1 最新版PTPP已经支持在添加下载时加上IMDb标签
+
+1. 感谢PTPP的开发者们，现在最新版PTPP(dev分支)已经支持在添加下载时加上IMDb标签
 ```sh
-git clone https://github.com/ccf-2012/PT-Plugin-Plus
+git clone https://github.com/pt-plugins/PT-Plugin-Plus
 cd PT-Plugin-Plus
 git checkout dev
-```
-
-2. 编译
-```sh
-yarn install 
 yarn build
 ```
-* 详情参考 https://github.com/ronggang/PT-Plugin-Plus/wiki/developer
 
-3. 安装后，PTPP“常规设置”中设置一个默认下载器，需要是qBittorrent，然后在各pt站的种子详情页中，会显示“一键下载”
+2. 安装后，PTPP“常规设置”中设置一个默认下载器，需要是qBittorrent，然后在各pt站的种子详情页中，会显示“一键下载”
 ![一键下载](https://ptpimg.me/y7dw6b.png)
 
 * 当前修改版仅作测试体验，仅在这种情况下的 “一键下载” 才会解析添加 IMDb 标签。下载器中添加了IMDb标签的种子如下图：
