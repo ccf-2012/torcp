@@ -24,13 +24,6 @@ git checkout dev
 yarn build
 ```
 
-2. 安装后，PTPP“常规设置”中设置一个默认下载器，需要是qBittorrent，然后在各pt站的种子详情页中，会显示“一键下载”
-![一键下载](https://ptpimg.me/y7dw6b.png)
-
-* 当前修改版仅作测试体验，仅在这种情况下的 “一键下载” 才会解析添加 IMDb 标签。下载器中添加了IMDb标签的种子如下图：
-
-![添加标签的种子](https://ptpimg.me/k509vo.png)
-
 
 ## 2 设置 qBittorrent 完成后执行脚本
 * 设置 qBittorrent 当种子在完成下载后，自动运行脚本。命令中的 `$G` 参数，即是将IMDb标签输出给脚本，另外两个参数 `$F` 和 `$N` 分别是种子完整路径和文件名称：
