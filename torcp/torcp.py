@@ -344,11 +344,14 @@ def genTVSeasonEpisonGroup(mediaFilename, groupName, resolution):
 def countMediaFile(filePath):
     types = ('*.mkv', '*.mp4', '*.ts')
     curdir = os.getcwd()
-    os.chdir(filePath)
     mediaCount = 0
-    for files in types:
-        mediaCount += len(glob.glob(files))
-    os.chdir(curdir)
+    try:
+        os.chdir(filePath)
+        for files in types:
+            mediaCount += len(glob.glob(files))
+        os.chdir(curdir)
+    except:
+        pass
     return mediaCount
 
 
