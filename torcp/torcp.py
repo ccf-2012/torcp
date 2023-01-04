@@ -604,6 +604,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
         if (os.path.isdir(os.path.join(mediaSrc, movieItem))):
             # Dir in movie folder
             if os.path.isdir(os.path.join(mediaSrc, movieItem, 'BDMV')):
+                print(" Alert: MovieBDMV in a Movie dir.....?")
                 processBDMV(os.path.join(mediaSrc, movieItem),
                             os.path.join(folderGenName, movieItem),
                             'MovieM2TS')
