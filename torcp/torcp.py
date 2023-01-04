@@ -546,13 +546,13 @@ def processBDMV(mediaSrc, folderGenName, catFolder, tmdbParser=None):
             return
 
         largestStreams = getLargestFiles(bdmvDir)
+        foldName = re.split(r'\/|\\', folderGenName)[0]
         if tmdbParser and tmdbParser.tmdbcat == 'tv':
             destCatFolderName = os.path.join(catFolder, 'TV', folderGenName, 'S01')
             for epidx, stream in enumerate(largestStreams):
                 # fn, ext = os.path.splitext(stream)
 
                 # foldName =  folderGenName.split("/")[0]
-                foldName = re.split(r'\/|\\', folderGenName)[0]
                 tsname = foldName + (' S01E%d  ' % (epidx+1)) + os.path.basename(mediaSrc) + '_' + os.path.basename( stream)
                 targetCopy(stream, destCatFolderName, tsname)
 
@@ -560,7 +560,7 @@ def processBDMV(mediaSrc, folderGenName, catFolder, tmdbParser=None):
         else:
             for stream in largestStreams:
                 # tsname = folderGenName + ' - ' + os.path.basename(mediaSrc) + '_' + os.path.basename( stream)
-                tsname = folderGenName + ' - ' + os.path.basename( stream)
+                tsname = foldName + ' - ' + os.path.basename( stream)
                 targetCopy(stream, destCatFolderName, tsname)
 
     else:
