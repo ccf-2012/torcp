@@ -265,11 +265,11 @@ def isMediaFileType(file_ext):
 
 
 def copyTVSeasonItems(tvSourceFullPath, tvFolder, seasonFolder, groupName,
-                      resolution):
+                      resolution, folderTmdbParser=None):
     if os.path.isdir(os.path.join(tvSourceFullPath, 'BDMV')):
         # break, process BDMV dir for this dir
         bdmvTVFolder = os.path.join(tvFolder, seasonFolder)
-        processBDMV(tvSourceFullPath, bdmvTVFolder, CATNAME_TV)
+        processBDMV(tvSourceFullPath, bdmvTVFolder, CATNAME_TV, tmdbParser=folderTmdbParser)
         return
 
     # catutil = TorCategory()
@@ -432,7 +432,7 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName,
         if os.path.isdir(tvitemPath):
             seasonFolder = getSeasonFromFolderName(tvitem, failDir=parseSeason)
             copyTVSeasonItems(tvitemPath, genFolder, seasonFolder, parseGroup,
-                              resolution)
+                              resolution, folderTmdbParser=folderTmdbParser)
         else:
             filename, file_ext = os.path.splitext(tvitemPath)
             if isMediaFileType(file_ext):
@@ -546,7 +546,7 @@ def processBDMV(mediaSrc, folderGenName, catFolder, tmdbParser=None):
             return
 
         largestStreams = getLargestFiles(bdmvDir)
-        if tmdbParser.tmdbcat == 'tv':
+        if tmdbParser and tmdbParser.tmdbcat == 'tv':
             destCatFolderName = os.path.join(catFolder, 'TV', folderGenName, 'S01')
             for epidx, stream in enumerate(largestStreams):
                 # fn, ext = os.path.splitext(stream)
