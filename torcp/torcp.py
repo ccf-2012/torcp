@@ -342,7 +342,7 @@ def genTVSeasonEpisonGroup(mediaFilename, groupName, resolution):
 
 
 def countMediaFile(filePath):
-    types = ('*.mkv', '*.mp4', '*.ts')
+    types = ('*.mkv', '*.mp4', '*.ts', '*.m2ts')
     curdir = os.getcwd()
     mediaCount = 0
     try:
@@ -548,19 +548,23 @@ def processBDMV(mediaSrc, folderGenName, catFolder, tmdbParser=None):
                   mediaSrc)
             return
 
-        largestStreams = getLargestFiles(bdmvDir)
+        largestStreams = sorted(getLargestFiles(bdmvDir))
         folderGenList = re.split(r'\/|\\', folderGenName)
         folderName = folderGenList[0]
         diskName = "" if len(folderGenList) <= 1 else folderGenList[1]
 
         if tmdbParser and tmdbParser.tmdbcat == 'tv':
-            # m = re.search(r"(D|DISK)(\d)$", diskName)
-            # if m:
-            #     diskName = "S"+m[2]
-            # epCount = countMediaFile(destCatFolderName)
-            destCatFolderName = os.path.join(catFolder, 'TV', folderName, 'S01') if not diskName else os.path.join(catFolder, 'TV', folderName, diskName)
+            m = re.search(r"(S|Season)(\d+)", diskName, re.I)
+            if m:
+                ssName = "S%02d" % int(m[2])
+            else:
+                ssName = "S01"
+            destCatFolderName = os.path.join(catFolder, folderName, ssName)
+            time.sleep(1)
+            epCount = countMediaFile(os.path.join(ARGS.hd_path, destCatFolderName))
             for epidx, stream in enumerate(largestStreams):
-                tsname = folderName + (' E%d  %s' % (epidx+1, diskName)) + '_' + os.path.basename( stream)
+                tsname = "%s %sE%02d %s_%s" % (folderName, ssName, epCount+epidx+1, diskName, os.path.basename(stream))
+                # tsname = '%s %s_%s' % (folderName, diskName, os.path.basename(stream))
                 targetCopy(stream, destCatFolderName, tsname)
         else:
             for stream in largestStreams:

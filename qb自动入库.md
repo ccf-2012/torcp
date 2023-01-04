@@ -78,7 +78,7 @@ rm -rf "/home/ccf2012/emby/$2/"
 │   └── ....
 ....
 ```
-
+* 注意docker中2个不同的目录映射，即使他们在同一文件系统上，对于docker来说，也是跨区的，即不可使用硬链
 * qBit中设置的脚本路径位置，应当为docker中看过来的位置，上述例子中，qBittorrent的 'Torrent完成时运行外部程序' / 'Run after completion' 中填写的命令应为：
 ```sh
 /downloads/torcp/rcp.sh "%F" "%N"
