@@ -408,7 +408,7 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName,
     if os.path.isdir(os.path.join(tvSourceFolder, 'BDMV')):
         if ARGS.full_bdmv or ARGS.extract_bdmv:
             # a BDMV dir in a TV folder, treat as Movie
-            processBDMV(tvSourceFolder, genFolder, 'MovieM2TS')
+            processBDMV(tvSourceFolder, genFolder, 'MovieM2TS', tmdbParser=folderTmdbParser)
             targetDirHook(os.path.join('MovieM2TS', genFolder), tmdbidstr=str(folderTmdbParser.tmdbid))
         else:
             print('\033[31mSkip BDMV/ISO  %s \033[0m' % genFolder)
@@ -530,7 +530,7 @@ def isCollections(folderName):
                      flags=re.I)
 
 
-def processBDMV(mediaSrc, folderGenName, catFolder):
+def processBDMV(mediaSrc, folderGenName, catFolder, tmdbParser=None):
     destCatFolderName = os.path.join(catFolder, folderGenName)
     if ARGS.full_bdmv:
         for bdmvItem in os.listdir(mediaSrc):
@@ -546,10 +546,19 @@ def processBDMV(mediaSrc, folderGenName, catFolder):
             return
 
         largestStreams = getLargestFiles(bdmvDir)
-        for stream in largestStreams:
-            # fn, ext = os.path.splitext(stream)
-            tsname = os.path.basename(mediaSrc) + ' - ' + os.path.basename( stream)
-            targetCopy(stream, destCatFolderName, tsname)
+        if tmdbParser.tmdbcat == 'tv':
+            destCatFolderName = os.path.join(catFolder, 'TV', folderGenName, 'S01')
+            for epidx, stream in enumerate(largestStreams):
+                # fn, ext = os.path.splitext(stream)
+                tsname = folderGenName + (' S01E%d  ' % (epidx+1)) + os.path.basename(mediaSrc) + '_' + os.path.basename( stream)
+                targetCopy(stream, destCatFolderName, tsname)
+
+            pass
+        else:
+            for stream in largestStreams:
+                # tsname = folderGenName + ' - ' + os.path.basename(mediaSrc) + '_' + os.path.basename( stream)
+                tsname = folderGenName + ' - ' + os.path.basename( stream)
+                targetCopy(stream, destCatFolderName, tsname)
 
     else:
         print('\033[31mSkip BDMV/ISO  %s \033[0m' % mediaSrc)
@@ -566,7 +575,7 @@ def processMovieDir(mediaSrc, folderCat, folderGenName, folderTmdbParser):
     if os.path.isdir(os.path.join(mediaSrc, 'BDMV')):
         # break, process BDMV dir for this dir
         if ARGS.full_bdmv or ARGS.extract_bdmv:
-            processBDMV(mediaSrc, folderGenName, 'MovieM2TS')
+            processBDMV(mediaSrc, folderGenName, 'MovieM2TS', tmdbParser=folderTmdbParser)
             targetDirHook(os.path.join('MovieM2TS', folderGenName), tmdbidstr=str(folderTmdbParser.tmdbid))
         else:
             print('\033[31mSkip BDMV/ISO  %s \033[0m' % mediaSrc)
