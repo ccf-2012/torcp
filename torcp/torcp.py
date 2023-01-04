@@ -423,7 +423,7 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName,
     if not os.path.isdir(tvSourceFolder):
         return
 
-    for tvitem in os.listdir(tvSourceFolder):
+    for tvitem in sorted(os.listdir(tvSourceFolder)):
         if uselessFile(tvitem):
             print('\033[34mSKIP useless file: [%s]\033[0m ' % tvitem)
             continue
