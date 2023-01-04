@@ -554,11 +554,11 @@ def processBDMV(mediaSrc, folderGenName, catFolder, tmdbParser=None):
         diskName = "" if len(folderGenList) <= 1 else folderGenList[1]
 
         if tmdbParser and tmdbParser.tmdbcat == 'tv':
-            destCatFolderName = os.path.join(catFolder, 'TV', folderGenName, 'S01') if not diskName else os.path.join(catFolder, 'TV', diskName)
             # m = re.search(r"(D|DISK)(\d)$", diskName)
             # if m:
             #     diskName = "S"+m[2]
             # epCount = countMediaFile(destCatFolderName)
+            destCatFolderName = os.path.join(catFolder, 'TV', folderName, 'S01') if not diskName else os.path.join(catFolder, 'TV', folderName, diskName)
             for epidx, stream in enumerate(largestStreams):
                 tsname = folderName + (' E%d  %s' % (epidx+1, diskName)) + '_' + os.path.basename( stream)
                 targetCopy(stream, destCatFolderName, tsname)
