@@ -314,21 +314,27 @@ def genTVSeasonEpisonGroup(mediaFilename, groupName, resolution):
     tt = TorTitle(mediaFilename)
     tvTitle, tvYear, tvSeason, tvEpisode, cntitle = tt.title, tt.yearstr, tt.season, tt.episode, tt.cntitle
     # tvTitle = fixNtName(tvTitle)
+    cutName = cutOriginName(mediaFilename)
 
     tvEpisode = re.sub(r'^Ep\s*', 'E', tvEpisode, flags=re.I)
-    filename, file_ext = os.path.splitext(mediaFilename)
-    ch1 = '- ' if (resolution or groupName) else ''
-    ch2 = '_' if (resolution and groupName) else ''
-
-    tvname = '%s %s %s%s %s%s%s' % (tvTitle,
+    # filename, file_ext = os.path.splitext(mediaFilename)
+    # ch1 = '- ' if (resolution or groupName) else ''
+    # ch2 = '_' if (resolution and groupName) else ''
+    # tvname = '%s %s %s%s %s%s%s' % (tvTitle,
+    #                                 ('(' + tvYear + ')') if tvYear else '',
+    #                                 tvSeason.upper() if tvSeason else '',
+    #                                 tvEpisode.upper() if tvEpisode else '',
+    #                                 (tt.subEpisode+' ') if tt.subEpisode else '',
+    #                                 ch1+resolution if resolution else '',
+    #                                 ch2+groupName if groupName else '')
+    tvname = '%s %s %s%s %s - %s' % (tvTitle,
                                     ('(' + tvYear + ')') if tvYear else '',
                                     tvSeason.upper() if tvSeason else '',
                                     tvEpisode.upper() if tvEpisode else '',
                                     (tt.subEpisode+' ') if tt.subEpisode else '',
-                                    ch1+resolution if resolution else '',
-                                    ch2+groupName if groupName else '')
+                                    cutName)
 
-    tvname = tvname.strip() + file_ext
+    tvname = tvname.strip()
 
     # filename, file_ext = os.path.splitext(mediaFilename)
     # ch1 = ' - ' if (resolution or groupName) else ''
@@ -453,8 +459,22 @@ def copyTVFolderItems(tvSourceFolder, genFolder, folderSeason, groupName,
     targetDirHook(os.path.join(CATNAME_TV, genFolder), tmdbidstr=str(folderTmdbParser.tmdbid))
 
 
+def cutOriginName(srcOriginName):
+    m1 = re.search( r'^.*\b(720p|1080[pi]|2160p|576i)[\. ]*', srcOriginName, flags=re.I)
+    sstr = srcOriginName
+    if m1:
+        sstr = srcOriginName[m1.span(1)[0]:]
+    else:
+        m2 = re.search( r'\b((19\d{2}\b|20\d{2})(-19\d{2}|-20\d{2})?)\b(?!.*\b\d{4}\b.*)', srcOriginName, flags=re.A | re.I)
+        if m2:
+            sstr = sstr[m2.span(1)[1]:]
+    sstr = re.sub(r'^[. ]*', '', sstr)
+    sstr = re.sub(r'-', '_', sstr)
+    return sstr
+
+
 def genMovieTMDbOriginName(mediaSrc, movieName, year, nameParser=None):
-    originName = os.path.basename(mediaSrc)
+    originName = cutOriginName(os.path.basename(mediaSrc))
     # filename, file_ext = os.path.splitext(mediaSrc)
     ch1 = ' - '
     tmdbTail = ''
@@ -726,7 +746,6 @@ def processOneDirItem(cpLocation, itemName, imdbidstr='', tmdbidstr=''):
     p = TMDbNameParser(ARGS.tmdb_api_key, ARGS.tmdb_lang, ccfcat_hard=cat)
     p.parse(itemName, useTMDb=(ARGS.tmdb_api_key is not None), hasIMDbId=imdbidstr, hasTMDbId=tmdbidstr)
     p.title = fixNtName(p.title)
-    
     cat = genCatFolderName(p)
 
     destFolderName = genMediaFolderName(p)
@@ -800,7 +819,7 @@ def processOneDirItem(cpLocation, itemName, imdbidstr='', tmdbidstr=''):
                 targetCopy(mediaSrc, cat)
                 targetDirHook(os.path.join(cat, itemName), tmdbidstr='notfound')
 
-        elif cat in ['HDTV', 'Audio']:
+        elif cat in ['Audio']:
             targetCopy(mediaSrc, cat)
             targetDirHook(os.path.join(cat, itemName), tmdbidstr='audio')
         elif cat in ['eBook']:
