@@ -460,18 +460,7 @@ class TMDbNameParser():
 # [{'adult': False, 'backdrop_path': '/rcmjVmKBKONXk2LCe7GOAIHaIAO.jpg', 'id': 1068249, 'title': 'Reborn Rich', 'original_language': 'ko', 'original_title': '재벌집 막내아들', 'overview': '...', 'poster_path': '/xVtekQdaJ00cQqK2oyVJg5P7a6H.jpg', 'media_type': 'movie', 'genre_ids': [18, 14], 'popularity': 1.4, 'release_date': '2022-11-18', 'video': False, 'vote_average': 0.0, 'vote_count': 0}]
 # (Pdb) t.tv_results
 # [{'adult': False, 'backdrop_path': '/jG8mKDxe0LIDFBPB8uCeYGSBWCH.jpg', 'id': 153496, 'name': 'Reborn Rich', 'original_language': 'ko', 'original_name': '재벌집 막내아들', 'overview': '....', 'poster_path': '/ioywelRYOfNJ5w8aNQ5ttJo9dk1.jpg', 'media_type': 'tv', 'genre_ids': [18, 10765], 'popularity': 70.232, 'first_air_date': '2022-11-18', 'vote_average': 8.094, 'vote_count': 32, 'origin_country': ['KR']}]
-            if self.tmdbcat == 'movie': 
-                if t.movie_results:
-                    self.tmdbcat = "movie"
-                    r = t['movie_results'][0]
-                    self.saveTmdbMovieResult(r)
-                elif t.tv_results:
-                    self.tmdbcat = "tv"
-                    r = t['tv_results'][0]
-                    self.saveTmdbTVResultMatch(r)
-                else:
-                    pass
-            elif self.tmdbcat == "tv":
+            if self.tmdbcat == "tv":
                 if t.tv_results:
                     self.tmdbcat = "tv"
                     r = t['tv_results'][0]
@@ -480,6 +469,17 @@ class TMDbNameParser():
                     self.tmdbcat = "movie"
                     r = t['movie_results'][0]
                     self.saveTmdbMovieResult(r)
+                else:
+                    pass
+            else: 
+                if t.movie_results:
+                    self.tmdbcat = "movie"
+                    r = t['movie_results'][0]
+                    self.saveTmdbMovieResult(r)
+                elif t.tv_results:
+                    self.tmdbcat = "tv"
+                    r = t['tv_results'][0]
+                    self.saveTmdbTVResultMatch(r)
                 else:
                     pass
 
