@@ -860,7 +860,7 @@ def ensureIMDb():
             ARGS.imdbid = ''
 
 
-def loadArgs():
+def loadArgs(argv=None):
     parser = argparse.ArgumentParser(
         description='torcp: a script hardlink media files and directories in Emby-happy naming and structs.'
     )
@@ -955,7 +955,7 @@ def loadArgs():
                         help='site-id(ex. hds-12345) folder name, set site strs like (\'chd,hds,ade,ttg\').')
 
     global ARGS
-    ARGS = parser.parse_args()
+    ARGS = parser.parse_args(argv)
     ensureIMDb()
     ARGS.MEDIA_DIR = os.path.expanduser(ARGS.MEDIA_DIR)
     makeKeepExts()
@@ -1024,8 +1024,8 @@ def parseFolderIMDbId(locIn, itemIn):
     return parentLocation, itemName, folderIMDb
 
 
-def main():
-    loadArgs()
+def main(argv=None):
+    loadArgs(argv)
     cpLocation = ARGS.MEDIA_DIR
     cpLocation = os.path.abspath(cpLocation)
 
