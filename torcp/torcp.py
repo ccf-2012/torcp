@@ -958,6 +958,7 @@ def loadArgs(argv=None):
     ARGS = parser.parse_args(argv)
     ensureIMDb()
     ARGS.MEDIA_DIR = os.path.expanduser(ARGS.MEDIA_DIR)
+    ARGS.hd_path = os.path.expanduser(ARGS.hd_path)
     makeKeepExts()
 
 
