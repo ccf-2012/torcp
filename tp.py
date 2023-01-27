@@ -1,5 +1,6 @@
-from torcp import torcp
+from torcp.torcp import Torcp
 
 
 if __name__ == '__main__':
-    torcp.main()
+    o = Torcp()
+    o.main()

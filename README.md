@@ -14,6 +14,7 @@
 * [刮削攻略](刮削攻略.md)
 
 ## 2 Last Update
+* 2023.1.27 torcp代码组织为类(class)形式，以便通过代码形式进行调用，调用入口为 `main(argv, exportObject)`，参见11节说明
 * 2022.12.23 `--tmdbid`，用`m-12345`或`movie-12345` 及 `t-54321`或`tv-54321`这样的形式，指定资源的TMDb信息
 * 2022.11.30 `--tmdb-origin-name`, 对于电影，生成 `刮削名 (年份) - 原文件名`  这样的文件名，对于Emby可以实现以原文件名作为版本名。
 * 2022.11.11 支持**Site-Id-IMDb**文件夹，即在资源目录之上，有一个目录名中带有 `[imdb=tt123456]` 或以 `tt123456` 结尾的目录
@@ -382,6 +383,31 @@ audies_movie-1234-tt123456\
 
 ```sh
 torcp-clean /home/test/  -e srt,ass --dryrun
+```
+
+## 12 以代码调用torcp进行二次开发
+* torcp 入口定义为：
+```py  
+torcp.main(argv=None, exportObject=None)
+```
+  * argv为输入参数列表，可将原本命令行中调用传入的参数，以字符串数组形式传入
+  * exportObject意为：当一个媒体项目完成输出时，调用此对象的函数 `exportObject.onOneItemTorcped(targetDir, curMediaName, tmdbIdStr, tmdbCat)` 进行处理。一个目录可能会多次输出。
+  * torcp原来以命令行方式运行时，仍然保持不变
+  
+* 示例
+```py
+from torcp import torcp
+
+class TorcpExportObj:
+	def onOneItemTorcped(self, targetDir, mediaName, tmdbIdStr, tmdbCat):
+		print(targetDir, mediaName, tmdbIdStr, tmdbCat)
+
+
+if __name__ == '__main__':
+	argv = ["~/torccf/test", "-d", "~/torccf/result", "--tmdb-api-key", "your_tmdb_api_key", "--emby-bracket", "--extract-bdmv", "--tmdb-origin-name"]
+	eo = TorcpExportObj()
+	o = Torcp()
+	o.main(argv, eo)
 ```
 
 ---
