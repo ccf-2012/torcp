@@ -238,6 +238,17 @@ class Torcp:
                     else:
                         subdir_title = os.path.join('other', nameParser.title)
 
+            # will overwite language
+            if self.ARGS.genre:
+                genrelist = self.ARGS.genre.lower().split(',')
+                mediaGenreList = [d['name'].lower() for d in nameParser.getGenres()]
+                matchGenre = next((g for g in genrelist if g in mediaGenreList), None)
+                if matchGenre:
+                    subdir_title = os.path.join(matchGenre, nameParser.title)
+                else:
+                    if not self.ARGS.lang:
+                        subdir_title = os.path.join('other', nameParser.title)
+
             if nameParser.year > 0:
                 mediaFolderName = '%s (%d) %s' % (
                     subdir_title, nameParser.year, tmdbTail)
@@ -879,6 +890,8 @@ class Torcp:
         parser.add_argument('-l',
                             '--lang',
                             help='seperate move by language(\'cn,en\').')
+        parser.add_argument('--genre',
+                            help='seperate move by genre(\'anime,document\').')
         parser.add_argument(
             '--tmdb-api-key',
             help='Search API for the tmdb id, and gen dirname as Name (year)\{tmdbid=xxx\}'

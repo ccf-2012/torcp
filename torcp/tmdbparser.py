@@ -122,7 +122,22 @@ class TMDbNameParser():
                     self.searchTMDb(self.title, self.tmdbcat,
                                     parseYear, self.cntitle)
             self.ccfcat = transToCCFCat(self.tmdbcat, self.ccfcat)
-            
+
+
+    def getGenres(self):
+        r = []
+        if self.tmdbid > 0:
+            if self.tmdbcat == 'movie':
+                movie = Movie()
+                detail = movie.details(self.tmdbid)
+                r = detail.genres
+            elif self.tmdbcat == 'tv':
+                tv = TV()
+                detail = tv.details(self.tmdbid)
+                r = detail.genres
+        return r
+
+
     def fixSeasonName(self, seasonStr):
         if re.match(r'^Ep?\d+(-Ep?\d+)?$', seasonStr,
                     flags=re.I) or not seasonStr:

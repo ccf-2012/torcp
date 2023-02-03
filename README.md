@@ -14,6 +14,7 @@
 * [刮削攻略](刮削攻略.md)
 
 ## 2 Last Update
+* 2023.2.3 `--genre` 支持按类型分目录，以逗号分隔，如：'--genre Anime,Document'，如果媒体包含列出的类型，则在Movie/TV目录下单独成分目录，未在列的在 other 目录；如果同时进行了语言分目录，类型分目录不分语言与语言同级目录，即未在列的才会被分语言；
 * 2023.1.27 torcp代码组织为类(class)形式，以便通过代码形式进行调用，调用入口为 `main(argv, exportObject)`，参见11节说明
 * 2022.12.23 `--tmdbid`，用`m-12345`或`movie-12345` 及 `t-54321`或`tv-54321`这样的形式，指定资源的TMDb信息
 * 2022.11.30 `--tmdb-origin-name`, 对于电影，生成 `刮削名 (年份) - 原文件名`  这样的文件名，对于Emby可以实现以原文件名作为版本名。
@@ -69,15 +70,12 @@ torcp -h
 
 * 或使用源码安装的话，打 `python tp.py -h `
 ```
-python3 tp.py -h                                          (main)torcp
-usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--tmdb-api-key TMDB_API_KEY]
-             [--tmdb-lang TMDB_LANG] [--tv-folder-name TV_FOLDER_NAME]
-             [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie] [--dryrun]
-             [--single] [--extract-bdmv] [--full-bdmv] [--origin-name]
-             [--tmdb-origin-name] [--sleep SLEEP] [--move-run] [--make-log] [--symbolink]
-             [--cache] [--emby-bracket] [--filename-emby-bracket] [--plex-bracket]
-             [--make-plex-match] [--after-copy-script AFTER_COPY_SCRIPT]
-             [--imdbid IMDBID] [--tmdbid TMDBID] [--site-str SITE_STR]
+python3 tp.py -h
+
+usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--genre GENRE] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG] [--tv-folder-name TV_FOLDER_NAME]
+             [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv] [--full-bdmv] [--origin-name] [--tmdb-origin-name]
+             [--sleep SLEEP] [--move-run] [--make-log] [--symbolink] [--cache] [--emby-bracket] [--filename-emby-bracket] [--plex-bracket] [--make-plex-match]
+             [--after-copy-script AFTER_COPY_SCRIPT] [--imdbid IMDBID] [--tmdbid TMDBID] [--site-str SITE_STR]
              MEDIA_DIR
 
 torcp: a script hardlink media files and directories in Emby-happy naming and structs.
@@ -92,9 +90,9 @@ options:
   -e KEEP_EXT, --keep-ext KEEP_EXT
                         keep files with these extention('srt,ass').
   -l LANG, --lang LANG  seperate move by language('cn,en').
+  --genre GENRE         seperate move by genre('anime,document').
   --tmdb-api-key TMDB_API_KEY
-                        Search API for the tmdb id, and gen dirname as Name
-                        (year)\{tmdbid=xxx\}
+                        Search API for the tmdb id, and gen dirname as Name (year)\{tmdbid=xxx\}
   --tmdb-lang TMDB_LANG
                         specify the TMDb language
   --tv-folder-name TV_FOLDER_NAME
@@ -123,8 +121,7 @@ options:
                         call this script with destination folder path after link/move
   --imdbid IMDBID       specify the IMDb id, -s single mode only
   --tmdbid TMDBID       specify the TMDb id, -s single mode only
-  --site-str SITE_STR   site-id(ex. hds-12345) folder name, set site strs like
-                        ('chd,hds,ade,ttg').
+  --site-str SITE_STR   site-id(ex. hds-12345) folder name, set site strs like ('chd,hds,ade,ttg').
 ```
 
 
@@ -408,6 +405,53 @@ if __name__ == '__main__':
 	eo = TorcpExportObj()
 	o = Torcp()
 	o.main(argv, eo)
+```
+
+
+## 13 类型分目录
+* `genres` 可设的类型值与 `--lang` 所设语言相关，中文有：
+```
+动作
+冒险
+动画
+喜剧
+犯罪
+纪录
+剧情
+家庭
+奇幻
+历史
+恐怖
+音乐
+悬疑
+爱情
+科幻
+电视电影
+惊悚
+战争
+西部
+```
+* 英文有：
+```
+Action
+Adventure
+Animation
+Comedy
+Crime
+Documentary
+Drama
+Family
+Fantasy
+History
+Horror
+Music
+Mystery
+Romance
+Science Fiction
+TV Movie
+Thriller
+War
+Western
 ```
 
 ---
