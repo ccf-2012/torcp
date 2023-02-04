@@ -29,7 +29,7 @@ class Torcp:
     def __init__(self):
         self.CUR_MEDIA_NAME = ''
         self.KEEPEXTALL = False
-        self.KEEPEXTS = ['.mkv', '.mp4', '.ts', '.m2ts']
+        self.KEEPEXTS = ['.mkv', '.mp4', '.ts', '.m2ts', '.mov']
         self.ARGS = None
         self.EXPORT_OBJ = None
         self.CATNAME_TV = 'TV'
@@ -365,7 +365,7 @@ class Torcp:
 
 
     def countMediaFile(self, filePath):
-        types = ('*.mkv', '*.mp4', '*.ts', '*.m2ts')
+        types = ('*.mkv', '*.mp4', '*.ts', '*.m2ts', '*.mov')
         curdir = os.getcwd()
         mediaCount = 0
         try:
@@ -384,7 +384,7 @@ class Torcp:
         
 
     def getMediaFiles(self, filePath):
-        types = ('*.mkv', '*.mp4', '*.ts')
+        types = ('*.mkv', '*.mp4', '*.ts', '*.m2ts', '*.mov')
         filesFound = []
         curdir = os.getcwd()
         os.chdir(filePath)
