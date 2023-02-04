@@ -240,9 +240,10 @@ class Torcp:
 
             # will overwite language
             if self.ARGS.genre:
-                genrelist = self.ARGS.genre.lower().split(',')
-                mediaGenreList = [d['name'].lower() for d in nameParser.getGenres()]
-                matchGenre = next((g for g in genrelist if g in mediaGenreList), None)
+                # genrelist = self.ARGS.genre.lower().split(',')
+                argGenreList = [x.strip() for x in self.ARGS.genre.lower().split(',')]
+                mediaGenreList = [d['name'].lower().strip() for d in nameParser.getGenres()]
+                matchGenre = next((g for g in argGenreList if g in mediaGenreList), None)
                 if matchGenre:
                     subdir_title = os.path.join(matchGenre, nameParser.title)
                 else:
