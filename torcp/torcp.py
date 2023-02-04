@@ -231,7 +231,7 @@ class Torcp:
                     subdir_title = os.path.join(nameParser.original_language,
                                                 nameParser.title)
                 else:
-                    ollist = self.ARGS.lang.lower().split(',')
+                    ollist = [x.strip() for x in self.ARGS.lang.lower().split(',')]
                     if nameParser.original_language in ollist:
                         subdir_title = os.path.join(nameParser.original_language,
                                                     nameParser.title)
