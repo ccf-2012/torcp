@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
+import time
 from tmdbv3api import TMDb, Movie, TV, Search, Find
-# from tmdbv3api.objs.find import Find
 
 from torcp import tortitle
 from torcp.torcategory import TorCategory
@@ -105,36 +105,54 @@ class TMDbNameParser():
         self.tmdbcat = transFromCCFCat(self.ccfcat)
 
         if useTMDb:
-            if hasTMDbId:
-                cat, tmdbstr = parseTMDbStr(hasTMDbId)
-                if tmdbstr:
-                    tmdbid, title, year = self.searchTMDbByTMDbId(cat, tmdbstr)
-                    if tmdbid > 0:
-                        print(tmdbid, title, self.ccfcat, self.year)
-                        return True
-            if hasIMDbId:
-                tmdbid, title, year = self.searchTMDbByIMDbId(hasIMDbId)
-                if tmdbid > 0:
-                    print(tmdbid, title, self.ccfcat, self.year)
-                    return
-            if not self.checkNameContainsId(torname):
-                if self.tmdbcat in ['tv', 'movie', 'Other', 'HDTV']:
-                    self.searchTMDb(self.title, self.tmdbcat,
-                                    parseYear, self.cntitle)
-            self.ccfcat = transToCCFCat(self.tmdbcat, self.ccfcat)
+            attempts = 0
+            while attempts < 3:
+                try:
+                    if hasTMDbId:
+                        cat, tmdbstr = parseTMDbStr(hasTMDbId)
+                        if tmdbstr:
+                            tmdbid, title, year = self.searchTMDbByTMDbId(cat, tmdbstr)
+                            if tmdbid > 0:
+                                print(tmdbid, title, self.ccfcat, self.year)
+                                return True
+                    if hasIMDbId:
+                        tmdbid, title, year = self.searchTMDbByIMDbId(hasIMDbId)
+                        if tmdbid > 0:
+                            print(tmdbid, title, self.ccfcat, self.year)
+                            return
+                    if not self.checkNameContainsId(torname):
+                        if self.tmdbcat in ['tv', 'movie', 'Other', 'HDTV']:
+                            self.searchTMDb(self.title, self.tmdbcat,
+                                            parseYear, self.cntitle)
+                    self.ccfcat = transToCCFCat(self.tmdbcat, self.ccfcat)
+                    
+                    break
+                except:
+                    attempts += 1
+                    print("TMDb connection failed. Trying %d " % attempts)
+                    time.sleep(3)
 
 
     def getGenres(self):
+        attempts = 0
         r = []
-        if self.tmdbid > 0:
-            if self.tmdbcat == 'movie':
-                movie = Movie()
-                detail = movie.details(self.tmdbid)
-                r = detail.genres
-            elif self.tmdbcat == 'tv':
-                tv = TV()
-                detail = tv.details(self.tmdbid)
-                r = detail.genres
+        while attempts < 3:
+            try:
+                if self.tmdbid > 0:
+                    if self.tmdbcat == 'movie':
+                        movie = Movie()
+                        detail = movie.details(self.tmdbid)
+                        r = detail.genres
+                    elif self.tmdbcat == 'tv':
+                        tv = TV()
+                        detail = tv.details(self.tmdbid)
+                        r = detail.genres
+                break
+            except:
+                attempts += 1
+                print("TMDb connection failed. Trying %d " % attempts)
+                time.sleep(3)
+
         return r
 
 

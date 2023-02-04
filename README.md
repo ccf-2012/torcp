@@ -409,49 +409,16 @@ if __name__ == '__main__':
 
 
 ## 13 类型分目录
-* `genres` 可设的类型值与 `--lang` 所设语言相关，中文有：
+* `--genre` 可设的类型值与 `--lang` 所设语言相关，中文有：
 ```
-动作
-冒险
-动画
-喜剧
-犯罪
-纪录
-剧情
-家庭
-奇幻
-历史
-恐怖
-音乐
-悬疑
-爱情
-科幻
-电视电影
-惊悚
-战争
-西部
+动作 冒险 动画 喜剧 犯罪 纪录 剧情 家庭 奇幻 历史 恐怖 
+音乐 悬疑 爱情 科幻 电视电影 惊悚 战争 西部
 ```
 * 英文有：
 ```
-Action
-Adventure
-Animation
-Comedy
-Crime
-Documentary
-Drama
-Family
-Fantasy
-History
-Horror
-Music
-Mystery
-Romance
-Science Fiction
-TV Movie
-Thriller
-War
-Western
+Action Adventure Animation Comedy Crime Documentary Drama Family
+Fantasy History Horror Music Mystery Romance Science Fiction TV Movie
+Thriller War Western
 ```
 
 ---
