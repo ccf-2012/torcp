@@ -692,6 +692,7 @@ class Torcp:
             cat = self.genCatFolderName(p)
             destFolderName = self.genMediaFolderName(p)
             destCatFolderName = os.path.join(cat, destFolderName)
+            mediaSrcItem = os.path.join(mediaSrc, movieItem)
 
             if cat == self.CATNAME_TV:
                 print('\033[31mMiss Categoried TV: [%s]\033[0m ' % mediaSrc)
@@ -707,8 +708,8 @@ class Torcp:
                 return
             elif cat in ['TMDbNotFound', 'HDTV', 'Audio', 'eBook']:
                 # catItemFolder = os.path.join(cat, movieItem)
-                self.targetCopy(mediaSrc, destFolderName)
-                self.targetDirHook(destFolderName, tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title)
+                self.targetCopy(mediaSrcItem, destCatFolderName)
+                self.targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title)
                 continue
             else:
                 if self.ARGS.origin_name:
@@ -721,7 +722,6 @@ class Torcp:
                     yearstr = str(p.year) if p.year > 0 else ''
                     newMovieName = self.genMovieResGroup(movieItem, p.title, yearstr,
                                                     p.resolution, p.group, nameParser=p)
-                mediaSrcItem = os.path.join(mediaSrc, movieItem)
                 # makeLogfile(mediaSrcItem, destCatFolderName)
                 self.targetCopy(mediaSrcItem, destCatFolderName, newMovieName)
                 self.targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title)
