@@ -62,8 +62,12 @@ class Torcp:
         if not os.path.exists(destDir):
             self.ensureDir(destDir)
         with codecs.open(logFilename, "a+", "utf-8") as logfile:
-            logfile.write(fromLoc+'\n')
-            logfile.close()
+            try:
+                logfile.write(fromLoc+'\n')
+                logfile.close()
+            except:
+                print("Error occur when write log file")
+                pass
 
 
     def hdlinkCopy(self, fromLoc, toLocPath, toLocFile=''):
@@ -702,8 +706,9 @@ class Torcp:
                 #                       p.resolution)
                 return
             elif cat in ['TMDbNotFound', 'HDTV', 'Audio', 'eBook']:
-                self.targetCopy(mediaSrc, cat)
-                self.targetDirHook(cat, tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title)
+                # catItemFolder = os.path.join(cat, movieItem)
+                self.targetCopy(mediaSrc, destFolderName)
+                self.targetDirHook(destFolderName, tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title)
                 continue
             else:
                 if self.ARGS.origin_name:
@@ -976,7 +981,6 @@ class Torcp:
         self.ARGS.hd_path = os.path.expanduser(self.ARGS.hd_path)
         self.makeKeepExts()
 
-
     def hasIMDbId(self, str):
         m1 = re.search(r'\[imdb(id)?\=(tt\d+)\]', str.strip(), flags=re.A | re.I)
         m2 = re.search(r'(tt\d+)\s*$', str, flags=re.A | re.I)
@@ -986,7 +990,6 @@ class Torcp:
             return m2[1]
         else:
             return None
-
 
     def matchSiteId(self, str):
         if self.ARGS.site_str:
@@ -1001,7 +1004,6 @@ class Torcp:
             return m1[2]
         else:
             return None
-
 
     def onlyOneDirInSiteIdFolder(self, cpLocation, foldername):
         siteid = self.matchSiteId(foldername)
@@ -1080,8 +1082,7 @@ class Torcp:
 
                     if self.isCollections(itemName) and os.path.isdir(
                             os.path.join(parentLocation, itemName)):
-                        print('\033[35mProcess collections: %s \033[0m' %
-                            itemName)
+                        print('\033[35mProcess collections: %s \033[0m' % itemName)
                         packDir = os.path.join(parentLocation, itemName)
                         for fn in os.listdir(packDir):
                             if self.ARGS.cache:
