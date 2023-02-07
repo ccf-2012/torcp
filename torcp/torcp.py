@@ -42,10 +42,9 @@ class Torcp:
             os.makedirs(file_path)
 
 
-    def makeLogfile(self, fromLoc, toLocPath, logDir=None):
+    def makeLogfile(self, fromLoc, destDir, logDir=None):
         if not self.ARGS.make_log:
             return 
-        destDir = os.path.join(self.ARGS.hd_path, toLocPath)
         if not logDir:
             fromLocDir = fromLoc
             if os.path.isfile(fromLoc):
@@ -69,15 +68,22 @@ class Torcp:
                 print("Error occur when write log file")
                 pass
 
+    def getDestDir(self, toLocPath):
+        if self.ARGS.other_dir:
+            if not toLocPath.startswith(self.CATNAME_TV) and not toLocPath.startswith(self.CATNAME_MOVIE):
+                return os.path.join(self.ARGS.other_dir, toLocPath)
+        destDir = os.path.join(self.ARGS.hd_path, toLocPath)
+        return destDir
 
     def hdlinkCopy(self, fromLoc, toLocPath, toLocFile=''):
         if os.path.islink(fromLoc):
             print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromLoc)
             return
-        destDir = os.path.join(self.ARGS.hd_path, toLocPath)
+        destDir = self.getDestDir(toLocPath)
+            
         if not self.ARGS.dryrun:
             self.ensureDir(destDir)
-            self.makeLogfile(fromLoc, toLocPath)
+            self.makeLogfile(fromLoc, destDir)
         if os.path.isfile(fromLoc):
             if toLocFile:
                 destFile = os.path.join(destDir, toLocFile)
@@ -105,12 +111,13 @@ class Torcp:
         else:
             print('File/Dir %s not found' % (fromLoc))
 
-
     def pathMove(self, fromLoc, toLocFolder, toLocFile=''):
         if os.path.islink(fromLoc):
             print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromLoc)
             return
-        destDir = os.path.join(self.ARGS.hd_path, toLocFolder)
+        # destDir = os.path.join(self.ARGS.hd_path, toLocFolder)
+        destDir = self.getDestDir(toLocFolder)
+
         if not self.ARGS.dryrun:
             self.ensureDir(destDir)
             self.makeLogfile(fromLoc, toLocFolder)
@@ -145,7 +152,8 @@ class Torcp:
         if os.path.islink(fromLoc):
             print('\033[31mSKIP symbolic link: [%s]\033[0m ' % fromLoc)
             return
-        destDir = os.path.join(self.ARGS.hd_path, toLocPath)
+        # destDir = os.path.join(self.ARGS.hd_path, toLocPath)
+        destDir = self.getDestDir(toLocPath)
         if not self.ARGS.dryrun:
             self.ensureDir(destDir)
             self.makeLogfile(fromLoc, toLocPath)
@@ -311,7 +319,6 @@ class Torcp:
                                 resolution = tc.resolution
                         newTVFileName = self.genTVSeasonEpisonGroup(
                             tv2item, groupName, resolution)
-                    # makeLogfile(tv2itemPath, seasonFolderFullPath, tvSourceFullPath)
                     self.targetCopy(tv2itemPath, seasonFolderFullPath, newTVFileName)
                 elif file_ext.lower() in ['.iso']:
                     # TODO: aruba need iso when extract_bdmv
@@ -472,7 +479,6 @@ class Torcp:
                             tvitem, parseGroup, resolution)
                     seasonFolderFullPath = os.path.join(self.CATNAME_TV, genFolder,
                                                         parseSeason)
-                    # makeLogfile(tvitemPath, seasonFolderFullPath, tvSourceFolder)
                     self.targetCopy(tvitemPath, seasonFolderFullPath, newTVFileName)
 
         self.mkPlexMatch(os.path.join(self.CATNAME_TV, genFolder), folderTmdbParser)
@@ -721,7 +727,6 @@ class Torcp:
                     yearstr = str(p.year) if p.year > 0 else ''
                     newMovieName = self.genMovieResGroup(movieItem, p.title, yearstr,
                                                     p.resolution, p.group, nameParser=p)
-                # makeLogfile(mediaSrcItem, destCatFolderName)
                 self.targetCopy(mediaSrcItem, destCatFolderName, newMovieName)
                 self.targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title)
 
@@ -897,6 +902,8 @@ class Torcp:
                             help='seperate dir by language(\'cn,en\').')
         parser.add_argument('--genre',
                             help='seperate dir by genre(\'anime,document\').')
+        parser.add_argument('--other-dir',
+                            help='for any files Other than Movie/TV.')
         parser.add_argument('--sep-area',
                             action='store_true',
                             help='seperate dir by all production area.')
@@ -981,6 +988,8 @@ class Torcp:
         self.ensureIMDb()
         self.ARGS.MEDIA_DIR = os.path.expanduser(self.ARGS.MEDIA_DIR)
         self.ARGS.hd_path = os.path.expanduser(self.ARGS.hd_path)
+        if self.ARGS.other_dir:
+            self.ARGS.other_dir = os.path.expanduser(self.ARGS.other_dir)
         self.makeKeepExts()
 
     def hasIMDbId(self, str):
