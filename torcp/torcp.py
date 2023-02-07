@@ -197,7 +197,6 @@ class Torcp:
             else:
                 self.hdlinkCopy(fromLoc, toLocPath, toLocFile)
 
-
     def getSeasonFromFolderName(self, folderName, failDir=''):
         m1 = re.search(r'(\bS\d+(-S\d+)?|第(\d+)季)', folderName, flags=re.A | re.I)
         if m1:
@@ -207,8 +206,6 @@ class Torcp:
                 return m1.group(1)
         else:
             return folderName
-            # return failDir
-
 
     def fixNtName(self, file_path):
         # file_path = re.sub(r'(\:|\?|<|>|\*|\\|\")', ' ', file_path)
@@ -217,7 +214,6 @@ class Torcp:
         else:
             file_path = re.sub(r'/', ' ', file_path)
         return file_path
-
 
     def genMediaFolderName(self, nameParser):
         if nameParser.tmdbid > 0:
@@ -241,17 +237,20 @@ class Torcp:
                                                     nameParser.title)
                     else:
                         subdir_title = os.path.join('other', nameParser.title)
+            elif self.ARGS.sep_area:
+                area = nameParser.getProductionArea()
+                subdir_title = os.path.join(area, nameParser.title)
 
-            # will overwite language
+            # will overwrite language/area
             if self.ARGS.genre:
                 # genrelist = self.ARGS.genre.lower().split(',')
                 argGenreList = [x.strip() for x in self.ARGS.genre.lower().split(',')]
-                mediaGenreList = [d['name'].lower().strip() for d in nameParser.getGenres()]
+                mediaGenreList = [d.lower().strip() for d in nameParser.getGenres()]
                 matchGenre = next((g for g in argGenreList if g in mediaGenreList), None)
                 if matchGenre:
                     subdir_title = os.path.join(matchGenre, nameParser.title)
                 else:
-                    if not self.ARGS.lang:
+                    if subdir_title == nameParser.title:
                         subdir_title = os.path.join('other', nameParser.title)
 
             if nameParser.year > 0:
@@ -895,9 +894,12 @@ class Torcp:
                             help='keep files with these extention(\'srt,ass\').')
         parser.add_argument('-l',
                             '--lang',
-                            help='seperate move by language(\'cn,en\').')
+                            help='seperate dir by language(\'cn,en\').')
         parser.add_argument('--genre',
-                            help='seperate move by genre(\'anime,document\').')
+                            help='seperate dir by genre(\'anime,document\').')
+        parser.add_argument('--sep-area',
+                            action='store_true',
+                            help='seperate dir by all production area.')
         parser.add_argument(
             '--tmdb-api-key',
             help='Search API for the tmdb id, and gen dirname as Name (year)\{tmdbid=xxx\}'

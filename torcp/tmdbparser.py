@@ -6,6 +6,10 @@ from tmdbv3api import TMDb, Movie, TV, Search, Find
 from torcp import tortitle
 from torcp.torcategory import TorCategory
 
+GENRE_LIST_en = [{'id': 28, 'name': 'Action'}, {'id': 12, 'name': 'Adventure'}, {'id': 16, 'name': 'Animation'}, {'id': 35, 'name': 'Comedy'}, {'id': 80, 'name': 'Crime'}, {'id': 99, 'name': 'Documentary'}, {'id': 18, 'name': 'Drama'}, {'id': 10751, 'name': 'Family'}, {'id': 14, 'name': 'Fantasy'}, {
+    'id': 36, 'name': 'History'}, {'id': 27, 'name': 'Horror'}, {'id': 10402, 'name': 'Music'}, {'id': 9648, 'name': 'Mystery'}, {'id': 10749, 'name': 'Romance'}, {'id': 878, 'name': 'Science Fiction'}, {'id': 10770, 'name': 'TV Movie'}, {'id': 53, 'name': 'Thriller'}, {'id': 10752, 'name': 'War'}, {'id': 37, 'name': 'Western'}]
+GENRE_LIST_cn = [{'id': 28, 'name': '动作'}, {'id': 12, 'name': '冒险'}, {'id': 16, 'name': '动画'}, {'id': 35, 'name': '喜剧'}, {'id': 80, 'name': '犯罪'}, {'id': 99, 'name': '纪录'}, {'id': 18, 'name': '剧情'}, {'id': 10751, 'name': '家庭'}, {'id': 14, 'name': '奇幻'}, {
+    'id': 36, 'name': '历史'}, {'id': 27, 'name': '恐怖'}, {'id': 10402, 'name': '音乐'}, {'id': 9648, 'name': '悬疑'}, {'id': 10749, 'name': '爱情'}, {'id': 878, 'name': '科幻'}, {'id': 10770, 'name': '电视电影'}, {'id': 53, 'name': '惊悚'}, {'id': 10752, 'name': '战争'}, {'id': 37, 'name': '西部'}]
 
 def transFromCCFCat(cat):
     if re.match(r'(Movie)', cat, re.I):
@@ -83,6 +87,7 @@ class TMDbNameParser():
         self.popularity = 0
         self.poster_path = ''
         self.genre_ids =[]
+        self.tmdbDetails = None
 
     def parse(self, torname, useTMDb=False, hasIMDbId=None, hasTMDbId=None):
         self.clearData()
@@ -133,28 +138,55 @@ class TMDbNameParser():
                     time.sleep(3)
 
 
-    def getGenres(self):
+    def getDetails(self):
         attempts = 0
-        r = []
         while attempts < 3:
             try:
                 if self.tmdbid > 0:
                     if self.tmdbcat == 'movie':
                         movie = Movie()
-                        detail = movie.details(self.tmdbid)
-                        r = detail.genres
+                        self.tmdbDetails = movie.details(self.tmdbid)
                     elif self.tmdbcat == 'tv':
                         tv = TV()
-                        detail = tv.details(self.tmdbid)
-                        r = detail.genres
+                        self.tmdbDetails = tv.details(self.tmdbid)
                 break
             except:
                 attempts += 1
                 print("TMDb connection failed. Trying %d " % attempts)
                 time.sleep(3)
 
-        return r
 
+    def getGenres(self):
+        ll = []
+        if self.genre_ids:
+            for x in self.genre_ids:
+                s = next((y for y in GENRE_LIST_cn if y['id']==x), None)
+                if s:
+                    ll.append(s['name'])
+        return ll
+
+    def getProductionArea(self):
+        if not self.tmdbDetails:
+            self.getDetails()
+        if self.tmdbcat == 'tv':
+            # print(self.tmdbDetails.origin_country)
+            if self.tmdbDetails and self.tmdbDetails.origin_country:
+                return self.tmdbDetails.origin_country[0]
+            elif 'original_language' in self.tmdbDetails:
+                return self.tmdbDetails['original_language']
+        else:            
+            if self.tmdbDetails and self.tmdbDetails.production_countries:
+                if 'iso_3166_1' in self.tmdbDetails.production_countries[0]:
+                    return self.tmdbDetails.production_countries[0]['iso_3166_1']
+                else:
+                    return self.tmdbDetails.production_countries[0]['name']
+            elif 'original_language' in self.tmdbDetails:
+                return self.tmdbDetails['original_language']
+
+        return ''
+        # if self.tmdbDetails and self.tmdbDetails.production_companies:
+        #     r = self.tmdbDetails.production_companies[0].origin_country
+        # return r
 
     def fixSeasonName(self, seasonStr):
         if re.match(r'^Ep?\d+(-Ep?\d+)?$', seasonStr,
