@@ -73,11 +73,10 @@ torcp -h
 ```
 python3 tp.py -h
 
-usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--genre GENRE] [--other-dir OTHER_DIR] [--sep-area] [--tmdb-api-key TMDB_API_KEY]
-             [--tmdb-lang TMDB_LANG] [--tv-folder-name TV_FOLDER_NAME] [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie] [--dryrun] [--single]
-             [--extract-bdmv] [--full-bdmv] [--origin-name] [--tmdb-origin-name] [--sleep SLEEP] [--move-run] [--make-log] [--symbolink] [--cache]
-             [--emby-bracket] [--filename-emby-bracket] [--plex-bracket] [--make-plex-match] [--after-copy-script AFTER_COPY_SCRIPT] [--imdbid IMDBID]
-             [--tmdbid TMDBID] [--site-str SITE_STR]
+usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--genre GENRE] [--other-dir OTHER_DIR] [--sep-area] [--sep-area5] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG]
+             [--tv-folder-name TV_FOLDER_NAME] [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv] [--full-bdmv] [--origin-name] [--tmdb-origin-name]
+             [--sleep SLEEP] [--move-run] [--make-log] [--symbolink] [--cache] [--emby-bracket] [--filename-emby-bracket] [--plex-bracket] [--make-plex-match]
+             [--after-copy-script AFTER_COPY_SCRIPT] [--imdbid IMDBID] [--tmdbid TMDBID] [--site-str SITE_STR]
              MEDIA_DIR
 
 torcp: a script hardlink media files and directories in Emby-happy naming and structs.
@@ -85,7 +84,7 @@ torcp: a script hardlink media files and directories in Emby-happy naming and st
 positional arguments:
   MEDIA_DIR             The directory contains TVs and Movies to be copied.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -d HD_PATH, --hd_path HD_PATH
                         the dest path to create Hard Link.
@@ -94,8 +93,9 @@ optional arguments:
   -l LANG, --lang LANG  seperate dir by language('cn,en').
   --genre GENRE         seperate dir by genre('anime,document').
   --other-dir OTHER_DIR
-                        for any files Other than Movie/TV.
+                        for any dir Other than Movie/TV.
   --sep-area            seperate dir by all production area.
+  --sep-area5           seperate 5 dirs(cn,hktw,jpkr,useu,other) by production area.
   --tmdb-api-key TMDB_API_KEY
                         Search API for the tmdb id, and gen dirname as Name (year)\{tmdbid=xxx\}
   --tmdb-lang TMDB_LANG

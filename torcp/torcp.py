@@ -25,6 +25,21 @@ from torcp.tortitle import TorTitle, is0DayName
 from torcp.cacheman import CacheManager
 
 
+def area2dir(arecode):
+    AREADICT = {
+        'useu' : ['GB', 'FR', 'DE', 'IT', 'RU', 'DK', 'NO', 'IS', 'SE', 'FI', 'IE', 'ES', 'PT', 'NL', 'BE', 'AT', 
+            'CH', 'UA', 'BY', 'PL', 'CZ', 'GR', 'TR', 'BG', 'RO', 'LT', 'HU', 'LU', 'MC', 'LI', 'EE', 'LV', 
+            'HR', 'RS', 'SK', 'MD', 'SI', 'AL', 'MK', 'AZ', 'GE', 'ME', 'BA', 'CA', 'US', 'MX', 'GT', 'BZ', 
+            'SV', 'HN', 'NI', 'CR', 'PA', 'BS', 'CU', 'JM', 'HT', 'DO', 'KN', 'AG', 'DM', 'LC', 'VC', 'BB', 
+            'GD', 'TT', 'CO', 'EC', 'VE', 'GF', 'SR', 'PE', 'BO', 'PY', 'BR', 'CL', 'AR', 'UY'],
+        'jpkr' : ['JP', 'KR', 'KO', 'JA'],
+        'cn' : ['CN', 'ZH'],
+        'hktw': ['HK', 'TW']
+        }
+    
+    return next((x for x,k in AREADICT.items() if arecode in AREADICT[x]), None)
+
+
 class Torcp:
     def __init__(self):
         self.CUR_MEDIA_NAME = ''
@@ -223,6 +238,7 @@ class Torcp:
             file_path = re.sub(r'/', ' ', file_path)
         return file_path
 
+
     def genMediaFolderName(self, nameParser):
         if nameParser.tmdbid > 0:
             if self.ARGS.emby_bracket:
@@ -248,6 +264,12 @@ class Torcp:
             elif self.ARGS.sep_area:
                 area = nameParser.getProductionArea()
                 subdir_title = os.path.join(area, nameParser.title)
+            elif self.ARGS.sep_area5:
+                area = area2dir(nameParser.getProductionArea().upper())
+                if area:
+                    subdir_title = os.path.join(area, nameParser.title)
+                else:
+                    subdir_title = os.path.join('other', nameParser.title)
 
             # will overwrite language/area
             if self.ARGS.genre:
@@ -903,10 +925,13 @@ class Torcp:
         parser.add_argument('--genre',
                             help='seperate dir by genre(\'anime,document\').')
         parser.add_argument('--other-dir',
-                            help='for any files Other than Movie/TV.')
+                            help='for any dir Other than Movie/TV.')
         parser.add_argument('--sep-area',
                             action='store_true',
                             help='seperate dir by all production area.')
+        parser.add_argument('--sep-area5',
+                            action='store_true',
+                            help='seperate 5 dirs(cn,hktw,jpkr,useu,other) by production area.')
         parser.add_argument(
             '--tmdb-api-key',
             help='Search API for the tmdb id, and gen dirname as Name (year)\{tmdbid=xxx\}'

@@ -178,8 +178,6 @@ class TMDbNameParser():
             if self.tmdbDetails and self.tmdbDetails.production_countries:
                 if 'iso_3166_1' in self.tmdbDetails.production_countries[0]:
                     return self.tmdbDetails.production_countries[0]['iso_3166_1']
-                else:
-                    return self.tmdbDetails.production_countries[0]['name']
             elif 'original_language' in self.tmdbDetails:
                 return self.tmdbDetails['original_language']
 
