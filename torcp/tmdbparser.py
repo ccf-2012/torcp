@@ -360,6 +360,11 @@ class TMDbNameParser():
             return list
         else:
             return list
+    
+    def fixTmdbParam(self, tparam):
+        if "year" in tparam and len(tparam["year"]) != 4:
+            del tparam["year"]
+        return tparam
 
     def replaceRomanNum(self, titlestr):
         # no I and X
@@ -424,7 +429,8 @@ class TMDbNameParser():
                 # tv = TV()
                 # results = tv.search(s[1])
                 search = Search()
-                results = search.tv_shows({"query": s[1], "year": str(intyear), "page": 1})
+
+                results = search.tv_shows(self.fixTmdbParam({"query": s[1], "year": str(intyear), "page": 1}))
                 if len(results) > 0:
                     if intyear > 0:
                         if self.season and 'S01' not in self.season:
@@ -445,7 +451,7 @@ class TMDbNameParser():
                 if intyear == 0:
                     results = search.movies({"query": s[1], "page": 1})
                 else:
-                    results = search.movies({"query": s[1], "year": str(intyear), "page": 1})
+                    results = search.movies(self.fixTmdbParam({"query": s[1], "year": str(intyear), "page": 1}))
 
                 if len(results) > 0:
                     result = self.findYearMatch(results, intyear, strict=True)
@@ -470,7 +476,7 @@ class TMDbNameParser():
                 if intyear == 0:
                     results = search.multi({"query": s[1], "page": 1})
                 else:
-                    results = search.multi({"query": s[1], "year": str(intyear), "page": 1})
+                    results = search.multi(self.fixTmdbParam({"query": s[1], "year": str(intyear), "page": 1}))
 
                 if len(results) > 0:
                     result = self.findYearMatch(results, intyear, strict=True)

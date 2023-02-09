@@ -508,17 +508,19 @@ class Torcp:
 
 
     def cutOriginName(self, srcOriginName):
-        m1 = re.search( r'^.*\b(720p|1080[pi]|2160p|576i)[\. ]*', srcOriginName, flags=re.I)
-        sstr = srcOriginName
-        if m1:
-            sstr = srcOriginName[m1.span(1)[0]:]
-        else:
-            m2 = re.search( r'\b((19\d{2}\b|20\d{2})(-19\d{2}|-20\d{2})?)\b(?!.*\b\d{4}\b.*)', srcOriginName, flags=re.A | re.I)
-            if m2:
-                sstr = sstr[m2.span(1)[1]:]
-        sstr = re.sub(r'^[. ]*', '', sstr)
-        sstr = re.sub(r'-', '_', sstr)
-        return sstr
+        return srcOriginName
+        # TODO:  full orginal name
+        # m1 = re.search( r'^.*\b(720p|1080[pi]|2160p|576i)[\. ]*', srcOriginName, flags=re.I)
+        # sstr = srcOriginName
+        # if m1:
+        #     sstr = srcOriginName[m1.span(1)[0]:]
+        # else:
+        #     m2 = re.search( r'\b((19\d{2}\b|20\d{2})(-19\d{2}|-20\d{2})?)\b(?!.*\b\d{4}\b.*)', srcOriginName, flags=re.A | re.I)
+        #     if m2:
+        #         sstr = sstr[m2.span(1)[1]:]
+        # sstr = re.sub(r'^[. ]*', '', sstr)
+        # sstr = re.sub(r'-', '_', sstr)
+        # return sstr
 
 
     def genMovieTMDbOriginName(self, mediaSrc, movieName, year, nameParser=None):
@@ -706,15 +708,16 @@ class Torcp:
                 continue
 
             p = folderTmdbParser
-            if (folderTmdbParser.tmdbid <= 0) or countMediaFiles > 1:
-                fnok = is0DayName(movieItem)
-                if fnok:
-                    pf = TMDbNameParser(self.ARGS.tmdb_api_key, self.ARGS.tmdb_lang,
-                                        ccfcat_hard=self.setArgsCategory())
-                    pf.parse(movieItem, useTMDb=(self.ARGS.tmdb_api_key is not None))
-                    pf.title = self.fixNtName(pf.title)
-                    if pf.tmdbid > 0 or fnok:
-                        p = pf
+            if not (self.ARGS.tmdbid and self.ARGS.single):
+                if (folderTmdbParser.tmdbid <= 0) or countMediaFiles > 1:
+                    fnok = is0DayName(movieItem)
+                    if fnok:
+                        pf = TMDbNameParser(self.ARGS.tmdb_api_key, self.ARGS.tmdb_lang,
+                                            ccfcat_hard=self.setArgsCategory())
+                        pf.parse(movieItem, useTMDb=(self.ARGS.tmdb_api_key is not None))
+                        pf.title = self.fixNtName(pf.title)
+                        if pf.tmdbid > 0 or fnok:
+                            p = pf
 
             cat = self.genCatFolderName(p)
             destFolderName = self.genMediaFolderName(p)
