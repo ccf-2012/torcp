@@ -508,23 +508,23 @@ class Torcp:
 
 
     def cutOriginName(self, srcOriginName):
-        return srcOriginName
+        # return srcOriginName
         # TODO:  full orginal name
-        # m1 = re.search( r'^.*\b(720p|1080[pi]|2160p|576i)[\. ]*', srcOriginName, flags=re.I)
-        # sstr = srcOriginName
-        # if m1:
-        #     sstr = srcOriginName[m1.span(1)[0]:]
-        # else:
-        #     m2 = re.search( r'\b((19\d{2}\b|20\d{2})(-19\d{2}|-20\d{2})?)\b(?!.*\b\d{4}\b.*)', srcOriginName, flags=re.A | re.I)
-        #     if m2:
-        #         sstr = sstr[m2.span(1)[1]:]
-        # sstr = re.sub(r'^[. ]*', '', sstr)
-        # sstr = re.sub(r'-', '_', sstr)
-        # return sstr
+        m1 = re.search( r'^.*\b(720p|1080[pi]|2160p|576i)[\. ]*', srcOriginName, flags=re.I)
+        sstr = srcOriginName
+        if m1:
+            sstr = srcOriginName[m1.span(1)[0]:]
+        else:
+            m2 = re.search( r'\b((19\d{2}\b|20\d{2})(-19\d{2}|-20\d{2})?)\b(?!.*\b\d{4}\b.*)', srcOriginName, flags=re.A | re.I)
+            if m2:
+                sstr = sstr[m2.span(1)[1]:]
+        sstr = re.sub(r'^[. ]*', '', sstr)
+        sstr = re.sub(r'-', '_', sstr)
+        return sstr
 
 
     def genMovieTMDbOriginName(self, mediaSrc, movieName, year, nameParser=None):
-        originName = self.cutOriginName(os.path.basename(mediaSrc))
+        originName = os.path.basename(mediaSrc)
         # filename, file_ext = os.path.splitext(mediaSrc)
         ch1 = ' - '
         tmdbTail = ''
