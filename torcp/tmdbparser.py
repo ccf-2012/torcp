@@ -561,6 +561,7 @@ class TMDbNameParser():
         try:
             t = tv.details(tmdbid)
             if t:
+                self.tmdbDetails = t
                 self.saveTmdbTVResultMatch(t)
         except:
             pass
@@ -572,10 +573,11 @@ class TMDbNameParser():
         try:
             m = movie.details(tmdbid)
             if m:
+                self.tmdbDetails = m
                 self.saveTmdbMovieResult(m)
         except:
             pass
-        return self.tmdbid, self.title, self.year 
+        return self.tmdbid, self.title, self.year
 
     def searchTMDbByTMDbId(self, cat, tmdbid):
         if cat == 'tv':
@@ -587,4 +589,4 @@ class TMDbNameParser():
             if self.tmdbid <= 0:
                 return self.searchTMDbByTMDbIdMovie(tmdbid)
 
-        return self.tmdbid, self.title, self.year 
+        return self.tmdbid, self.title, self.year

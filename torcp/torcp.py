@@ -467,7 +467,7 @@ class Torcp:
             if self.ARGS.full_bdmv or self.ARGS.extract_bdmv:
                 # a BDMV dir in a TV folder, treat as Movie
                 self.processBDMV(tvSourceFolder, genFolder, 'MovieM2TS', tmdbParser=folderTmdbParser)
-                self.targetDirHook(os.path.join('MovieM2TS', genFolder), tmdbidstr=str(folderTmdbParser.tmdbid), tmdbcat=folderTmdbParser.tmdbcat, tmdbtitle=folderTmdbParser.title)
+                self.targetDirHook(os.path.join('MovieM2TS', genFolder), tmdbidstr=str(folderTmdbParser.tmdbid), tmdbcat=folderTmdbParser.tmdbcat, tmdbtitle=folderTmdbParser.title, tmdbobj=folderTmdbParser)
             else:
                 print('\033[31mSkip BDMV/ISO  %s \033[0m' % genFolder)
             return
@@ -504,7 +504,7 @@ class Torcp:
                     self.targetCopy(tvitemPath, seasonFolderFullPath, newTVFileName)
 
         self.mkPlexMatch(os.path.join(self.CATNAME_TV, genFolder), folderTmdbParser)
-        self.targetDirHook(os.path.join(self.CATNAME_TV, genFolder), tmdbidstr=str(folderTmdbParser.tmdbid), tmdbcat=folderTmdbParser.tmdbcat, tmdbtitle=folderTmdbParser.title)
+        self.targetDirHook(os.path.join(self.CATNAME_TV, genFolder), tmdbidstr=str(folderTmdbParser.tmdbid), tmdbcat=folderTmdbParser.tmdbcat, tmdbtitle=folderTmdbParser.title, tmdbobj=folderTmdbParser)
 
 
     def cutOriginName(self, srcOriginName):
@@ -649,7 +649,7 @@ class Torcp:
         # destCatFolderName = os.path.join(folderCat, folderGenName)
         self.targetCopy(mediaSrc, folderCat)
         # TODO: new item add to Music folder cause full update
-        self.targetDirHook('Music', tmdbidstr='', tmdbcat='music', tmdbtitle=os.path.basename(mediaSrc))
+        self.targetDirHook('Music', tmdbidstr='', tmdbcat='music', tmdbtitle=os.path.basename(mediaSrc), tmdbobj=None)
 
 
     def processMovieDir(self, mediaSrc, folderCat, folderGenName, folderTmdbParser):
@@ -657,7 +657,7 @@ class Torcp:
             # break, process BDMV dir for this dir
             if self.ARGS.full_bdmv or self.ARGS.extract_bdmv:
                 self.processBDMV(mediaSrc, folderGenName, 'MovieM2TS', tmdbParser=folderTmdbParser)
-                self.targetDirHook(os.path.join('MovieM2TS', folderGenName), tmdbidstr=str(folderTmdbParser.tmdbid), tmdbcat=folderTmdbParser.tmdbcat, tmdbtitle=folderTmdbParser.title)
+                self.targetDirHook(os.path.join('MovieM2TS', folderGenName), tmdbidstr=str(folderTmdbParser.tmdbid), tmdbcat=folderTmdbParser.tmdbcat, tmdbtitle=folderTmdbParser.title, tmdbobj=folderTmdbParser)
             else:
                 print('\033[31mSkip BDMV/ISO  %s \033[0m' % mediaSrc)
             return
@@ -698,7 +698,7 @@ class Torcp:
                     destCatFolderName = os.path.join('BDMVISO', folderGenName)
                     self.targetCopy(os.path.join(mediaSrc, movieItem),
                             destCatFolderName)
-                    self.targetDirHook(destCatFolderName, tmdbidstr='', tmdbcat='iso', tmdbtitle=movieItem) 
+                    self.targetDirHook(destCatFolderName, tmdbidstr='', tmdbcat='iso', tmdbtitle=movieItem, tmdbobj=None) 
                 else:
                     print('\033[31mSKip iso file: [%s]\033[0m ' % movieItem)
                 continue
@@ -739,7 +739,7 @@ class Torcp:
             elif cat in ['TMDbNotFound', 'HDTV', 'Audio', 'eBook']:
                 # catItemFolder = os.path.join(cat, movieItem)
                 self.targetCopy(mediaSrcItem, destCatFolderName)
-                self.targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title)
+                self.targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title, tmdbobj=p)
                 continue
             else:
                 if self.ARGS.origin_name:
@@ -753,7 +753,7 @@ class Torcp:
                     newMovieName = self.genMovieResGroup(movieItem, p.title, yearstr,
                                                     p.resolution, p.group, nameParser=p)
                 self.targetCopy(mediaSrcItem, destCatFolderName, newMovieName)
-                self.targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title)
+                self.targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title, tmdbobj=p)
 
 
     def mkPlexMatch(self, targetDir, tmdbParser):
@@ -771,12 +771,12 @@ class Torcp:
                 pmfile.write("Year: %d\n" % (tmdbParser.year))
 
 
-    def targetDirHook(self, targetDir, tmdbidstr='', tmdbcat='', tmdbtitle=''):
+    def targetDirHook(self, targetDir, tmdbidstr='', tmdbcat='', tmdbtitle='', tmdbobj=None):
         # exportTargetDir = os.path.join(ARGS.hd_path, targetDir)
         exportTargetDir = targetDir
         print('Target Dir: ' + exportTargetDir)
         if self.EXPORT_OBJ:
-            self.EXPORT_OBJ.onOneItemTorcped(exportTargetDir, self.CUR_MEDIA_NAME, tmdbidstr, tmdbcat, tmdbtitle)
+            self.EXPORT_OBJ.onOneItemTorcped(exportTargetDir, self.CUR_MEDIA_NAME, tmdbidstr, tmdbcat, tmdbtitle, tmdbobj)
         if self.ARGS.after_copy_script:
             import subprocess        
             cmd = [self.ARGS.after_copy_script, exportTargetDir, self.CUR_MEDIA_NAME, tmdbidstr, tmdbcat, tmdbtitle]
@@ -816,7 +816,7 @@ class Torcp:
                                                         p.season)
                     self.targetCopy(mediaSrc, seasonFolderFullPath, newTVFileName)
                     self.mkPlexMatch(os.path.join(self.ARGS.tv_folder_name, destFolderName), p)
-                    self.targetDirHook(os.path.join(self.ARGS.tv_folder_name, destFolderName), tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title)
+                    self.targetDirHook(os.path.join(self.ARGS.tv_folder_name, destFolderName), tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title, tmdbobj=p)
                 elif cat == self.CATNAME_MOVIE:
                     if self.ARGS.origin_name:
                         newMovieName = itemName
@@ -830,21 +830,21 @@ class Torcp:
                                                         yearstr, p.resolution,
                                                         p.group, nameParser=p)
                     self.targetCopy(mediaSrc, destCatFolderName, newMovieName)
-                    self.targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title)
+                    self.targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title, tmdbobj=p)
                 elif cat == 'TMDbNotFound':
                     self.targetCopy(mediaSrc, cat)
-                    self.targetDirHook(os.path.join(cat, itemName), tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title)
+                    self.targetDirHook(os.path.join(cat, itemName), tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title, tmdbobj=p)
                 else:
                     print('\033[33mSingle media file : [ %s ] %s \033[0m' %
                         (cat, mediaSrc))
                     self.targetCopy(mediaSrc, destCatFolderName)
-                    self.targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title)
+                    self.targetDirHook(destCatFolderName, tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title, tmdbobj=p)
             elif file_ext.lower() in ['.iso']:
                 #  TODO: aruba need iso when extract_bdmv
                 if self.ARGS.full_bdmv or self.ARGS.extract_bdmv:
                     bdmvFolder = os.path.join('BDMVISO', destFolderName)
                     self.targetCopy(mediaSrc, bdmvFolder)
-                    self.targetDirHook(bdmvFolder, tmdbidstr='', tmdbcat='iso', tmdbtitle=itemName)
+                    self.targetDirHook(bdmvFolder, tmdbidstr='', tmdbcat='iso', tmdbtitle=itemName, tmdbobj=None)
                 else:
                     print('\033[33mSkip .iso file:  %s \033[0m' % mediaSrc)
             else:
@@ -858,7 +858,7 @@ class Torcp:
                                 destFolderName, folderTmdbParser=p)
             elif cat in ['MV']:
                 self.targetCopy(mediaSrc, cat)
-                self.targetDirHook(os.path.join(cat, itemName), tmdbidstr='', tmdbcat='mv', tmdbtitle=itemName)
+                self.targetDirHook(os.path.join(cat, itemName), tmdbidstr='', tmdbcat='mv', tmdbtitle=itemName, tmdbobj=None)
             elif cat in ['Music']:
                 self.processMusic(mediaSrc, cat, destFolderName)
             elif cat in ['TMDbNotFound']:
@@ -868,11 +868,11 @@ class Torcp:
                     self.processMovieDir(mediaSrc, cat, destFolderName, folderTmdbParser=p)
                 else:
                     self.targetCopy(mediaSrc, cat)
-                    self.targetDirHook(os.path.join(cat, itemName), tmdbidstr='', tmdbcat='notfound', tmdbtitle=itemName)
+                    self.targetDirHook(os.path.join(cat, itemName), tmdbidstr='', tmdbcat='notfound', tmdbtitle=itemName, tmdbobj=None)
 
             elif cat in ['Audio']:
                 self.targetCopy(mediaSrc, cat)
-                self.targetDirHook(os.path.join(cat, itemName), tmdbidstr='', tmdbcat='audio', tmdbtitle=itemName)
+                self.targetDirHook(os.path.join(cat, itemName), tmdbidstr='', tmdbcat='audio', tmdbtitle=itemName, tmdbobj=None)
             elif cat in ['eBook']:
                 print('\033[33mSkip eBoook: [%s], %s\033[0m ' %
                     (cat, mediaSrc))
