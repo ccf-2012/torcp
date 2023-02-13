@@ -63,6 +63,7 @@ class TMDbNameParser():
         self.popularity = 0
         self.poster_path = ''
         self.genre_ids =[]
+        self.release_air_date = ''
 
         if tmdb_api_key:
             self.tmdb = TMDb()
@@ -229,10 +230,14 @@ class TMDbNameParser():
                 self.poster_path = result.poster_path
             if hasattr(result, 'first_air_date'):
                 self.year = self.getYear(result.first_air_date)
+                self.release_air_date = result.first_air_date
             elif hasattr(result, 'release_date'):
                 self.year = self.getYear(result.release_date)
+                self.release_air_date = result.release_date
             else:
                 self.year = 0
+            if hasattr(result, 'genres'):
+                self.genre_ids = [x['id'] for x in result.genres]
             if hasattr(result, 'genre_ids'):
                 self.genre_ids = result.genre_ids
             print('Found [%d]: %s' % (self.tmdbid, self.title))
@@ -261,10 +266,14 @@ class TMDbNameParser():
             self.poster_path = result.poster_path
         if hasattr(result, 'release_date'):
             self.year = self.getYear(result.release_date)
+            self.release_air_date = result.release_date
         elif hasattr(result, 'first_air_date'):
             self.year = self.getYear(result.first_air_date)
+            self.release_air_date = result.first_air_date
         else:
             self.year = 0
+        if hasattr(result, 'genres'):
+            self.genre_ids = [x['id'] for x in result.genres]
         if hasattr(result, 'genre_ids'):
             self.genre_ids = result.genre_ids
         
