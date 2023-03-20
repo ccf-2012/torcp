@@ -2,7 +2,7 @@
 import re
 import time
 from tmdbv3api import TMDb, Movie, TV, Search, Find
-
+import logging
 from torcp import tortitle
 from torcp.torcategory import TorCategory
 
@@ -10,6 +10,10 @@ GENRE_LIST_en = [{'id': 28, 'name': 'Action'}, {'id': 12, 'name': 'Adventure'}, 
     'id': 36, 'name': 'History'}, {'id': 27, 'name': 'Horror'}, {'id': 10402, 'name': 'Music'}, {'id': 9648, 'name': 'Mystery'}, {'id': 10749, 'name': 'Romance'}, {'id': 878, 'name': 'Science Fiction'}, {'id': 10770, 'name': 'TV Movie'}, {'id': 53, 'name': 'Thriller'}, {'id': 10752, 'name': 'War'}, {'id': 37, 'name': 'Western'}]
 GENRE_LIST_cn = [{'id': 28, 'name': '动作'}, {'id': 12, 'name': '冒险'}, {'id': 16, 'name': '动画'}, {'id': 35, 'name': '喜剧'}, {'id': 80, 'name': '犯罪'}, {'id': 99, 'name': '纪录'}, {'id': 18, 'name': '剧情'}, {'id': 10751, 'name': '家庭'}, {'id': 14, 'name': '奇幻'}, {
     'id': 36, 'name': '历史'}, {'id': 27, 'name': '恐怖'}, {'id': 10402, 'name': '音乐'}, {'id': 9648, 'name': '悬疑'}, {'id': 10749, 'name': '爱情'}, {'id': 878, 'name': '科幻'}, {'id': 10770, 'name': '电视电影'}, {'id': 53, 'name': '惊悚'}, {'id': 10752, 'name': '战争'}, {'id': 37, 'name': '西部'}]
+
+
+logger = logging.getLogger(__name__)
+
 
 def transFromCCFCat(cat):
     if re.match(r'(Movie)', cat, re.I):
@@ -119,12 +123,13 @@ class TMDbNameParser():
                         if tmdbstr:
                             tmdbid, title, year = self.searchTMDbByTMDbId(cat, tmdbstr)
                             if tmdbid > 0:
-                                print(tmdbid, title, self.ccfcat, self.year)
+                                logger.info("%s %s %s %s" % (tmdbid, title, self.ccfcat, self.year))
                                 return True
                     if hasIMDbId:
                         tmdbid, title, year = self.searchTMDbByIMDbId(hasIMDbId)
                         if tmdbid > 0:
-                            print(tmdbid, title, self.ccfcat, self.year)
+                            logger.info("%s %s %s %s" % (tmdbid, title, self.ccfcat, self.year))
+                            # print(tmdbid, title, self.ccfcat, self.year)
                             return
                     if not self.checkNameContainsId(torname):
                         if self.tmdbcat in ['tv', 'movie', 'Other', 'HDTV']:
@@ -135,7 +140,7 @@ class TMDbNameParser():
                     break
                 except:
                     attempts += 1
-                    print("TMDb connection failed. Trying %d " % attempts)
+                    logger.info("TMDb connection failed. Trying %d " % attempts)
                     time.sleep(3)
 
 
@@ -153,7 +158,7 @@ class TMDbNameParser():
                 break
             except:
                 attempts += 1
-                print("TMDb connection failed. Trying %d " % attempts)
+                logger.info("TMDb connection failed. Trying %d " % attempts)
                 time.sleep(3)
 
 
@@ -240,9 +245,9 @@ class TMDbNameParser():
                 self.genre_ids = [x['id'] for x in result.genres]
             if hasattr(result, 'genre_ids'):
                 self.genre_ids = result.genre_ids
-            print('Found [%d]: %s' % (self.tmdbid, self.title))
+            logger.info('Found [%d]: %s' % (self.tmdbid, self.title))
         else:
-            print('\033[33mNot match in tmdb: [%s]\033[0m ' % (self.title))
+            logger.info('Not match in tmdb: [%s] ' % (self.title))
 
         return result is not None
 
@@ -277,7 +282,7 @@ class TMDbNameParser():
         if hasattr(result, 'genre_ids'):
             self.genre_ids = result.genre_ids
         
-        print('Found [%d]: %s' % (self.tmdbid, self.title))
+        logger.info('Found [%d]: %s' % (self.tmdbid, self.title))
         return True
 
     def saveTmdbMultiResult(self, result):
@@ -288,7 +293,7 @@ class TMDbNameParser():
             elif result.media_type == 'movie':
                 self.saveTmdbMovieResult(result)
             else:
-                print('Unknow media_type %s ' % result.media_type)
+                logger.info('Unknow media_type %s ' % result.media_type)
         return
 
     # def imdbMultiQuery(self, title, year=None):
@@ -434,7 +439,7 @@ class TMDbNameParser():
 
         for s in searchList:
             if s[0] == 'tv' and s[1]:
-                print('Search TV: ' + s[1])
+                logger.info('Search TV: ' + s[1])
                 # tv = TV()
                 # results = tv.search(s[1])
                 search = Search()
@@ -455,7 +460,7 @@ class TMDbNameParser():
                             return self.tmdbid, self.title, self.year
 
             elif s[0] == 'movie' and s[1]:
-                print('Search Movie:  %s (%d)' % (s[1], intyear))
+                logger.info('Search Movie:  %s (%d)' % (s[1], intyear))
                 search = Search()
                 if intyear == 0:
                     results = search.movies({"query": s[1], "page": 1})
@@ -480,7 +485,7 @@ class TMDbNameParser():
                             self.saveTmdbMovieResult(result)
                             return self.tmdbid, self.title, self.year
             elif s[0] == 'multi' and s[1]:
-                print('Search Multi:  %s (%d)' % (s[1], intyear))
+                logger.info('Search Multi:  %s (%d)' % (s[1], intyear))
                 search = Search()
                 if intyear == 0:
                     results = search.multi({"query": s[1], "page": 1})
@@ -510,7 +515,7 @@ class TMDbNameParser():
                                 self.saveTmdbMultiResult(result)
                                 return self.tmdbid, self.title, self.year
 
-        print('\033[31mTMDb Not found: [%s] [%s]\033[0m ' % (title, cntitle))
+        logger.info('TMDb Not found: [%s] [%s] ' % (title, cntitle))
         return 0, title, intyear
 
 
@@ -530,7 +535,7 @@ class TMDbNameParser():
 
     def searchTMDbByIMDbId(self, imdbid):
         f = Find(self.tmdb)
-        print("Search : " + imdbid)
+        logger.info("Search : " + imdbid)
         t = f.find_by_imdb_id(imdb_id=imdbid)
         if t:
             # print(t)
@@ -566,7 +571,7 @@ class TMDbNameParser():
 
     def searchTMDbByTMDbIdTv(self, tmdbid):
         tv = TV(self.tmdb)
-        print("Search tmdbid in TV: " + tmdbid)
+        logger.info("Search tmdbid in TV: " + tmdbid)
         try:
             t = tv.details(tmdbid)
             if t:
@@ -578,7 +583,7 @@ class TMDbNameParser():
 
     def searchTMDbByTMDbIdMovie(self, tmdbid):
         movie = Movie(self.tmdb)
-        print("Search tmdbid in Movie: " + tmdbid)
+        logger.info("Search tmdbid in Movie: " + tmdbid)
         try:
             m = movie.details(tmdbid)
             if m:
