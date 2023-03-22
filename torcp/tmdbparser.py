@@ -43,9 +43,12 @@ def tryint(instr):
 def parseTMDbStr(tmdbstr):
     if tmdbstr.isnumeric():
         return '', tmdbstr
-    m = re.search(r'(m(ovie)?|t(v)?)[-_]?(\d+)', tmdbstr.strip(), flags=re.A | re.I)
+    m = re.search(r'(m(ovie)?|t(v)?)?[-_]?(\d+)', tmdbstr.strip(), flags=re.A | re.I)
     if m:
-        catstr = 'movie' if m[1].startswith('m') else 'tv'
+        if m[1]:
+            catstr = 'movie' if m[1].startswith('m') else 'tv'
+        else:
+            catstr = ''
         return catstr, m[4]
     else:
         return '', ''
