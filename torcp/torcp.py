@@ -130,6 +130,10 @@ class Torcp:
             logger.warning('File/Dir %s not found' % (fromLoc))
 
     def pathMove(self, fromLoc, toLocFolder, toLocFile=''):
+        if not os.path.exists(fromLoc):
+            logger.warning('[%s] not exists. ' % fromLoc)
+            return
+
         if os.path.islink(fromLoc):
             logger.info('SKIP symbolic link: [%s] ' % fromLoc)
             return
