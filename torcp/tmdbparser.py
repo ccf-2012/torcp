@@ -123,6 +123,8 @@ class TMDbNameParser():
                 try:
                     if hasTMDbId:
                         cat, tmdbstr = parseTMDbStr(hasTMDbId)
+                        if self.ccfcatHard and (not cat):
+                            cat = self.tmdbcat
                         if tmdbstr:
                             tmdbid, title, year = self.searchTMDbByTMDbId(cat, tmdbstr)
                             if tmdbid > 0:
@@ -529,7 +531,7 @@ class TMDbNameParser():
             tmdbid, title, year = self.searchTMDbByIMDbId(m[2])
             if tmdbid > 0:
                 return True
-        m = re.search(r'\[tmdb(id)?\=(\d+)\]', torname, flags=re.A | re.I)
+        m = re.search(r'\[tmdb(id)?[=-](\d+)\]', torname, flags=re.A | re.I)
         if m:
             tmdbid, title, year = self.searchTMDbByTMDbId(self.tmdbcat, m[2])
             if tmdbid > 0:

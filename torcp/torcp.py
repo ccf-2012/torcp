@@ -983,7 +983,7 @@ class Torcp:
         self.makeKeepExts()
 
     def hasTMDbId(self, str):
-        m1 = re.search(r'tmdb(id)?\=((m|tv)?-?(\d+))', str.strip(), flags=re.A | re.I)
+        m1 = re.search(r'tmdb(id)?[=-]((m|tv)?-?(\d+))', str.strip(), flags=re.A | re.I)
         if m1:
             return m1[2]
         else:
