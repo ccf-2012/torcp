@@ -7,6 +7,7 @@ __pycache__/
 *.so
 *.json
 .vscode/
+config.ini
 
 myTMDbParser*
 tt.py
