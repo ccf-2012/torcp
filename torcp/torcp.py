@@ -741,7 +741,7 @@ class Torcp:
             return
 
         pmfilepath = os.path.join(self.ARGS.hd_path, targetDir, '.plexmatch')
-        with open(pmfilepath, "w") as pmfile:
+        with open(pmfilepath, "w", encoding='utf-8') as pmfile:
             pmfile.write("Title: %s\ntmdbid: %d\n" %
                         (tmdbParser.title, tmdbParser.tmdbid))
             if tmdbParser.year > 1990:
@@ -750,7 +750,7 @@ class Torcp:
     def writeNfoFile(self, nfoFilename, etroot):
         # ET.indent(etroot, '  ')
         # etroot.write(nfoFilename, encoding="utf-8", xml_declaration=True)
-        with open(nfoFilename, "w") as nfo_file:
+        with open(nfoFilename, "w", encoding='utf-8') as nfo_file:
             nfo_file.write(ET.tostring(etroot, encoding="unicode"))
 
     def mkMediaNfo(self, targetDir, mediaFilename, tmdbParser):
@@ -766,7 +766,8 @@ class Torcp:
             nfoFilename = 'tvshow.nfo'
         elif tmdbParser.tmdbcat == 'movie':
             root = ET.Element("movie")
-            nfoFilename = mediaFilename + ".nfo"
+            fn, ext = os.path.splitext(mediaFilename)
+            nfoFilename = fn + ".nfo"
         else:
             return
         
