@@ -60,6 +60,7 @@ class TMDbNameParser():
         self.title = ''
         self.year = 0
         self.tmdbid = 0
+        self.tmdbhard = False
         self.season = ''
         self.episode = ''
         self.cntitle = ''
