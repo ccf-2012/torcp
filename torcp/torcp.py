@@ -686,7 +686,7 @@ class Torcp:
 
             p = folderTmdbParser
             if not (self.ARGS.tmdbid and self.ARGS.single):
-                if (folderTmdbParser.tmdbid <= 0) or countMediaFiles > 1:
+                if not folderTmdbParser.tmdbhard and (folderTmdbParser.tmdbid <= 0) or countMediaFiles > 1:
                     fnok = is0DayName(movieItem)
                     if fnok:
                         pf = TMDbNameParser(self.ARGS.tmdb_api_key, self.ARGS.tmdb_lang,
@@ -1061,7 +1061,7 @@ class Torcp:
     def hasTMDbId(self, str):
         m1 = re.search(r'(?<![\[\{]})tmdb(id)?[=-]((m|tv)?-?(\d+))', str.strip(), flags=re.A | re.I)
         if m1:
-            return m1[3]
+            return m1[4]
         else:
             return None
 
