@@ -1059,7 +1059,7 @@ class Torcp:
         self.makeKeepExts()
 
     def hasTMDbId(self, str):
-        m1 = re.search(r'(?<![\[\{]})tmdb(id)?[=-]((m|tv)?-?(\d+))', str.strip(), flags=re.A | re.I)
+        m1 = re.search(r'tmdb(id)?[=-]((m|tv)?-?(\d+))', str.strip(), flags=re.A | re.I)
         if m1:
             return m1[4]
         else:
@@ -1089,7 +1089,7 @@ class Torcp:
         else:
             return None
 
-    def onlyOneDirInSiteIdFolder(self, cpLocation, foldername):
+    def underSiteIdFolder(self, cpLocation, foldername):
         siteid = self.matchSiteId(foldername)
         if siteid:
             # dirlist = [name for name in os.listdir(os.path.join(cpLocation, foldername)) if os.path.isdir(os.path.join(cpLocation, foldername, name))]
@@ -1098,7 +1098,7 @@ class Torcp:
                 return siteid, dirlist[0]
         return '', ''
 
-    def onlyOneDirInIMDbFolder(self, cpLocation, foldername):
+    def underIMDbFolder(self, cpLocation, foldername):
         imdbstr = self.hasIMDbId(foldername)
         if imdbstr:
             dirlist = os.listdir(os.path.join(cpLocation, foldername))
@@ -1109,7 +1109,7 @@ class Torcp:
                 # return imdbstr, dirlist[0]
         return '', ''
 
-    def onlyOneDirInTMDbFolder(self, cpLocation, foldername):
+    def underTMDbFolder(self, cpLocation, foldername):
         tmdbstr = self.hasTMDbId(foldername)
         if tmdbstr:
             dirlist = os.listdir(os.path.join(cpLocation, foldername))
@@ -1118,9 +1118,9 @@ class Torcp:
         return '', ''
 
     def parseFolderIMDbId(self, locIn, itemIn):
-        siteid, insideSiteFolderName = self.onlyOneDirInSiteIdFolder(locIn, itemIn)
-        folderIMDb, insideIMDbFolderName = self.onlyOneDirInIMDbFolder(locIn, itemIn)
-        folderTMDb, insideTMDbFolderName = self.onlyOneDirInTMDbFolder(locIn, itemIn)
+        siteid, insideSiteFolderName = self.underSiteIdFolder(locIn, itemIn)
+        folderIMDb, insideIMDbFolderName = self.underIMDbFolder(locIn, itemIn)
+        folderTMDb, insideTMDbFolderName = self.underTMDbFolder(locIn, itemIn)
         if folderIMDb:
             parentLocation = os.path.join(locIn, itemIn)
             itemName = insideIMDbFolderName
@@ -1134,6 +1134,10 @@ class Torcp:
             parentLocation = locIn
             itemName = itemIn
         return parentLocation, itemName, folderIMDb, folderTMDb
+
+    def processWithSameTIMDb(self, parentFolder, folderImdb, folderTmdb):
+        for item in os.listdir(parentFolder):
+            self.processOneDirItem(parentFolder, item, imdbidstr=folderImdb, tmdbidstr=folderTmdb)
 
     def main(self, argv=None, exportObject=None):
         self.EXPORT_OBJ = exportObject
@@ -1163,6 +1167,8 @@ class Torcp:
                                 os.path.basename(os.path.normpath(cpLocation)))
                 if argIMDb or argTMDb:
                     self.processOneDirItem(parentLocation, itemName, imdbidstr=argIMDb, tmdbidstr=argTMDb)
+                elif folderimdb or folderTmdb:
+                    self.processWithSameTIMDb(parentLocation, folderImdb=folderimdb, folderTmdb=folderTmdb)
                 else:
                     self.processOneDirItem(parentLocation, itemName, imdbidstr=folderimdb, tmdbidstr=folderTmdb)
 
@@ -1192,6 +1198,9 @@ class Torcp:
                                 continue
                             else:
                                 searchCache.append(itemName)
+                    if (folderimdb or folderTmdb) and (parentLocation != cpLocation):
+                        self.processWithSameTIMDb(parentLocation, folderImdb=folderimdb, folderTmdb=folderTmdb)
+                    else:
                         self.processOneDirItem(parentLocation, itemName, imdbidstr=folderimdb, tmdbidstr=folderTmdb)
 
         if self.ARGS.cache:
