@@ -1,1 +1,1 @@
-tmdbv3api
+tmdbv3api=1.7.7
