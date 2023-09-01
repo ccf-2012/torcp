@@ -189,6 +189,8 @@ def test_parseTorName(test_input, e1, e2, e3, e4):
      'TV', 'FRDS'),
     ('半暖时光.The.Memory.About.You.S01.2021.2160p.WEB-DL.AAC.H265-HDSWEB', 'TV',
      'HDSWEB'),
+    ('童年 - 高尔基 - 演播有声文学频道 - 完结 - 2019 - MP3 64kbps -RL', 'Audio', 'RL'),
+    ('邪王挚宠：一品狂妃 - 欲念无罪 - 演播千瓣莲 - 2018 - AAC - 32kbps-RL4B', 'Audio', 'RL4B'),
     ('排球女将.Moero.Attack.1979.Complete.WEB-DL.1080p.H264.DDP.MP3.Mandarin&Japanese-OPS', 'TV', 'OPS'),
     ('The.Smurfs.2.2013.3Audio.DTS-HD.MA5.1.x265.10bit-BeiTai.mkv', 'MovieEncode', 'BeiTai'),
     ('Death.on.the.Nile.1978.1080p.BluRay.FLAC.2.0.x264-PTer.mkv', 'MovieEncode', 'PTer'),    

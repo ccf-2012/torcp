@@ -5,7 +5,7 @@ import re
 
 logger = logging.getLogger(__name__)
 
-DOUBAN_API_KEY = '0ab215a8b1977939201640fa14c66bab'
+DOUBAN_API_KEY = '???'
 
 class DoubanApi:
     def __init__(self, douban_api_key, ccfcat_hard=None):
@@ -112,7 +112,6 @@ class DoubanApi:
 
 if __name__ == '__main__':
     d1 = DoubanApi(DOUBAN_API_KEY)
-    imdb_id = 
     d1.searchDoubanByIMDb(imdb_id)
     d1.getSubjectPageKeyword()
 

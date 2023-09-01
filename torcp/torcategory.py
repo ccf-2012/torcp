@@ -33,7 +33,7 @@ class TorCategory:
     # 有些组专门生产 MV
     MV_GROUPS = ['PTerMV', 'FHDMv', 'Melon', 'HaresMV', 'Bugs!']
     # 有些组专门生产 Audio
-    AUDIO_GROUPS = ['PTHAudio', 'HDSAB']
+    AUDIO_GROUPS = ['PTHAudio', 'HDSAB', 'RL', 'RL4B', 'iYY', 'M4A', 'YXY']
     # 有些组专门作压制，但是不在种子名上标记
     MOVIE_ENCODE_GROUPS = ['CMCT', 'FRDS']
 
