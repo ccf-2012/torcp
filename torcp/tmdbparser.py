@@ -401,6 +401,7 @@ class TMDbNameParser():
         searchList = []
         if title == cntitle:
             cntitle = ''
+        cuttitle = re.sub(r'^(Jade|\w{2,3}TV)\s+', '', title, flags=re.I)
         cuttitle = re.sub(r'\b(Extended|Anthology|Trilogy|Quadrilogy|Tetralogy|Collections?)\s*$', '', title, flags=re.I)
         cuttitle = re.sub(r'\b(Extended|HD|S\d+|E\d+|V\d+|4K|DVD|CORRECTED|UnCut|SP)\s*$', '', cuttitle, flags=re.I)
         cuttitle = re.sub(r'^\s*(剧集|BBC：?|TLOTR|Jade|Documentary|【[^】]*】)', '', cuttitle, flags=re.I)
