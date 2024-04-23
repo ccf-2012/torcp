@@ -175,7 +175,10 @@ class TMDbNameParser():
         ll = []
         if self.genre_ids:
             for x in self.genre_ids:
-                s = next((y for y in GENRE_LIST_cn if y['id']==x), None)
+                genre_list = GENRE_LIST_en
+                if self.tmdb.language == 'zh-CN':
+                    genre_list = GENRE_LIST_cn
+                s = next((y for y in genre_list if y['id']==x), None)
                 if s:
                     ll.append(s['name'])
         return ll
