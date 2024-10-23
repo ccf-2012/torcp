@@ -842,6 +842,10 @@ class Torcp:
         destFolderName = self.genMediaFolderName(p)
         destCatFolderName = os.path.join(cat, destFolderName)
 
+        if self.ARGS.add_year_dir:
+            year_dir_name = str(p.year) if p.year > 0 else 'none'
+            destCatFolderName = os.path.join(cat, year_dir_name)
+
         if os.path.isfile(mediaSrc):
             filename, file_ext = os.path.splitext(itemName)
             if self.isMediaFileType(file_ext):
@@ -1049,6 +1053,9 @@ class Torcp:
                             help='specify the TMDb id, -s single mode only')
         parser.add_argument('--site-str',
                             help='site-id(ex. hds-12345) folder name, set site strs like (\'chd,hds,ade,ttg\').')
+        parser.add_argument('--add-year-dir',
+                            action='store_true',
+                            help='Add a year dir above the media folder')
 
         self.ARGS = parser.parse_args(argv)
         self.ensureIMDb()
