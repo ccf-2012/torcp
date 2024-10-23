@@ -33,7 +33,9 @@ def area2dir(arecode):
             'HR', 'RS', 'SK', 'MD', 'SI', 'AL', 'MK', 'AZ', 'GE', 'ME', 'BA', 'CA', 'US', 'MX', 'GT', 'BZ', 
             'SV', 'HN', 'NI', 'CR', 'PA', 'BS', 'CU', 'JM', 'HT', 'DO', 'KN', 'AG', 'DM', 'LC', 'VC', 'BB', 
             'GD', 'TT', 'CO', 'EC', 'VE', 'GF', 'SR', 'PE', 'BO', 'PY', 'BR', 'CL', 'AR', 'UY'],
-        'jpkr' : ['JP', 'KR', 'KO', 'JA'],
+        # 'jpkr' : ['JP', 'KR', 'KO', 'JA'],
+        'jp' : ['JP', 'JA'],
+        'kr' : ['KR', 'KO'],
         'cn' : ['CN', 'ZH'],
         'hktw': ['HK', 'TW']
         }
@@ -250,31 +252,38 @@ class Torcp:
             else:
                 tmdbTail = ''
 
-            media_title = nameParser.title
+            media_folder_name = nameParser.title
             if self.ARGS.add_year_dir:
                 year_dir_name = str(nameParser.year) if nameParser.year > 0 else 'none'
-                media_title = os.path.join(year_dir_name, nameParser.title)
+                media_folder_name = os.path.join(year_dir_name, nameParser.title)
 
+            subdir_title = media_folder_name
+            area_dir = ''
             if self.ARGS.lang:
                 if self.ARGS.lang.lower() == 'all':
-                    subdir_title = os.path.join(nameParser.original_language,
-                                                media_title)
+                    area_dir = nameParser.original_language
+                    # subdir_title = os.path.join(nameParser.original_language,
+                    #                             media_folder_name)
                 else:
                     ollist = [x.strip() for x in self.ARGS.lang.lower().split(',')]
-                    if nameParser.original_language in ollist:
-                        subdir_title = os.path.join(nameParser.original_language,
-                                                    media_title)
-                    else:
-                        subdir_title = os.path.join('other', media_title)
+                    area_dir = nameParser.original_language if nameParser.original_language in ollist else 'other'
+                    # if nameParser.original_language in ollist:
+                    #     subdir_title = os.path.join(nameParser.original_language,
+                    #                                 media_folder_name)
+                    # else:
+                    #     subdir_title = os.path.join('other', media_folder_name)
             elif self.ARGS.sep_area:
-                area = nameParser.getProductionArea()
-                subdir_title = os.path.join(area, media_title)
+                area_dir = nameParser.getProductionArea()
+                # area_dir = os.path.join(area, media_folder_name)
             elif self.ARGS.sep_area5:
                 area = area2dir(nameParser.getProductionArea().upper())
-                if area:
-                    subdir_title = os.path.join(area, media_title)
-                else:
-                    subdir_title = os.path.join('other', media_title)
+                area_dir = area if area else 'other'
+                # if area:
+                #     subdir_title = os.path.join(area, media_folder_name)
+                # else:
+                #     subdir_title = os.path.join('other', media_folder_name)
+            if area_dir:
+                subdir_title = os.path.join(area_dir, media_folder_name)
 
             # will overwrite language/area
             if self.ARGS.genre:
@@ -283,10 +292,10 @@ class Torcp:
                 mediaGenreList = [d.lower().strip() for d in nameParser.getGenres()]
                 matchGenre = next((g for g in argGenreList if g in mediaGenreList), None)
                 if matchGenre:
-                    subdir_title = os.path.join(matchGenre, media_title)
+                    subdir_title = os.path.join(matchGenre, area_dir, media_folder_name)
                 else:
-                    if subdir_title == media_title:
-                        subdir_title = os.path.join('other', media_title)
+                    if subdir_title == media_folder_name:
+                        subdir_title = os.path.join('other', media_folder_name)
 
             if nameParser.year > 0:
                 mediaFolderName = '%s (%d) %s' % (
