@@ -548,7 +548,7 @@ class Torcp:
     def genTMDbTail(self, nameParser):
         tmdbTail = ''
         if (nameParser and nameParser.tmdbid > 0 and self.ARGS.filename_emby_bracket and self.ARGS.emby_bracket):
-            tmdbTail = ' [tmdbid=' + str(nameParser.tmdbid) + ']'
+            tmdbTail = '[tmdbid=' + str(nameParser.tmdbid) + ']'
         return tmdbTail
 
     def genMovieOriginName(self, mediaSrc, movieName, year, nameParser=None):
