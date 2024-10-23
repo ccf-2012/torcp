@@ -24,15 +24,18 @@ torcp -h
 ```
 
 ```
-usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG]
+usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--genre GENRE]
+             [--other-dir OTHER_DIR] [--sep-area] [--sep-area5]
              [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG]
              [--tv-folder-name TV_FOLDER_NAME]
              [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie]
              [--dryrun] [--single] [--extract-bdmv] [--full-bdmv]
-             [--origin-name] [--sleep SLEEP] [--move-run] [--make-log]
-             [--symbolink] [--cache] [--emby-bracket]
+             [--origin-name] [--tmdb-origin-name] [--sleep SLEEP] [--move-run]
+             [--make-log] [--symbolink] [--cache] [--emby-bracket]
              [--filename-emby-bracket] [--plex-bracket] [--make-plex-match]
-             [--after-copy-script AFTER_COPY_SCRIPT] [--imdbid IMDBID]
+             [--make-nfo] [--after-copy-script AFTER_COPY_SCRIPT]
+             [--imdbid IMDBID] [--tmdbid TMDBID] [--site-str SITE_STR]
+             [--add-year-dir]
              MEDIA_DIR
 
 torcp: a script hardlink media files and directories in Emby-happy naming and
@@ -41,13 +44,19 @@ structs.
 positional arguments:
   MEDIA_DIR             The directory contains TVs and Movies to be copied.
 
-options:
+optional arguments:
   -h, --help            show this help message and exit
   -d HD_PATH, --hd_path HD_PATH
                         the dest path to create Hard Link.
   -e KEEP_EXT, --keep-ext KEEP_EXT
                         keep files with these extention('srt,ass').
-  -l LANG, --lang LANG  seperate move by language('cn,en').
+  -l LANG, --lang LANG  seperate dir by language('cn,en').
+  --genre GENRE         seperate dir by genre('anime,document').
+  --other-dir OTHER_DIR
+                        for any dir Other than Movie/TV.
+  --sep-area            seperate dir by all production area.
+  --sep-area5           seperate 5 dirs(cn,hktw,jpkr,useu,other) by production
+                        area.
   --tmdb-api-key TMDB_API_KEY
                         Search API for the tmdb id, and gen dirname as Name
                         (year)\{tmdbid=xxx\}
@@ -64,6 +73,7 @@ options:
   --extract-bdmv        extract largest file in BDMV dir.
   --full-bdmv           copy full BDMV dir and iso files.
   --origin-name         keep origin file name.
+  --tmdb-origin-name    filename emby bracket - origin file name.
   --sleep SLEEP         sleep x seconds after operation.
   --move-run            WARN: REAL MOVE...with NO REGRET.
   --make-log            Make a log file.
@@ -74,10 +84,15 @@ options:
                         filename with emby bracket
   --plex-bracket        ex: Alone (2020) {tmdb-509635}
   --make-plex-match     Create a .plexmatch file at the top level of a series
+  --make-nfo            Create a .nfo file in the media dir
   --after-copy-script AFTER_COPY_SCRIPT
                         call this script with destination folder path after
                         link/move
-  --imdbid IMDBID       specify the TMDb id, -s single mode only
+  --imdbid IMDBID       specify the IMDb id, -s single mode only
+  --tmdbid TMDBID       specify the TMDb id, -s single mode only
+  --site-str SITE_STR   site-id(ex. hds-12345) folder name, set site strs like
+                        ('chd,hds,ade,ttg').
+  --add-year-dir        Add a year dir above the media folder
 ```
 
 ### Alternatively, call with `python tp.py`

@@ -438,16 +438,28 @@ if __name__ == '__main__':
 * 地区 `--sep-area` 与 语言 `--lang` 只选其一，`--lang` 优先（有lang了就不看area）
 * 如果地区没有取到，则会取语言代码；语言是小写，地区是大写；
 * 类型 `--genre` 独立在 地区/语言之外，如果指定了类型，只有没指定的部分会分 地区/地区
-* `--genre` 可设的类型值与 `--tmdb-lang` 所设语言相关，中文有：
+* `--genre` 可设的类型值与 `--tmdb-lang` 所设语言相关，对于电影，中文有：
 ```
-动作 冒险 动画 喜剧 犯罪 纪录 剧情 家庭 奇幻 历史 恐怖 
-音乐 悬疑 爱情 科幻 电视电影 惊悚 战争 西部
+动作 冒险 动画 喜剧 犯罪 纪录 剧情 家庭 奇幻 历史 恐怖 音乐 
+悬疑 爱情 科幻 电视电影 惊悚 战争 西部
 ```
-* 英文有：
+英文有：
 ```
-Action Adventure Animation Comedy Crime Documentary Drama Family
-Fantasy History Horror Music Mystery Romance Science Fiction TV Movie
-Thriller War Western
+Action Adventure Animation Comedy Crime Documentary Drama Family Fantasy
+History Horror Music Mystery Romance Science Fiction TV Movie Thriller
+War Western
+```
+
+* 对于电视，中文有：
+```
+动作冒险 动画 喜剧 犯罪 纪录 剧情 家庭 儿童 悬疑 新闻 真人秀 Sci-Fi & Fantasy
+肥皂剧 脱口秀 War & Politics 西部
+```
+
+英文有：
+```
+Action & Adventure Animation Comedy Crime Documentary Drama Family
+Kids Mystery News Reality Sci-Fi & Fantasy Soap Talk War & Politics
 ```
 
 ---
