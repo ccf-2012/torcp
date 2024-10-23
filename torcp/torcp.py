@@ -307,7 +307,7 @@ class Torcp:
                         subdir_title = os.path.join('other', media_folder_name)
 
             if nameParser.year > 0:
-                mediaFolderName = '%s (%d)%s' % (
+                mediaFolderName = '%s (%d) %s' % (
                     subdir_title, nameParser.year, tmdbTail)
             else:
                 mediaFolderName = '%s %s' % (subdir_title, tmdbTail)
@@ -548,7 +548,7 @@ class Torcp:
     def genTMDbTail(self, nameParser):
         tmdbTail = ''
         if (nameParser and nameParser.tmdbid > 0 and self.ARGS.filename_emby_bracket and self.ARGS.emby_bracket):
-            tmdbTail = '[tmdbid=' + str(nameParser.tmdbid) + ']'
+            tmdbTail = ' [tmdbid=' + str(nameParser.tmdbid) + ']'
         return tmdbTail
 
     def genMovieOriginName(self, mediaSrc, movieName, year, nameParser=None):
