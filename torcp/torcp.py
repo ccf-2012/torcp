@@ -243,7 +243,7 @@ class Torcp:
         return file_path
 
 
-    def genreWithoutArea(nameParser):
+    def genreWithoutArea(self, nameParser):
         NOAREA_GENRE = ['纪录', 'Documentary', '真人秀', '脱口秀', 'Soap', 'Talk']
         mediaGenreList = [d.lower().strip() for d in nameParser.getGenres()]
         matchGenre = next((g for g in NOAREA_GENRE if g in mediaGenreList), None)
