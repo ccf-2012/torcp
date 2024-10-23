@@ -250,28 +250,31 @@ class Torcp:
             else:
                 tmdbTail = ''
 
-            subdir_title = nameParser.title
+            media_title = nameParser.title
+            if self.ARGS.add_year_dir:
+                year_dir_name = str(p.year) if p.year > 0 else 'none'
+                media_title = os.path.join(year_dir_name, nameParser.title)
 
             if self.ARGS.lang:
                 if self.ARGS.lang.lower() == 'all':
                     subdir_title = os.path.join(nameParser.original_language,
-                                                nameParser.title)
+                                                media_title)
                 else:
                     ollist = [x.strip() for x in self.ARGS.lang.lower().split(',')]
                     if nameParser.original_language in ollist:
                         subdir_title = os.path.join(nameParser.original_language,
-                                                    nameParser.title)
+                                                    media_title)
                     else:
-                        subdir_title = os.path.join('other', nameParser.title)
+                        subdir_title = os.path.join('other', media_title)
             elif self.ARGS.sep_area:
                 area = nameParser.getProductionArea()
-                subdir_title = os.path.join(area, nameParser.title)
+                subdir_title = os.path.join(area, media_title)
             elif self.ARGS.sep_area5:
                 area = area2dir(nameParser.getProductionArea().upper())
                 if area:
-                    subdir_title = os.path.join(area, nameParser.title)
+                    subdir_title = os.path.join(area, media_title)
                 else:
-                    subdir_title = os.path.join('other', nameParser.title)
+                    subdir_title = os.path.join('other', media_title)
 
             # will overwrite language/area
             if self.ARGS.genre:
@@ -280,10 +283,10 @@ class Torcp:
                 mediaGenreList = [d.lower().strip() for d in nameParser.getGenres()]
                 matchGenre = next((g for g in argGenreList if g in mediaGenreList), None)
                 if matchGenre:
-                    subdir_title = os.path.join(matchGenre, nameParser.title)
+                    subdir_title = os.path.join(matchGenre, media_title)
                 else:
-                    if subdir_title == nameParser.title:
-                        subdir_title = os.path.join('other', nameParser.title)
+                    if subdir_title == media_title:
+                        subdir_title = os.path.join('other', media_title)
 
             if nameParser.year > 0:
                 mediaFolderName = '%s (%d) %s' % (
@@ -841,10 +844,6 @@ class Torcp:
 
         destFolderName = self.genMediaFolderName(p)
         destCatFolderName = os.path.join(cat, destFolderName)
-
-        if self.ARGS.add_year_dir:
-            year_dir_name = str(p.year) if p.year > 0 else 'none'
-            destCatFolderName = os.path.join(cat, year_dir_name)
 
         if os.path.isfile(mediaSrc):
             filename, file_ext = os.path.splitext(itemName)
