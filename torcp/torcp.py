@@ -334,6 +334,13 @@ class Torcp:
     def isMediaFileType(self, file_ext):
         return self.KEEPEXTALL or file_ext.lower() in self.KEEPEXTS
 
+    def renameS0d(self, seasonFolderName):
+        match = re.match(r'^S(\d+)$', seasonFolderName)
+        if match:
+            return f"Season {match.group(1)}"
+        else:
+            return seasonFolderName
+        
     def copyTVSeasonItems(self, tvSourceFullPath, tvFolder, seasonFolder, groupName,
                         resolution, folderTmdbParser=None):
         if os.path.isdir(os.path.join(tvSourceFullPath, 'BDMV')):
@@ -486,6 +493,8 @@ class Torcp:
 
         parseSeason, parseGroup, genFolder, resolution = self.fixSeasonGroupWithFilename(
             tvSourceFolder, folderSeason, groupName, resolution, genFolder)
+        # for 香香
+        parseSeason = self.renameS0d(parseSeason)                       
 
         if not os.path.isdir(tvSourceFolder):
             return
@@ -501,6 +510,8 @@ class Torcp:
             tvitemPath = os.path.join(tvSourceFolder, tvitem)
             if os.path.isdir(tvitemPath):
                 seasonFolder = self.getSeasonFromFolderName(tvitem, failDir=parseSeason)
+                # for 香香
+                seasonFolder = self.renameS0d(seasonFolder)                       
                 self.copyTVSeasonItems(tvitemPath, genFolder, seasonFolder, parseGroup,
                                 resolution, folderTmdbParser=folderTmdbParser)
             else:
@@ -873,8 +884,10 @@ class Torcp:
                     else:
                         newTVFileName = self.genTVSeasonEpisonGroup(
                             itemName, p.group, p.resolution)
+                    # for 香香
+                    seasonFolder = self.renameS0d(p.season)                       
                     seasonFolderFullPath = os.path.join(self.ARGS.tv_folder_name, destFolderName,
-                                                        p.season)
+                                                        seasonFolder)
                     self.targetCopy(mediaSrc, seasonFolderFullPath, newTVFileName)
                     self.mkPlexMatch(os.path.join(self.ARGS.tv_folder_name, destFolderName), p)
                     self.mkMediaNfo(os.path.join(self.ARGS.tv_folder_name, destFolderName), "", p)
