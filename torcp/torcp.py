@@ -243,6 +243,12 @@ class Torcp:
         return file_path
 
 
+    def genreWithoutArea(nameParser):
+        NOAREA_GENRE = ['纪录', 'Documentary', '真人秀', '脱口秀', 'Soap', 'Talk']
+        mediaGenreList = [d.lower().strip() for d in nameParser.getGenres()]
+        matchGenre = next((g for g in NOAREA_GENRE if g in mediaGenreList), None)
+        return matchGenre
+
     def genMediaFolderName(self, nameParser):
         if nameParser.tmdbid > 0:
             if self.ARGS.emby_bracket:
@@ -285,8 +291,11 @@ class Torcp:
             if area_dir:
                 subdir_title = os.path.join(area_dir, media_folder_name)
 
+            matchGenre = self.genreWithoutArea(nameParser)
+            if matchGenre:
+                subdir_title = os.path.join(matchGenre, media_folder_name)
             # will overwrite language/area
-            if self.ARGS.genre:
+            elif self.ARGS.genre:
                 # genrelist = self.ARGS.genre.lower().split(',')
                 argGenreList = [x.strip() for x in self.ARGS.genre.lower().split(',')]
                 mediaGenreList = [d.lower().strip() for d in nameParser.getGenres()]
