@@ -307,7 +307,7 @@ class Torcp:
                         subdir_title = os.path.join('other', media_folder_name)
 
             if nameParser.year > 0:
-                mediaFolderName = '%s (%d) %s' % (
+                mediaFolderName = '%s (%d)%s' % (
                     subdir_title, nameParser.year, tmdbTail)
             else:
                 mediaFolderName = '%s %s' % (subdir_title, tmdbTail)
@@ -545,14 +545,25 @@ class Torcp:
         sstr = re.sub(r'-', '_', sstr)
         return sstr
 
+    def genTMDbTail(self, nameParser):
+        tmdbTail = ''
+        if (nameParser and nameParser.tmdbid > 0 and self.ARGS.filename_emby_bracket and self.ARGS.emby_bracket):
+            tmdbTail = ' [tmdbid=' + str(nameParser.tmdbid) + ']'
+        return tmdbTail
+
+    def genMovieOriginName(self, mediaSrc, movieName, year, nameParser=None):
+        originName = os.path.basename(mediaSrc)
+        # filename, file_ext = os.path.splitext(mediaSrc)
+        ch1 = ' - '
+        tmdbTail = self.genTMDbTail(nameParser)
+        medianame = movieName + ((' (' + year + ')' ) if year else '') + tmdbTail + ch1 + originName
+        return medianame.strip()
 
     def genMovieTMDbOriginName(self, mediaSrc, movieName, year, nameParser=None):
         originName = os.path.basename(mediaSrc)
         # filename, file_ext = os.path.splitext(mediaSrc)
         ch1 = ' - '
-        tmdbTail = ''
-        if (nameParser and nameParser.tmdbid > 0 and self.ARGS.filename_emby_bracket and self.ARGS.emby_bracket):
-            tmdbTail = ' [tmdbid=' + str(nameParser.tmdbid) + ']'
+        tmdbTail = self.genTMDbTail(nameParser)
         medianame = movieName + ((' (' + year + ')' ) if year else '') + tmdbTail + ch1 + originName
         return medianame.strip()
 
@@ -561,9 +572,7 @@ class Torcp:
         filename, file_ext = os.path.splitext(mediaSrc)
         ch1 = ' - ' if (resolution or group) else ''
         ch2 = '_' if (resolution and group) else ''
-        tmdbTail = ''
-        if (nameParser and nameParser.tmdbid > 0 and self.ARGS.filename_emby_bracket and self.ARGS.emby_bracket):
-            tmdbTail = ' [tmdbid=' + str(nameParser.tmdbid) + ']'
+        tmdbTail = self.genTMDbTail(nameParser)
         medianame = movieName + ((' (' + year + ')' ) if year else '') + tmdbTail + ch1 + (
             resolution if resolution else '') + ch2 + (group
                                                     if group else '') + file_ext
@@ -752,7 +761,10 @@ class Torcp:
                 continue
             else:
                 if self.ARGS.origin_name:
-                    newMovieName = os.path.basename(movieItem)
+                    # newMovieName = os.path.basename(movieItem)
+                    yearstr = str(p.year) if p.year > 0 else ''
+                    newMovieName = self.genMovieOriginName(movieItem, p.title, yearstr,
+                                                    nameParser=p)
                 elif self.ARGS.tmdb_origin_name:
                     yearstr = str(p.year) if p.year > 0 else ''
                     newMovieName = self.genMovieTMDbOriginName(movieItem, p.title, yearstr,
@@ -894,7 +906,10 @@ class Torcp:
                     self.targetDirHook(os.path.join(self.ARGS.tv_folder_name, destFolderName), tmdbidstr=str(p.tmdbid), tmdbcat=p.tmdbcat, tmdbtitle=p.title, tmdbobj=p)
                 elif cat == self.CATNAME_MOVIE:
                     if self.ARGS.origin_name:
-                        newMovieName = itemName
+                        # newMovieName = itemName
+                        yearstr = str(p.year) if p.year > 0 else ''
+                        newMovieName = self.genMovieOriginName(mediaSrc, p.title,
+                                                        yearstr, nameParser=p)
                     elif self.ARGS.tmdb_origin_name:
                         yearstr = str(p.year) if p.year > 0 else ''
                         newMovieName = self.genMovieTMDbOriginName(mediaSrc, p.title,
