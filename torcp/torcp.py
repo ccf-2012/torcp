@@ -252,7 +252,7 @@ class Torcp:
 
             media_title = nameParser.title
             if self.ARGS.add_year_dir:
-                year_dir_name = str(p.year) if p.year > 0 else 'none'
+                year_dir_name = str(nameParser.year) if nameParser.year > 0 else 'none'
                 media_title = os.path.join(year_dir_name, nameParser.title)
 
             if self.ARGS.lang:
