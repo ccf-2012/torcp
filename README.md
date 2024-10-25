@@ -327,11 +327,11 @@ torcp /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Video/emby/  -
 ### 9.1 `--origin-name` 与 `--tmdb-origin-name`
 * 对于IMDb搜索到的媒体资源，目录结构将按Emby/Plex所约定的规范进行组织，目录内的文件名，有3种可能的方式：
 1. 默认的：刮削名 (年份) - 分辨率_组名.mkv
-2. `--origin-name`：直接使用 原文件名
+2. `--origin-name`：TV直接使用 原文件名, Movie：刮削名 (年份) - 原文件名
 3. `--tmdb-origin-name`：刮削名 (年份) - 原文件名
 
 
-### 9.2 `--emby-bracket`， `--filename-emby-bracket`
+### 9.2 `--emby-bracket`， --plex-bracket`， `--filename-emby-bracket`
 * 可以使用 `--emby-bracket` 选项在 「刮削名 (年份)」之后加上如「[tmdbid=509635]」这样的emby bracket，以便Emby在刮削时直接辨认使用；对于plex，可以使用 `--plex-bracket` 生成如 「{tmdb-509635}」这样的后缀
 * 对于电影，如果使用了 `--emby-bracket`，可以附加使用 `--filename-emby-bracket`，使其中的电影媒体文件的文件名也附加「[tmdbid=509635]」这样的emby bracket。
 * 这两个选项在使用  `--tmdb-origin-name` 时也是生效的
