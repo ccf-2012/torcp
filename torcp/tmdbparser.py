@@ -121,6 +121,7 @@ class TMDbNameParser():
 
         if useTMDb:
             attempts = 0
+            
             while attempts < 3:
                 try:
                     if hasTMDbId:
@@ -145,7 +146,7 @@ class TMDbNameParser():
                             if exTitle:
                                 self.searchTMDb(exTitle, self.tmdbcat,
                                                 parseYear, self.cntitle)
-                            if tmdbid <= 0:
+                            if self.tmdbid <= 0:
                                 self.searchTMDb(self.title, self.tmdbcat,
                                                 parseYear, self.cntitle)
                     self.ccfcat = transToCCFCat(self.tmdbcat, self.ccfcat)
