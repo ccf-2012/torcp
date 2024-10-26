@@ -879,7 +879,7 @@ class Torcp:
         logger.info(" >> [%s] %s %s" % (itemName, imdbidstr, tmdbidstr))
         cat = self.setArgsCategory()
         p = TMDbNameParser(self.ARGS.tmdb_api_key, self.ARGS.tmdb_lang, ccfcat_hard=cat)
-        p.parse(itemName, useTMDb=(self.ARGS.tmdb_api_key is not None), hasIMDbId=imdbidstr, hasTMDbId=tmdbidstr)
+        p.parse(itemName, useTMDb=(self.ARGS.tmdb_api_key is not None), hasIMDbId=imdbidstr, hasTMDbId=tmdbidstr, exTitle=self.ARGS.extitle)
         p.title = self.fixNtName(p.title)
         cat = self.genCatFolderName(p)
 
@@ -1093,6 +1093,9 @@ class Torcp:
         parser.add_argument('--tmdbid',
                             default='',
                             help='specify the TMDb id, -s single mode only')
+        parser.add_argument('--extitle',
+                            default='',
+                            help='specify the extra title to search')
         parser.add_argument('--site-str',
                             help='site-id(ex. hds-12345) folder name, set site strs like (\'chd,hds,ade,ttg\').')
         parser.add_argument('--add-year-dir',

@@ -99,7 +99,7 @@ class TMDbNameParser():
         self.genre_ids =[]
         self.tmdbDetails = None
 
-    def parse(self, torname, useTMDb=False, hasIMDbId=None, hasTMDbId=None):
+    def parse(self, torname, useTMDb=False, hasIMDbId=None, hasTMDbId=None, exTitle=''):
         self.clearData()
         tc = TorCategory(torname)
         self.ccfcat, self.group = tc.ccfcat, tc.group
@@ -142,8 +142,12 @@ class TMDbNameParser():
                             return
                     if not self.checkNameContainsId(torname):
                         if self.tmdbcat in ['tv', 'movie', 'Other', 'HDTV']:
-                            self.searchTMDb(self.title, self.tmdbcat,
-                                            parseYear, self.cntitle)
+                            if exTitle:
+                                self.searchTMDb(exTitle, self.tmdbcat,
+                                                parseYear, self.cntitle)
+                            if tmdbid <= 0:
+                                self.searchTMDb(self.title, self.tmdbcat,
+                                                parseYear, self.cntitle)
                     self.ccfcat = transToCCFCat(self.tmdbcat, self.ccfcat)
                     
                     break
