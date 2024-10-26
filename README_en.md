@@ -80,8 +80,6 @@ optional arguments:
   --symbolink           symbolink instead of hard link
   --cache               cache searched dir entries
   --emby-bracket        ex: Alone (2020) [tmdbid=509635]
-  --filename-emby-bracket
-                        filename with emby bracket
   --plex-bracket        ex: Alone (2020) {tmdb-509635}
   --make-plex-match     Create a .plexmatch file at the top level of a series
   --make-nfo            Create a .nfo file in the media dir

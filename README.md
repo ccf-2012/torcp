@@ -27,7 +27,6 @@
 * 2022.11.30 `--tmdb-origin-name`, 对于电影，生成 `刮削名 (年份) - 原文件名`  这样的文件名，对于Emby可以实现以原文件名作为版本名。
 * 2022.11.11 支持**Site-Id-IMDb**文件夹，即在资源目录之上，有一个目录名中带有 `[imdb=tt123456]` 或以 `tt123456` 结尾的目录
 * 2022.10.26 `--make-plex-match`  Create a .plexmatch file at the top level of a series
-* 2022.10.5 `--filename-emby-bracket` 对于电影，在使用`--emby-bracket` 时，使文件名与目录都加上emby后缀
 * 2022.9.5 `--imdbid` 在 `-s` 模式下指定媒体的 IMDb id
 * 2022.9.4  `--after-copy-script` 执行外部脚本时，会传入3个参数：生成的媒体路径，原媒体文件(夹)名，tmdbid
 * 2022.8.18 如果资源文件夹命名里面带`[imdbid=xxx]`或`[tmdbid=xxx]`，则直接使用这样的id去TMDb中搜索资源信息
@@ -331,15 +330,15 @@ torcp /share/CACHEDEV1_DATA/Video/QB/TV  -d /share/CACHEDEV1_DATA/Video/emby/  -
 3. `--tmdb-origin-name`：刮削名 (年份) - 原文件名
 
 
-### 9.2 `--emby-bracket`， --plex-bracket`， `--filename-emby-bracket`
-* 可以使用 `--emby-bracket` 选项在 「刮削名 (年份)」之后加上如「[tmdbid=509635]」这样的emby bracket，以便Emby在刮削时直接辨认使用；对于plex，可以使用 `--plex-bracket` 生成如 「{tmdb-509635}」这样的后缀
-* 对于电影，如果使用了 `--emby-bracket`，可以附加使用 `--filename-emby-bracket`，使其中的电影媒体文件的文件名也附加「[tmdbid=509635]」这样的emby bracket。
+### 9.2 `--emby-bracket`， --plex-bracket`
+* 可以使用 `--emby-bracket` 选项在 「刮削名 (年份)」之后加上如「[tmdbid=509635]」这样的emby bracket，以便Emby在刮削时直接辨认使用；
+* 对于plex，可以使用 `--plex-bracket` 生成如 「{tmdb-509635}」这样的后缀；
 * 这两个选项在使用  `--tmdb-origin-name` 时也是生效的
 
 
 * 比如：
 ```sh
-python3 tp.py ../test -d ../test/result  --tmdb-api-key 'your TMDb api key'  --tmdb-origin-name  --emby-bracket --filename-emby-bracket
+python3 tp.py ../test -d ../test/result  --tmdb-api-key 'your TMDb api key'  --tmdb-origin-name  --emby-bracket
 ```
 * 结果如下：
 ```
@@ -357,7 +356,7 @@ python3 tp.py ../test -d ../test/result  --tmdb-api-key 'your TMDb api key'  --t
 ```
 * 而如果不使用 `--tmdb-origin-name `
 ```sh
-python3 tp.py ../test -d ../test/result  --tmdb-api-key 'your TMDb api key'  --emby-bracket --filename-emby-bracket 
+python3 tp.py ../test -d ../test/result  --tmdb-api-key 'your TMDb api key'  --emby-bracket 
 ```
 * 得到结果如下：
 ```

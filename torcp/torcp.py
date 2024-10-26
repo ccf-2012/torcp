@@ -547,7 +547,7 @@ class Torcp:
 
     def genTMDbTail(self, nameParser):
         tmdbTail = ''
-        if (nameParser and nameParser.tmdbid > 0 and self.ARGS.filename_emby_bracket and self.ARGS.emby_bracket):
+        if (nameParser and nameParser.tmdbid > 0 and self.ARGS.emby_bracket):
             tmdbTail = ' [tmdbid=' + str(nameParser.tmdbid) + ']'
         return tmdbTail
 
@@ -1075,9 +1075,6 @@ class Torcp:
         parser.add_argument('--emby-bracket',
                             action='store_true',
                             help='ex: Alone (2020) [tmdbid=509635]')
-        parser.add_argument('--filename-emby-bracket',
-                            action='store_true',
-                            help='filename with emby bracket')
         parser.add_argument('--plex-bracket',
                             action='store_true',
                             help='ex: Alone (2020) {tmdb-509635}')
