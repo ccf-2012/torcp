@@ -24,27 +24,18 @@ torcp -h
 ```
 
 ```
-usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--genre GENRE]
-             [--other-dir OTHER_DIR] [--sep-area] [--sep-area5]
-             [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG]
-             [--tv-folder-name TV_FOLDER_NAME]
-             [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie]
-             [--dryrun] [--single] [--extract-bdmv] [--full-bdmv]
-             [--origin-name] [--tmdb-origin-name] [--sleep SLEEP] [--move-run]
-             [--make-log] [--symbolink] [--cache] [--emby-bracket]
-             [--filename-emby-bracket] [--plex-bracket] [--make-plex-match]
-             [--make-nfo] [--after-copy-script AFTER_COPY_SCRIPT]
-             [--imdbid IMDBID] [--tmdbid TMDBID] [--site-str SITE_STR]
+usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--genre GENRE] [--other-dir OTHER_DIR] [--sep-area] [--sep-area5] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG] [--tv-folder-name TV_FOLDER_NAME]
+             [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv] [--full-bdmv] [--origin-name] [--tmdb-origin-name] [--sleep SLEEP] [--move-run] [--make-log]
+             [--symbolink] [--cache] [--emby-bracket] [--plex-bracket] [--make-plex-match] [--make-nfo] [--after-copy-script AFTER_COPY_SCRIPT] [--imdbid IMDBID] [--tmdbid TMDBID] [--site-str SITE_STR]
              [--add-year-dir]
              MEDIA_DIR
 
-torcp: a script hardlink media files and directories in Emby-happy naming and
-structs.
+torcp: a script hardlink media files and directories in Emby-happy naming and structs.
 
 positional arguments:
   MEDIA_DIR             The directory contains TVs and Movies to be copied.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -d HD_PATH, --hd_path HD_PATH
                         the dest path to create Hard Link.
@@ -55,11 +46,9 @@ optional arguments:
   --other-dir OTHER_DIR
                         for any dir Other than Movie/TV.
   --sep-area            seperate dir by all production area.
-  --sep-area5           seperate 5 dirs(cn,hktw,jpkr,useu,other) by production
-                        area.
+  --sep-area5           seperate 5 dirs(cn,hktw,jpkr,useu,other) by production area.
   --tmdb-api-key TMDB_API_KEY
-                        Search API for the tmdb id, and gen dirname as Name
-                        (year)\{tmdbid=xxx\}
+                        Search API for the tmdb id, and gen dirname as Name (year)\{tmdbid=xxx\}
   --tmdb-lang TMDB_LANG
                         specify the TMDb language
   --tv-folder-name TV_FOLDER_NAME
@@ -84,12 +73,10 @@ optional arguments:
   --make-plex-match     Create a .plexmatch file at the top level of a series
   --make-nfo            Create a .nfo file in the media dir
   --after-copy-script AFTER_COPY_SCRIPT
-                        call this script with destination folder path after
-                        link/move
+                        call this script with destination folder path after link/move
   --imdbid IMDBID       specify the IMDb id, -s single mode only
   --tmdbid TMDBID       specify the TMDb id, -s single mode only
-  --site-str SITE_STR   site-id(ex. hds-12345) folder name, set site strs like
-                        ('chd,hds,ade,ttg').
+  --site-str SITE_STR   site-id(ex. hds-12345) folder name, set site strs like ('chd,hds,ade,ttg').
   --add-year-dir        Add a year dir above the media folder
 ```
 
