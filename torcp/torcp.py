@@ -26,7 +26,7 @@ from torcp.tortitle import TorTitle, is0DayName
 from torcp.cacheman import CacheManager
 import xml.etree.ElementTree as ET
 
-def area2dir(arecode):
+def area5dir(arecode):
     AREADICT = {
         'useu' : ['GB', 'FR', 'DE', 'IT', 'RU', 'DK', 'NO', 'IS', 'SE', 'FI', 'IE', 'ES', 'PT', 'NL', 'BE', 'AT', 
             'CH', 'UA', 'BY', 'PL', 'CZ', 'GR', 'TR', 'BG', 'RO', 'LT', 'HU', 'LU', 'MC', 'LI', 'EE', 'LV', 
@@ -39,7 +39,23 @@ def area2dir(arecode):
         'cn' : ['CN', 'ZH'],
         'hktw': ['HK', 'TW']
         }
-    
+    return next((x for x, k in AREADICT.items() if arecode in AREADICT[x]), 'other')
+
+def area7dir(arecode):
+    AREADICT = {
+        'us' : ['US'],
+        'occident' : ['GB', 'FR', 'DE', 'IT', 'RU', 'DK', 'NO', 'IS', 'SE', 'FI', 'IE', 'ES', 'PT', 'NL', 'BE', 'AT', 
+            'CH', 'UA', 'BY', 'PL', 'CZ', 'GR', 'TR', 'BG', 'RO', 'LT', 'HU', 'LU', 'MC', 'LI', 'EE', 'LV', 
+            'HR', 'RS', 'SK', 'MD', 'SI', 'AL', 'MK', 'AZ', 'GE', 'ME', 'BA', 'CA', 'MX', 'GT', 'BZ', 
+            'SV', 'HN', 'NI', 'CR', 'PA', 'BS', 'CU', 'JM', 'HT', 'DO', 'KN', 'AG', 'DM', 'LC', 'VC', 'BB', 
+            'GD', 'TT', 'CO', 'EC', 'VE', 'GF', 'SR', 'PE', 'BO', 'PY', 'BR', 'CL', 'AR', 'UY'],
+        # 'jpkr' : ['JP', 'KR', 'KO', 'JA'],
+        'jp' : ['JP', 'JA'],
+        'kr' : ['KR', 'KO'],
+        'cn' : ['CN', 'ZH'],
+        'hk' : ['HK'],
+        'tw' : ['TW']
+        }
     return next((x for x, k in AREADICT.items() if arecode in AREADICT[x]), 'other')
 
 
@@ -276,7 +292,9 @@ class Torcp:
                 area_dir = nameParser.getProductionArea()
                 # area_dir = os.path.join(area, media_folder_name)
             elif self.ARGS.sep_area5:
-                area_dir = area2dir(nameParser.getProductionArea().upper())
+                area_dir = area5dir(nameParser.getProductionArea().upper())
+            elif self.ARGS.sep_area7:
+                area_dir = area7dir(nameParser.getProductionArea().upper())
 
             if area_dir:
                 subdir_title = os.path.join(area_dir, media_folder_name)
@@ -1004,7 +1022,10 @@ class Torcp:
                             help='seperate dir by all production area.')
         parser.add_argument('--sep-area5',
                             action='store_true',
-                            help='seperate 5 dirs(cn,hktw,jpkr,useu,other) by production area.')
+                            help='seperate 5 dirs(cn,hktw,jp,kr,useu,other) by production area.')
+        parser.add_argument('--sep-area7',
+                            action='store_true',
+                            help='seperate 7 dirs(us,cn,hk,tw,jp,kr,occident,other) by production area.')
         parser.add_argument(
             '--tmdb-api-key',
             help='Search API for the tmdb id, and gen dirname as Name (year)\{tmdbid=xxx\}'
