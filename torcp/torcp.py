@@ -42,6 +42,7 @@ def area2dir(arecode):
     
     return next((x for x, k in AREADICT.items() if arecode in AREADICT[x]), None)
 
+GENRE_WITHOUT_AREA = ['纪录', 'Documentary', '真人秀', '脱口秀', 'Soap', 'Talk', '新闻', 'News']
 
 logger = logging.getLogger(__name__)
 
@@ -243,10 +244,9 @@ class Torcp:
         return file_path
 
 
-    def genreWithoutArea(self, nameParser):
-        NOAREA_GENRE = ['纪录', 'Documentary', '真人秀', '脱口秀', 'Soap', 'Talk']
+    def genreWithoutArea(nameParser):
         mediaGenreList = [d.lower().strip() for d in nameParser.getGenres()]
-        matchGenre = next((g for g in NOAREA_GENRE if g in mediaGenreList), None)
+        matchGenre = next((g for g in GENRE_WITHOUT_AREA if g in mediaGenreList), None)
         return matchGenre
 
     def genMediaFolderName(self, nameParser):
@@ -291,9 +291,9 @@ class Torcp:
             if area_dir:
                 subdir_title = os.path.join(area_dir, media_folder_name)
 
-            matchGenre = self.genreWithoutArea(nameParser)
-            if matchGenre:
-                subdir_title = os.path.join(matchGenre, media_folder_name)
+            matchGenreWithoutArea = self.genreWithoutArea(nameParser)
+            if matchGenreWithoutArea:
+                subdir_title = os.path.join(matchGenreWithoutArea, media_folder_name)
             # will overwrite language/area
             elif self.ARGS.genre:
                 # genrelist = self.ARGS.genre.lower().split(',')

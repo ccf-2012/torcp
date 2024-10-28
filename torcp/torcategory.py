@@ -130,8 +130,8 @@ class TorCategory:
     def categoryTvByName(self, torName):
         if re.search(r'(\b(S\d+)(E\d+)?|(Ep?\d+-Ep?\d+))\b', torName, flags=re.A | re.I):
             self.setCategory('TV')
-        elif re.search(r'\b(Season\s?\d+)\b', torName, flags=re.A | re.I):
-            self.setCategory('TV')
+        # elif re.search(r'\b(Season\s?\d+)\b', torName, flags=re.A | re.I):
+        #     self.setCategory('TV')
         elif re.search(r'(第\s*(\d+)(-\d+)?季)\b', torName, flags=re.I):
             self.setCategory('TV')
         elif re.search(r'(\bS\d+(-S\d+))\b', torName, flags=re.A | re.I):
