@@ -287,7 +287,8 @@ class Torcp:
                 genre_dir = next((g for g in argGenreList if g in mediaGenreList), 'genres')
                 matchGenreWithArea = ''
                 if self.ARGS.genre_with_area:
-                    matchGenreWithArea = next((g for g in self.ARGS.genre_with_area if g in mediaGenreList), '')
+                    argGenrewAreaList = [x.strip() for x in self.ARGS.genre_with_area.lower().split(',')]
+                    matchGenreWithArea = next((g for g in argGenrewAreaList if g in mediaGenreList), '')
                     genre_dir = os.path.join(matchGenreWithArea, area_dir)
                 subdir_title = os.path.join(genre_dir, media_folder_name)
                 
