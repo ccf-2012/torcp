@@ -40,9 +40,8 @@ def area2dir(arecode):
         'hktw': ['HK', 'TW']
         }
     
-    return next((x for x, k in AREADICT.items() if arecode in AREADICT[x]), None)
+    return next((x for x, k in AREADICT.items() if arecode in AREADICT[x]), 'other')
 
-GENRE_WITHOUT_AREA = ['纪录', 'Documentary', '真人秀', '脱口秀', 'Soap', 'Talk', '新闻', 'News']
 
 logger = logging.getLogger(__name__)
 
@@ -244,11 +243,6 @@ class Torcp:
         return file_path
 
 
-    def genreWithoutArea(nameParser):
-        mediaGenreList = [d.lower().strip() for d in nameParser.getGenres()]
-        matchGenre = next((g for g in GENRE_WITHOUT_AREA if g in mediaGenreList), None)
-        return matchGenre
-
     def genMediaFolderName(self, nameParser):
         if nameParser.tmdbid > 0:
             if self.ARGS.emby_bracket:
@@ -282,30 +276,21 @@ class Torcp:
                 area_dir = nameParser.getProductionArea()
                 # area_dir = os.path.join(area, media_folder_name)
             elif self.ARGS.sep_area5:
-                area = area2dir(nameParser.getProductionArea().upper())
-                area_dir = area if area else 'other'
-                # if area:
-                #     subdir_title = os.path.join(area, media_folder_name)
-                # else:
-                #     subdir_title = os.path.join('other', media_folder_name)
+                area_dir = area2dir(nameParser.getProductionArea().upper())
+
             if area_dir:
                 subdir_title = os.path.join(area_dir, media_folder_name)
 
-            matchGenreWithoutArea = self.genreWithoutArea(nameParser)
-            if matchGenreWithoutArea:
-                subdir_title = os.path.join(matchGenreWithoutArea, media_folder_name)
-            # will overwrite language/area
-            elif self.ARGS.genre:
-                # genrelist = self.ARGS.genre.lower().split(',')
+            if self.ARGS.genre:
                 argGenreList = [x.strip() for x in self.ARGS.genre.lower().split(',')]
                 mediaGenreList = [d.lower().strip() for d in nameParser.getGenres()]
-                matchGenre = next((g for g in argGenreList if g in mediaGenreList), None)
-                if matchGenre:
-                    subdir_title = os.path.join(matchGenre, area_dir, media_folder_name)
-                else:
-                    if subdir_title == media_folder_name:
-                        subdir_title = os.path.join('other', media_folder_name)
-
+                genre_dir = next((g for g in argGenreList if g in mediaGenreList), 'genres')
+                matchGenreWithArea = ''
+                if self.ARGS.genre_with_area:
+                    matchGenreWithArea = next((g for g in self.ARGS.genre_with_area if g in mediaGenreList), '')
+                    genre_dir = os.path.join(matchGenreWithArea, area_dir)
+                subdir_title = os.path.join(genre_dir, media_folder_name)
+                
             if nameParser.year > 0:
                 mediaFolderName = '%s (%d) %s' % (
                     subdir_title, nameParser.year, tmdbTail)
@@ -1101,6 +1086,9 @@ class Torcp:
         parser.add_argument('--add-year-dir',
                             action='store_true',
                             help='Add a year dir above the media folder')
+        parser.add_argument('--genre-with-area',
+                            default='',
+                            help='specify genres with area subdir, seperated with comma')
 
         self.ARGS = parser.parse_args(argv)
         self.ensureIMDb()

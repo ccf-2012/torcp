@@ -78,10 +78,10 @@ torcp -h
 ```
 python3 tp.py -h
 
-usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--genre GENRE] [--other-dir OTHER_DIR] [--sep-area] [--sep-area5] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG] [--tv-folder-name TV_FOLDER_NAME]
-             [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv] [--full-bdmv] [--origin-name] [--tmdb-origin-name] [--sleep SLEEP] [--move-run] [--make-log]
-             [--symbolink] [--cache] [--emby-bracket] [--plex-bracket] [--make-plex-match] [--make-nfo] [--after-copy-script AFTER_COPY_SCRIPT] [--imdbid IMDBID] [--tmdbid TMDBID] [--site-str SITE_STR]
-             [--add-year-dir]
+usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--genre GENRE] [--other-dir OTHER_DIR] [--sep-area] [--sep-area5] [--tmdb-api-key TMDB_API_KEY] [--tmdb-lang TMDB_LANG]
+             [--tv-folder-name TV_FOLDER_NAME] [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv] [--full-bdmv] [--origin-name] [--tmdb-origin-name]
+             [--sleep SLEEP] [--move-run] [--make-log] [--symbolink] [--cache] [--emby-bracket] [--plex-bracket] [--make-plex-match] [--make-nfo] [--after-copy-script AFTER_COPY_SCRIPT]
+             [--imdbid IMDBID] [--tmdbid TMDBID] [--extitle EXTITLE] [--site-str SITE_STR] [--add-year-dir] [--genre-with-area GENRE_WITH_AREA]
              MEDIA_DIR
 
 torcp: a script hardlink media files and directories in Emby-happy naming and structs.
@@ -130,8 +130,11 @@ options:
                         call this script with destination folder path after link/move
   --imdbid IMDBID       specify the IMDb id, -s single mode only
   --tmdbid TMDBID       specify the TMDb id, -s single mode only
+  --extitle EXTITLE     specify the extra title to search
   --site-str SITE_STR   site-id(ex. hds-12345) folder name, set site strs like ('chd,hds,ade,ttg').
   --add-year-dir        Add a year dir above the media folder
+  --genre-with-area GENRE_WITH_AREA
+                        specify genres with area subdir, seperated with comma
 ```
 
 
