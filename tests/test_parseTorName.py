@@ -256,3 +256,20 @@ def test_parseTorName(test_input, e1, e2, e3, e4):
 def test_categoryByName(test_input, e1, e2):
     tc = TorCategory(test_input)
     assert tc.ccfcat == e1 and tc.group == e2
+
+@pytest.mark.parametrize("test_input, e1, e2, e3", [
+    ('StickySticky Thanksgiving 2023 2160p USA UHD BluRay HEVC DV TrueHD 7.1 Atmos-DIY@Audies',
+     'USA UHD BluRay', 'HEVC DV', 'TrueHD 7.1 Atmos'),
+    ('The Crimson Rivers 2000 2160p UHD Blu-ray DoVi HDR10 HEVC DTS-HD MA 5.1-NOGROUP',
+     'UHD Blu-ray', 'DoVi HDR10 HEVC', 'DTS-HD MA 5.1'),
+    ('Tower of God S02E14 Meeting the Traveler REPACK 1080p CR WEB-DL AAC 2.0 H.264-VARYG', 'CR WEB-DL',
+     'H.264', 'AAC 2.0'),
+    ('Ink Master S16E04 1080p WEB h264-EDITH', 'WEB', 'h264', ''),
+    ('American Sports Story S01E08 DV 2160p WEB H265-ASS ', 'WEB', 'H265', ''),
+    ('Are You Smarter Than a Celebrity S01E05 1080p WEB h264-EDITH', 'WEB', 'h264', ''),
+])    
+def test_parseTorNameMore(test_input, e1, e2, e3):
+    tt = tortitle.TorTitle(test_input)
+    mediasource, video, audio = tt.parseTorNameMore(test_input)
+    assert e1 == mediasource and e2 == video and e3 == audio
+

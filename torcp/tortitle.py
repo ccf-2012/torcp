@@ -338,6 +338,15 @@ class TorTitle:
 
         return titlestr, yearstr, seasonstr, episodestr, cntitle
 
+    def parseTorNameMore(self, torName):
+        mediaSource, video, audio = '', '', ''
+        if m := re.search(r"(?<=(1080p|2160p)\s)((((AMZN|DSNP|KKTV|friDay|ATVP|CR|LINETV|MAX)\s+)?WEB(-DL)?)|((\w{3}\s+)?(UHD )?(BluRay|Blu-ray)))", torName, re.I):
+            mediaSource = m[0]
+        if m := re.search(r"AVC|HEVC(\s(DV|HDR))?|H\.?26[456](\s(HDR|DV))?|x26[45]\s?(10bit)?(HDR)?|DoVi (HDR10)? (HEVC)?", torName, re.I):
+            video = m[0]
+        if m := re.search(r"DTS-HD MA 5.1|LPCM 2.0|TrueHD \d\.\d( Atmos)?|DDP\d\.\d|(AAC|FLAC) (\d\.\d)?|DTS(?!-\w+)|DD\+? \d\.\d", torName, re.I):
+            audio = m[0]
+        return mediaSource, video, audio
 
     def parseMovieName(self, torName):
         if torName.startswith('[') and torName.endswith('SP'):

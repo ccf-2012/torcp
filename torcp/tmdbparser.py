@@ -72,6 +72,9 @@ class TMDbNameParser():
         self.poster_path = ''
         self.genre_ids =[]
         self.release_air_date = ''
+        self.mediaSource = ''
+        self.videoCodec = ''
+        self.audioCodec = ''
 
         if tmdb_api_key:
             self.tmdb = TMDb()
@@ -106,6 +109,7 @@ class TMDbNameParser():
         self.resolution = tc.resolution
         tt = tortitle.TorTitle(torname)
         self.title, parseYear, self.season, self.episode, self.cntitle = tt.title, tt.yearstr, tt.season, tt.episode, tt.cntitle 
+        self.mediaSource, self.videoCodec, self.audioCodec = tt.parseTorNameMore(torname)
         self.year = tryint(parseYear)
 
         if self.season and (self.ccfcat != 'TV'):
