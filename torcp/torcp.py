@@ -296,19 +296,24 @@ class Torcp:
             elif self.ARGS.sep_area7:
                 area_dir = area7dir(nameParser.getProductionArea().upper())
 
-            if area_dir:
-                subdir_title = os.path.join(area_dir, media_folder_name)
-
+            genre_dir = area_dir
             if self.ARGS.genre:
                 argGenreList = [x.strip() for x in self.ARGS.genre.lower().split(',')]
                 mediaGenreList = [d.lower().strip() for d in nameParser.getGenres()]
-                genre_dir = next((g for g in argGenreList if g in mediaGenreList), 'genres')
+                matchGenre = next((g for g in argGenreList if g in mediaGenreList), '')
+                if matchGenre:
+                    # 如果匹配 genre 则放弃前面的 area_dir
+                    genre_dir = matchGenre
                 matchGenreWithArea = ''
                 if self.ARGS.genre_with_area:
                     argGenrewAreaList = [x.strip() for x in self.ARGS.genre_with_area.lower().split(',')]
                     matchGenreWithArea = next((g for g in argGenrewAreaList if g in mediaGenreList), '')
-                    genre_dir = os.path.join(matchGenreWithArea, area_dir)
-                subdir_title = os.path.join(genre_dir, media_folder_name)
+                    if matchGenreWithArea:
+                        # 如果匹配 --genre-with-area 则将前面的 area_dir 加进来，使用 --genre-with-area 则要求 --genre 同时有
+                        genre_dir = os.path.join(matchGenreWithArea, area_dir)
+                # 不分地区时，设置了 --genre， --genre-with-area 都没匹配上，单独放一目录
+                genre_dir = genre_dir if genre_dir else 'genres'
+            subdir_title = os.path.join(genre_dir, media_folder_name)
                 
             if nameParser.year > 0:
                 mediaFolderName = '%s (%d) %s' % (
