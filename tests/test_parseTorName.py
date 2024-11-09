@@ -268,6 +268,7 @@ def test_categoryByName(test_input, e1, e2):
     ('Ink Master S16E04 1080p WEB h264-EDITH', 'WEB', 'h264', ''),
     ('American Sports Story S01E08 DV 2160p WEB H265-ASS ', 'WEB', 'H265', ''),
     ('Are You Smarter Than a Celebrity S01E05 1080p WEB h264-EDITH', 'WEB', 'h264', ''),
+    ('Outer Banks S04E06-E10 2024 1080p NF WEB-DL x264 DDP5.1 Atmos-ADWeb', 'NF WEB-DL', 'x264', 'DDP5.1')
 ])    
 def test_parseTorNameMore(test_input, e1, e2, e3):
     tt = tortitle.TorTitle(test_input)
