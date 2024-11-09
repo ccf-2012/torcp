@@ -118,7 +118,7 @@ class TorTitle:
             return seasonstr, seasonspan, episodestr
 
         # m2 = re.search(r'(\b(S\d+)([\. ]?(\d{4}[\s\.])?Ep?\d+)?)\b(?!.*S\d+)', sstr, flags=re.A | re.I)
-        m2 = re.search(r'(\b(S\d+)([\. ]?(\d{4}[\s\.])?Ep?\d+)?)([A-Z]?)\b', sstr, flags=re.A | re.I)
+        m2 = re.search(r'(\b(S\d+)([\. ]?(\d{4}[\s\.])?Ep?\d+(-Ep?\d+)?)?)([A-Z]?)\b', sstr, flags=re.A | re.I)
         if m2:
             seasonstr = m2.group(1)
             seasonspan = m2.span(1)
