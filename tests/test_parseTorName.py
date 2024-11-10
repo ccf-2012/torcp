@@ -260,7 +260,7 @@ def test_categoryByName(test_input, e1, e2):
 
 @pytest.mark.parametrize("test_input, e1, e2, e3", [
     ('StickySticky Thanksgiving 2023 2160p USA UHD BluRay HEVC DV TrueHD 7.1 Atmos-DIY@Audies',
-     'USA UHD BluRay', 'HEVC DV', 'TrueHD 7.1 Atmos'),
+     'UHD BluRay', 'HEVC DV', 'TrueHD 7.1 Atmos'),
     ('The Crimson Rivers 2000 2160p UHD Blu-ray DoVi HDR10 HEVC DTS-HD MA 5.1-NOGROUP',
      'UHD Blu-ray', 'DoVi HDR10 HEVC', 'DTS-HD MA 5.1'),
     ('Tower of God S02E14 Meeting the Traveler REPACK 1080p CR WEB-DL AAC 2.0 H.264-VARYG', 'CR WEB-DL',
