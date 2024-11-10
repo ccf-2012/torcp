@@ -340,11 +340,11 @@ class TorTitle:
 
     def parseTorNameMore(self, torName):
         mediaSource, video, audio = '', '', ''
-        if m := re.search(r"(?<=(1080p|2160p)\s)(((\w+)\s+)?WEB(-DL)?)|HDTV|((UHD )?(BluRay|Blu-ray))", torName, re.I):
+        if m := re.search(r"(?<=(1080p|2160p)\s)(((\w+)\s+)?WEB(-DL)?)|\bWEB(-DL)?\b|\bHDTV\b|((UHD )?(BluRay|Blu-ray))", torName, re.I):
             mediaSource = m[0].strip()
-        if m := re.search(r"AVC|HEVC(\s(DV|HDR))?|H\.?26[456](\s(HDR|DV))?|x26[45]\s?(10bit)?(HDR)?|DoVi (HDR10)? (HEVC)?", torName, re.I):
+        if m := re.search(r"AVC|HEVC(\s(DV|HDR))?|H\.?26[456](\s(HDR|DV))?|x26[45]\s?(10bit)?(HDR)?|DoVi (HDR(10)?)? (HEVC)?", torName, re.I):
             video = m[0].strip()
-        if m := re.search(r"DTS-HD MA 5.1|LPCM 2.0|TrueHD \d\.\d( Atmos)?|DDP\s*\d\.\d( Atmos)?|(AAC|FLAC) (\d\.\d)?( Atmos)?|DTS(?!-\w+)|DD\+? \d\.\d", torName, re.I):
+        if m := re.search(r"DTS-HD MA \d.\d|LPCM\s?\d.\d|TrueHD\s?\d\.\d( Atmos)?|DDP\s*\d\.\d( Atmos)?|(AAC|FLAC)(\s*\d\.\d)?( Atmos)?|DTS(?!-\w+)|DD\+? \d\.\d", torName, re.I):
             audio = m[0].strip()
         return mediaSource, video, audio
 

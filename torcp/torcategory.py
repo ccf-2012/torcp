@@ -186,7 +186,10 @@ class TorCategory:
     def getResolution(self, torName):
         match = re.search(r'\b(4K|2160p|1080[pi]|720p|576p|480p)\b', torName, re.A | re.I)
         if match:
-            return match.group(0).strip().lower()
+            r = match.group(0).strip().lower()
+            if r == '4k':
+                r = '2160p'
+            return r
         else:
             return ''
 

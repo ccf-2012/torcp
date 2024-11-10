@@ -268,7 +268,12 @@ def test_categoryByName(test_input, e1, e2):
     ('Ink Master S16E04 1080p WEB h264-EDITH', 'WEB', 'h264', ''),
     ('American Sports Story S01E08 DV 2160p WEB H265-ASS ', 'WEB', 'H265', ''),
     ('Are You Smarter Than a Celebrity S01E05 1080p WEB h264-EDITH', 'WEB', 'h264', ''),
-    ('Outer Banks S04E06-E10 2024 1080p NF WEB-DL x264 DDP5.1 Atmos-ADWeb', 'NF WEB-DL', 'x264', 'DDP5.1')
+    ('Outer Banks S04E06-E10 2024 1080p NF WEB-DL x264 DDP5.1 Atmos-ADWeb', 'NF WEB-DL', 'x264', 'DDP5.1 Atmos'),
+    ('The Pink Panther 2 2009 4K WEB-DL H265 AAC-PTerWEB', 'WEB-DL', 'H265', 'AAC'),
+    ('The Wild Robot 2024 2160p iTunes WEB-DL DDP 5.1 Atmos DV HDR H.265-sh@CHDBits', 'iTunes WEB-DL', 'H.265', 'DDP 5.1 Atmos'),
+    ('The 4 30 Movie 2024 BluRay 1080p TrueHD7.1 x265.10bit-CHD', 'BluRay', 'x265', 'TrueHD7.1'),
+    ('The Tai-chi Master 1993 GBR BluRay Remux UHD DoVi HDR 2160p LPCM2.0-CHD', 'BluRay', 'DoVi HDR', 'LPCM2.0'),
+    ('"Keeping Score" Berlioz Symphony Fantastique 2009 Bluray 1080p TrueHD7.1 x264-CHD', 'Bluray', 'x264', 'TrueHD7.1')
 ])    
 def test_parseTorNameMore(test_input, e1, e2, e3):
     tt = tortitle.TorTitle(test_input)
