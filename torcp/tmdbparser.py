@@ -6,11 +6,24 @@ import logging
 from torcp import tortitle
 from torcp.torcategory import TorCategory
 
-GENRE_LIST_en = [{'id': 28, 'name': 'Action'}, {'id': 12, 'name': 'Adventure'}, {'id': 16, 'name': 'Animation'}, {'id': 35, 'name': 'Comedy'}, {'id': 80, 'name': 'Crime'}, {'id': 99, 'name': 'Documentary'}, {'id': 18, 'name': 'Drama'}, {'id': 10751, 'name': 'Family'}, {'id': 14, 'name': 'Fantasy'}, {
-    'id': 36, 'name': 'History'}, {'id': 27, 'name': 'Horror'}, {'id': 10402, 'name': 'Music'}, {'id': 9648, 'name': 'Mystery'}, {'id': 10749, 'name': 'Romance'}, {'id': 878, 'name': 'Science Fiction'}, {'id': 10770, 'name': 'TV Movie'}, {'id': 53, 'name': 'Thriller'}, {'id': 10752, 'name': 'War'}, {'id': 37, 'name': 'Western'}]
-GENRE_LIST_cn = [{'id': 28, 'name': '动作'}, {'id': 12, 'name': '冒险'}, {'id': 16, 'name': '动画'}, {'id': 35, 'name': '喜剧'}, {'id': 80, 'name': '犯罪'}, {'id': 99, 'name': '纪录'}, {'id': 18, 'name': '剧情'}, {'id': 10751, 'name': '家庭'}, {'id': 14, 'name': '奇幻'}, {
-    'id': 36, 'name': '历史'}, {'id': 27, 'name': '恐怖'}, {'id': 10402, 'name': '音乐'}, {'id': 9648, 'name': '悬疑'}, {'id': 10749, 'name': '爱情'}, {'id': 878, 'name': '科幻'}, {'id': 10770, 'name': '电视电影'}, {'id': 53, 'name': '惊悚'}, {'id': 10752, 'name': '战争'}, {'id': 37, 'name': '西部'}]
-
+GENRE_LIST_en = [{'id': 28, 'name': 'Action'}, {'id': 12, 'name': 'Adventure'}, {'id': 16, 'name': 'Animation'}, {'id': 35, 'name': 'Comedy'}, 
+                 {'id': 80, 'name': 'Crime'}, {'id': 99, 'name': 'Documentary'}, {'id': 18, 'name': 'Drama'}, {'id': 10751, 'name': 'Family'}, 
+                 {'id': 14, 'name': 'Fantasy'}, {'id': 36, 'name': 'History'}, {'id': 27, 'name': 'Horror'}, {'id': 10402, 'name': 'Music'}, 
+                 {'id': 9648, 'name': 'Mystery'}, {'id': 10749, 'name': 'Romance'}, {'id': 878, 'name': 'Science Fiction'}, 
+                 {'id': 10770, 'name': 'TV Movie'}, {'id': 53, 'name': 'Thriller'}, {'id': 10752, 'name': 'War'}, 
+                 {'id': 37, 'name': 'Western'}, {'id': 10763, 'name': 'News'}, {'id': 10764, 'name': 'Reality'}, 
+                 {'id': 10762, 'name': 'Kids'}, 
+                 {'id': 10765, 'name': 'Sci-Fi & Fantasy'}, {'id': 10766, 'name': 'Soap'}, {'id': 10767, 'name': 'Talk'}, 
+                 {'id': 10768, 'name': 'War & Politics'}]
+GENRE_LIST_cn = [{'id': 28, 'name': '动作'}, {'id': 12, 'name': '冒险'}, {'id': 16, 'name': '动画'}, {'id': 35, 'name': '喜剧'}, 
+                 {'id': 80, 'name': '犯罪'}, {'id': 99, 'name': '纪录'}, {'id': 18, 'name': '剧情'}, {'id': 10751, 'name': '家庭'}, 
+                 {'id': 14, 'name': '奇幻'}, {'id': 36, 'name': '历史'}, {'id': 27, 'name': '恐怖'}, {'id': 10402, 'name': '音乐'},
+                 {'id': 9648, 'name': '悬疑'}, {'id': 10749, 'name': '爱情'}, {'id': 878, 'name': '科幻'}, 
+                 {'id': 10770, 'name': '电视电影'}, {'id': 53, 'name': '惊悚'},  {'id': 10752, 'name': '战争'}, 
+                 {'id': 10762, 'name': '儿童'},
+                 {'id': 37, 'name': '西部'}, {'id': 10763, 'name': '新闻'}, {'id': 10764, 'name': '真人秀'}, 
+                 {'id': 10765, 'name': 'Sci-Fi & Fantasy'}, {'id': 10766, 'name': '肥皂剧'}, {'id': 10767, 'name': '脱口秀'}, 
+                 {'id': 10768, 'name': 'War & Politics'}]
 
 logger = logging.getLogger(__name__)
 
