@@ -162,7 +162,7 @@ class TMDbNameParser():
                         if self.tmdbcat in ['tv', 'movie', 'Other', 'HDTV']:
                             if exTitle:
                                 self.searchTMDb(exTitle, self.tmdbcat,
-                                                parseYear, self.cntitle)
+                                                parseYear, self.title)
                             if self.tmdbid <= 0:
                                 self.searchTMDb(self.title, self.tmdbcat,
                                                 parseYear, self.cntitle)
