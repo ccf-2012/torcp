@@ -10,7 +10,7 @@ __pycache__/
 config.ini
 
 myTMDbParser*
-tt.py
+tt*.py
 
 # Distribution / packaging
 .Python

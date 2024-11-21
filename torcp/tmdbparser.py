@@ -2,6 +2,7 @@
 import re
 import time
 from tmdbv3api import TMDb, Movie, TV, Search, Find
+from imdb import Cinemagoer
 import logging
 from torcp import tortitle
 from torcp.torcategory import TorCategory
@@ -152,7 +153,8 @@ class TMDbNameParser():
                                 logger.info("%s %s %s %s" % (tmdbid, title, self.ccfcat, self.year))
                                 return True
                     if hasIMDbId:
-                        tmdbid, title, year = self.searchTMDbByIMDbId(hasIMDbId)
+                        seriesIMDb = self.getSeriesIMDb(hasIMDbId)
+                        tmdbid, title, year = self.searchTMDbByIMDbId(seriesIMDb)
                         if tmdbid > 0:
                             self.tmdbhard = True
                             logger.info("%s %s %s %s" % (tmdbid, title, self.ccfcat, self.year))
@@ -173,6 +175,20 @@ class TMDbNameParser():
                     attempts += 1
                     logger.info("TMDb connection failed. Trying %d " % attempts)
                     time.sleep(3)
+
+
+    def getSeriesIMDb(self, imdb_id):
+        ia = Cinemagoer()
+        series = imdb_id
+        try:
+            movie = ia.get_movie(imdb_id[2:])
+            # 检查是否是电视剧
+            if movie.get('kind') in [ 'episode'] :
+                series = 'tt'+movie.get('episode of').movieID
+                logger.error(f"提供的ID {imdb_id} 是个 episode, 剧集 为 {series}")
+        except Exception as e:
+            logger.error(f"获取 IMDb 信息时发生错误: {e}")
+        return series
 
 
     def getDetails(self):
