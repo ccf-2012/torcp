@@ -115,6 +115,8 @@ class TMDbNameParser():
         self.poster_path = ''
         self.genre_ids =[]
         self.tmdbDetails = None
+        self.imdbid = ''
+        self.imdbval = 0.0
 
     def parse(self, torname, useTMDb=False, hasIMDbId=None, hasTMDbId=None, exTitle=''):
         self.clearData()
@@ -153,7 +155,7 @@ class TMDbNameParser():
                                 logger.info("%s %s %s %s" % (tmdbid, title, self.ccfcat, self.year))
                                 return True
                     if hasIMDbId:
-                        seriesIMDb = self.getSeriesIMDb(hasIMDbId)
+                        seriesIMDb = self.getIMDbInfo(hasIMDbId)
                         tmdbid, title, year = self.searchTMDbByIMDbId(seriesIMDb)
                         if tmdbid > 0:
                             self.tmdbhard = True
@@ -177,18 +179,19 @@ class TMDbNameParser():
                     time.sleep(3)
 
 
-    def getSeriesIMDb(self, imdb_id):
+    def getIMDbInfo(self, imdb_id):
         ia = Cinemagoer()
-        series = imdb_id
+        self.imdbid = imdb_id
         try:
             movie = ia.get_movie(imdb_id[2:])
+            self.imdbval = movie.get('rating')
             # 检查是否是电视剧
             if movie.get('kind') in [ 'episode'] :
-                series = 'tt'+movie.get('episode of').movieID
-                logger.error(f"提供的ID {imdb_id} 是个 episode, 剧集 为 {series}")
+                self.imdbid = 'tt'+movie.get('episode of').movieID
+                logger.error(f"提供的ID {imdb_id} 是个 episode, 剧集 为 {self.imdbid}")
         except Exception as e:
             logger.error(f"获取 IMDb 信息时发生错误: {e}")
-        return series
+        return self.imdbid
 
 
     def getDetails(self):
