@@ -66,7 +66,7 @@ class Torcp:
     def __init__(self):
         self.CUR_MEDIA_NAME = ''
         self.KEEPEXTALL = False
-        self.KEEPEXTS = ['.mkv', '.mp4', '.ts', '.m2ts', '.mov']
+        self.KEEPEXTS = ['.mkv', '.mp4', '.ts', '.m2ts', '.mov', '.strm']
         self.ARGS = None
         self.EXPORT_OBJ = None
         self.CATNAME_TV = 'TV'
