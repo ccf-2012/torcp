@@ -385,7 +385,13 @@ class TMDbNameParser():
 
     def findYearMatch(self, results, year, strict=True):
         matchList = []
-        for result in results:
+        if hasattr(results, 'results'):
+            resultlist = results['results']
+        else:
+            # 旧版 tmdbv3api
+            resultlist = results
+
+        for result in resultlist:
             if year == 0:
                 matchList.append(result)
                 continue

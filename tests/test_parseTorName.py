@@ -86,6 +86,8 @@ from torcp.torcategory import TorCategory
     ('HunanTV.Da.Wan.Zai.De.Ye.20211201.HDTV.1080i.H264-HDSTV.ts', 'Da Wan Zai De Ye 20211201', '', '', ''),
     ('2021.FIVB.VNL.CHN.vs.BRA.20210608.1080p.REPACK.WEB-DL.x264.AAC-TJUPT.mp4', 'FIVB VNL CHN vs BRA 20210608', '2021', '', ''),
     ('失落的秘符.第1季', '失落的秘符', '', 'S1', ''),
+    ('人生一串 第三季.The.Story.Of.Chuaner.S03.2021.2160p.WEB-DL.AAC.H264-HDSWEB', 'The Story Of Chuaner', '2021', 'S03', ''),
+    ('圆桌派第二季.Yuan.Zhuo.Pai.S02.2017.WEB-DL.1080p.H265.AAC-HDSWEB', 'Yuan Zhuo Pai', '2017', 'S02', ''),
     ('最后的决斗.The.Last.Duel.2021.1080p.Blu-ray.x265.DTS￡cXcY@FRDS', 'The Last Duel', '2021', '', ''),
     ('现代爱情S02.Modern.Love.2021.1080p.WEB-DL.x265.AC3￡cXcY@FRDS', 'Modern Love', '2021', 'S02', ''),
     # ('สิ่งเล็กเล็กที่เรียกว่า...รัก.A.Little.Thing.Called.Love.AKA.First.Love.2010.WEB-DL.1080p.x264.AAC-PTHome.mp4', 'A Little Thing Called Love', '2010', '', ''),
