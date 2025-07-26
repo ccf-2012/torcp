@@ -498,7 +498,9 @@ class TMDbNameParser():
                 # results = tv.search(s[1])
                 search = Search()
 
-                results = search.tv_shows(self.fixTmdbParam({"query": s[1], "year": str(intyear), "page": 1}))
+                # results = search.tv_shows(self.fixTmdbParam({"query": s[1], "year": str(intyear), "page": 1}))
+                results = search.tv_shows(term=s[1], adult=True, release_year=str(intyear), page=1)
+
                 if len(results) > 0:
                     if intyear > 0:
                         if self.season and 'S01' not in self.season:
@@ -517,9 +519,11 @@ class TMDbNameParser():
                 logger.info('Search Movie:  %s (%d)' % (s[1], intyear))
                 search = Search()
                 if intyear == 0:
-                    results = search.movies({"query": s[1], "page": 1})
+                    # results = search.movies({"query": s[1], "page": 1})
+                    results = search.movies(term=s[1], adult=True)
                 else:
-                    results = search.movies(self.fixTmdbParam({"query": s[1], "year": str(intyear), "page": 1}))
+                    # results = search.movies(self.fixTmdbParam({"query": s[1], "year": str(intyear), "page": 1}))
+                    results = search.movies(term=s[1], adult=True, year=str(intyear), page=1)
 
                 if len(results) > 0:
                     result = self.findYearMatch(results, intyear, strict=True)
@@ -532,7 +536,9 @@ class TMDbNameParser():
                             self.saveTmdbMovieResult(result)
                             return self.tmdbid, self.title, self.year
                 elif intyear > 0:
-                    results = search.movies({"query": s[1], "page": 1})
+                    # results = search.movies({"query": s[1], "page": 1})
+                    results = search.movies(term=s[1])
+
                     if len(results) > 0:
                         result = self.findYearMatch(results, intyear, strict=False)
                         if result:
@@ -542,9 +548,11 @@ class TMDbNameParser():
                 logger.info('Search Multi:  %s (%d)' % (s[1], intyear))
                 search = Search()
                 if intyear == 0:
-                    results = search.multi({"query": s[1], "page": 1})
+                    # results = search.multi({"query": s[1], "page": 1})
+                    results = search.multi(term=s[1], adult=True, page=1)
                 else:
-                    results = search.multi(self.fixTmdbParam({"query": s[1], "year": str(intyear), "page": 1}))
+                    # results = search.multi(self.fixTmdbParam({"query": s[1], "year": str(intyear), "page": 1}))
+                    results = search.multi(term=s[1], adult=True, page=1)
 
                 if len(results) > 0:
                     result = self.findYearMatch(results, intyear, strict=True)
@@ -557,7 +565,9 @@ class TMDbNameParser():
                             self.saveTmdbMultiResult(result)
                             return self.tmdbid, self.title, self.year
                 elif intyear > 0:
-                    results = search.multi({"query": s[1], "page": 1})
+                    # results = search.multi({"query": s[1], "page": 1})
+                    results = search.multi(term=s[1], adult=True)
+
                     if len(results) > 0:
                         result = self.findYearMatch(results, intyear, strict=True)
                         if result:
