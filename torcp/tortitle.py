@@ -251,14 +251,16 @@ class TorTitle:
         sstr = re.sub(r'\bComplete[\s\.]+(Series|HDTV|4K|1080p|WEB-?DL)\b', '', sstr, flags=re.I)
         sstr = re.sub(r'\[Vol.*\]$', '', sstr, flags=re.I)
 
-        sstr = re.sub(r'\W?(IMAX|Extended Cut|\d+CD|APE整轨)\b.*$', '', sstr, flags=re.I)
+        sstr = re.sub(r'\W?(IMAX|Extended Cut|Unrated Cut|\d+CD|APE整轨)\b.*$', '', sstr, flags=re.I)
         sstr = re.sub(r'[\[\(](BD\d+|WAV\d*|(CD\-)?FLAC|Live|DSD\s?\d*)\b.*$', '', sstr, flags=re.I)
-        sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV\d(HD|K)?|BD\-?\d*|[A-Z]{1,5}TV)\W*', '', sstr, flags=re.I)
+        sstr = re.sub(r'^\W?(BDMV|\BDRemux|\bCCTV-4K|\bCCTV\d+(HD|K)?|BD\-?\d*|[A-Z]{1,5}TV)\W*', '', sstr, flags=re.I)
 
         sstr = re.sub(r'\{[^\}]*\}.*$', '', sstr, flags=re.I)
         sstr = re.sub(r'([\s\.-](\d+)?CD[\.-]WEB|[\s\.-](\d+)?CD[\.-]FLAC|[\s\.-][\[\(\{]FLAC[\]\)\}]).*$', '', sstr, flags=re.I)
         sstr = re.sub(r'\bFLAC\b.*$', '', sstr, flags=re.I)
         sstr = re.sub(r'^[\[\(]\d+[^\)\]]*[\)\]]', '', sstr, flags=re.I)
+        sstr = re.sub(r'^Jade\b', '', sstr, flags=re.I)
+        sstr = re.sub(r'^\(\w+\)', '', sstr, flags=re.I)
 
         sstr = re.sub(r'^\W?CC_?\b', '', sstr, flags=re.I)
         if sstr and sstr[-1] in ['(', '[', '{']:
@@ -295,8 +297,11 @@ class TorTitle:
                 sstr = sstr[:syspan[0]]
 
         if not skipcut:
-            sstr = cutspan(sstr, seasonspan[0], seasonspan[1])
+            # sstr = cutspan(sstr, seasonspan[0], seasonspan[1])
             sstr = cutspan(sstr, yearspan[0], yearspan[1])
+            sypos = seasonspan[0] if seasonspan[0] < yearspan[0] else yearspan[0]
+            if sypos > 0:
+                sstr = sstr[0:sypos].strip()
         if sstr:
             failsafeTitle = sstr
         sstr = re.sub(r'\b(Theatrical|Extended)\s+Version', '', sstr, flags=re.I)
@@ -347,10 +352,21 @@ class TorTitle:
     def parseTorNameMore(self, torName):
         mediaSource, video, audio = '', '', ''
         if m := re.search(r"(?<=(1080p|2160p)\s)(((\w+)\s+)?WEB(-DL)?)|\bWEB(-DL)?\b|\bHDTV\b|((UHD )?(BluRay|Blu-ray))", torName, re.I):
-            mediaSource = m[0].strip()
+            m0 = m[0].strip()
+            if re.search(r'WEB[-]?(DL)?', m0, re.I):
+                mediaSource = 'webdl'
+            elif re.search(r'BLURAY|BLU-RAY', m0, re.I):
+                if re.search(r'x26[45]', torName, re.I):
+                    mediaSource = 'encode'
+                elif re.search(r'remux', torName, re.I):
+                    mediaSource = 'remux'
+                else:
+                    mediaSource = 'bluray'
+            else:
+                mediaSource = m0
         if m := re.search(r"AVC|HEVC(\s(DV|HDR))?|H\.?26[456](\s(HDR|DV))?|x26[45]\s?(10bit)?(HDR)?|DoVi (HDR(10)?)? (HEVC)?", torName, re.I):
             video = m[0].strip()
-        if m := re.search(r"DTS-HD MA \d.\d|LPCM\s?\d.\d|TrueHD\s?\d\.\d( Atmos)?|DDP\s*\d\.\d( Atmos)?|(AAC|FLAC)(\s*\d\.\d)?( Atmos)?|DTS(?!-\w+)|DD\+? \d\.\d", torName, re.I):
+        if m := re.search(r"DTS-HD MA \d.\d|LPCM\s?\d.\d|TrueHD\s?\d\.\d( Atmos)?|DDP[\s\.]*\d\.\d( Atmos)?|(AAC|FLAC)(\s*\d\.\d)?( Atmos)?|DTS(?!-\w+)|DD\+? \d\.\d", torName, re.I):
             audio = m[0].strip()
         return mediaSource, video, audio
 
