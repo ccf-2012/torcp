@@ -238,17 +238,17 @@ class TorTitle:
             return sstr
 
     def parse0DayMovieName(self, torName):
-        sstr = cutExt(torName)
+        sstr = cutExt(torName.strip())
 
         failsafeTitle = sstr
-
+        sstr = re.sub(r'^【.*】', '', sstr, flags=re.I)
         sstr = re.sub(r'\W(Disney|DSNP|Hami|ATVP|Netflix|NF|KKTV|Amazon|AMZN|HMAX|Friday|\d+fps)\W*WEB-?DL.*$', '', sstr, flags=re.I)
         sstr = re.sub(
             r'\b((UHD)?\s+BluRay|Blu-?ray|720p|1080[pi]|2160p|576i|WEB-DL|\.DVD\.|UHD|WEBRip|HDTV|Director(\'s)?[ .]Cut|REMASTERED|LIMITED|Complete(?=[. -]\d+)|SUBBED|TV Series).*$',
             '',
             sstr,
             flags=re.I)
-        sstr = re.sub(r'\bComplete (Series|HDTV)\b', '', sstr, flags=re.I)
+        sstr = re.sub(r'\bComplete[\s\.]+(Series|HDTV|4K|1080p|WEB-?DL)\b', '', sstr, flags=re.I)
         sstr = re.sub(r'\[Vol.*\]$', '', sstr, flags=re.I)
 
         sstr = re.sub(r'\W?(IMAX|Extended Cut|\d+CD|APE整轨)\b.*$', '', sstr, flags=re.I)
@@ -260,7 +260,6 @@ class TorTitle:
         sstr = re.sub(r'\bFLAC\b.*$', '', sstr, flags=re.I)
         sstr = re.sub(r'^[\[\(]\d+[^\)\]]*[\)\]]', '', sstr, flags=re.I)
 
-        sstr = re.sub(r'^【.*】', '', sstr, flags=re.I)
         sstr = re.sub(r'^\W?CC_?\b', '', sstr, flags=re.I)
         if sstr and sstr[-1] in ['(', '[', '{']:
             sstr = sstr[:-1]
@@ -331,10 +330,15 @@ class TorTitle:
                     cntitle = m.group(1)
                     if not re.search(r'\s[\-\+]\s', cntitle):
                         sstr = sstr.replace(cntitle, '')
+            # 连续空格只留 一个
             cntitle = re.sub(r' +', ' ', cntitle).strip()
+            # 取第1个空格之前的部分
+            cntitle = re.match(r'^[^ \(\[]*', cntitle).group()
 
         titlestr = bracketToBlank(sstr)
         titlestr = cutAKA(titlestr)
+        if len(titlestr) > 5:
+            titlestr = re.sub(r'part\s?\d+$', '', titlestr, flags=re.I).strip()
         if not containsCJK(titlestr) and len(titlestr) < 3:
             titlestr = bracketToBlank(failsafeTitle)
 

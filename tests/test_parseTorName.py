@@ -176,6 +176,7 @@ from torcp.torcategory import TorCategory
     ('威尼斯疑魂.4K修复版.1973.CC.1080p.中英字幕￡CMCT风潇潇', '威尼斯疑魂', '1973', '', ''),
     ('奇异博士2：疯狂多元宇宙.Doctor.Strange.in.the.Multiverse.of.Madness.2022.2160p.UHD.BluRay.2160p.x265.10bit.HDR.mUHD-FRDS', 'Doctor Strange in the Multiverse of Madness', '2022', '', ''),
     ('Arcane S02E01-E03 2024 V2 1080p NF WEB-DL x264 DDP5.1 Atmos-ADWeb', 'Arcane', '2024', 'S02', 'E01-E03'),
+    ('Re：从零开始的异世界生活 S01+S02 全50话 声优：小林裕介 高桥李依 *内封中字* Re.Zero.kara.Hajimeru.Isekai.Seikatsu.Netflix.WEB-DL.1080p.x264.DDP-HDCTV', 'Re：从零开始的异世界生活', '', 'S01', ''),
     # ('[劫与罪].Heist.2021.S01.S01E03.NF.WEB-DL.1080p.H264.DDP.5.1-CMCTV.mp4', 'Heist', '2021', 'S01', 'E03'),
     # ('Grateful Dead - Listen to the River：St. Louis \'71 \'72 \'73 (Live) (2021) (24-192)', 'Grateful Dead - Listen to the River：St. Louis', '2021', '', ''),
     # ('32.迪卡唱片.-.《极致：勃拉姆斯选集》.(5CDs.Box-set)', '32 迪卡唱片 《极致：勃拉姆斯选集》', '', '', ''),
