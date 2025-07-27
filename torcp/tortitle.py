@@ -248,6 +248,7 @@ class TorTitle:
             '',
             sstr,
             flags=re.I)
+        sstr = re.sub(r'\bComplete (Series|HDTV)\b', '', sstr, flags=re.I)
         sstr = re.sub(r'\[Vol.*\]$', '', sstr, flags=re.I)
 
         sstr = re.sub(r'\W?(IMAX|Extended Cut|\d+CD|APE整轨)\b.*$', '', sstr, flags=re.I)
@@ -259,6 +260,7 @@ class TorTitle:
         sstr = re.sub(r'\bFLAC\b.*$', '', sstr, flags=re.I)
         sstr = re.sub(r'^[\[\(]\d+[^\)\]]*[\)\]]', '', sstr, flags=re.I)
 
+        sstr = re.sub(r'^【.*】', '', sstr, flags=re.I)
         sstr = re.sub(r'^\W?CC_?\b', '', sstr, flags=re.I)
         if sstr and sstr[-1] in ['(', '[', '{']:
             sstr = sstr[:-1]
