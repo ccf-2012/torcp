@@ -8,6 +8,10 @@ A script to organize media files in Emby-happy way, create hardlink in a seperat
 
 ## Last update:
 * ...refer to [chinese version](README.md).....
+* 2025.12.24: Unified folder handling: `--unified-folders` to merge BDMV/ISO into Movie/TV folders based on content category. HDTV is now always treated as TV. `--tmdb-not-found-folder` to customize the folder name for TMDb lookup failures. Fixes bug where HDTV items that fail TMDb lookup went to HDTV folder instead of TMDbNotFound
+* 2025.12.24: Processing report: shows summary at end with skipped/failed items. Use `--save-skipped` and `--save-failed` to save to files
+* 2025.12.24: TMDB query cache: auto-caches TMDB queries to `~/.torcp/tmdb_cache.json` with 30-day expiry. Use `--no-tmdb-cache` to disable, `--clear-tmdb-cache` to clear cache
+* 2025.12.24: `--progress` enable progress bar display when processing files
 * 2022.4.3: `--make-log` create a log file to trace the origin file location and folder name
 * 2022.3.23: `--symbolink` support symbol link
 * 2022.3.13: `--lang` dispatch to different folders base on TMDb language
@@ -30,6 +34,7 @@ usage: tp.py [-h] -d HD_PATH [-e KEEP_EXT] [-l LANG] [--genre GENRE] [--other-di
              [--tv-folder-name TV_FOLDER_NAME] [--movie-folder-name MOVIE_FOLDER_NAME] [--tv] [--movie] [--dryrun] [--single] [--extract-bdmv] [--full-bdmv] [--origin-name] [--tmdb-origin-name]
              [--sleep SLEEP] [--move-run] [--make-log] [--symbolink] [--cache] [--emby-bracket] [--plex-bracket] [--make-plex-match] [--make-nfo] [--after-copy-script AFTER_COPY_SCRIPT]
              [--imdbid IMDBID] [--tmdbid TMDBID] [--extitle EXTITLE] [--site-str SITE_STR] [--add-year-dir] [--genre-with-area GENRE_WITH_AREA]
+             [--progress] [--no-tmdb-cache] [--clear-tmdb-cache]
              MEDIA_DIR
 
 torcp: a script hardlink media files and directories in Emby-happy naming and structs.
@@ -83,7 +88,15 @@ options:
   --site-str SITE_STR   site-id(ex. hds-12345) folder name, set site strs like ('chd,hds,ade,ttg').
   --add-year-dir        Add a year dir above the media folder
   --genre-with-area GENRE_WITH_AREA
-                        specify genres with area subdir, seperated with comma  
+                        specify genres with area subdir, seperated with comma
+  --progress            enable progress bar display
+  --no-tmdb-cache       disable TMDB query cache
+  --clear-tmdb-cache    clear TMDB cache before running
+  --save-skipped FILE   save skipped items list to specified file
+  --save-failed FILE    save failed items list to specified file
+  --unified-folders     merge BDMV/ISO into Movie/TV folders based on content category
+  --tmdb-not-found-folder FOLDER
+                        folder name for items that fail TMDb lookup (default: TMDbNotFound)
 ```
 
 ### Alternatively, call with `python tp.py`
